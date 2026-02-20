@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "version": 1
+  },
+  "project": {
+    "name": "LightRail_CPO_DeepPCB",
+    "description": "Strictly Validated for DeepPCB"
+  },
+  "pcbnew": {
+    "design_settings": {
+      "rules": {
+        "min_copper_edge_clearance": 0.2
+      }
+    }
+  }
+}

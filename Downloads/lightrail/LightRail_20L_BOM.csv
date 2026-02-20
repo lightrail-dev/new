@@ -1,0 +1,10 @@
+Designator,Description,Manufacturer,MPN,Qty,Function
+CORE1,LightRail AI 20-Layer 3D Photonic Intelligence Stack,LightRail-Fabrication,LR-20L-INTEL-G1,1,Complete 20-Layer AI Compute Engine
+L1-Interposer,Embedded Analog Voltage Regulator Plane,LightRail-Power,LR-PWR-L1-1.5KW,1,Step 1: 1.5kW Power Delivery Layer
+L2-Engine,Heterogeneously Integrated DFB Laser Array (CW-C-Band),Lumentum,LR-LHE-G2,1,Step 2: Foundry bonded Light Engine
+L3-TFLN,Thin-Film Lithium Niobate 3D Interposer,LightRail-Optical,LR-TFLN-800G,1,Step 3: Linear Pockels Effect CPO Foundation
+L7-Memristor,Memristive Synaptic Grid (Non-Volatile Base-3 Memory),LightRail-NV,LR-MEM-BASE3,1,Step 7: Analog Compute-in-Memory Grid
+L9-Ternary,"Ternary Logic Encoder (-1, 0, +1)",LightRail-Logic,LR-TRIT-ENC,1,Step 9: Exponential Info-Density Core
+C0-C1789,"0201 Ultra-Thin MLCC (0.1uF, 10V, X5R)",Murata,GRM033R61A104ME15D,1790,System-wide 3D Decoupling nodes for 20L Stack
+J1,PCIe Gen5 x16 Edge Interface,TE Connectivity,2-2013289-6,1,Primary Data/Power Host Bridge
+Fab1,20-Layer Rogers 4350B Hybrid 3D Substrate,LightRail-PCB,LR-20L-HDI-3D,1,The 20-Layer Photonic Intelligence Carrier

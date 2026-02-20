@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "version": 1
+  },
+  "project": {
+    "name": "lightrail_pluggable",
+    "description": "LightRail AI Ultra Density"
+  },
+  "pcbnew": {
+    "design_settings": {
+      "rules": {
+        "min_copper_edge_clearance": 0.1
+      }
+    }
+  }
+}
