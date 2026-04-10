@@ -1,6 +1,6 @@
 (module PCIe_x16_EdgeConnector (layer F.Cu) (tedit 0)
-  (descr "PCIe x16 Edge Connector, 164 pins")
-  (tags "PCIe edge connector")
+  (descr "PCIe x16 Edge 164 pins")
+  (tags "PCIe edge")
   (attr smd)
   (fp_text reference REF** (at 0 -5) (layer F.SilkS) (effects (font (size 1 1) (thickness 0.15))))
   (fp_text value PCIe_x16_EdgeConnector (at 0 5) (layer F.Fab) (effects (font (size 1 1) (thickness 0.15))))

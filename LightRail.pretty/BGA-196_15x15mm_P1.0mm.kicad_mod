@@ -1,5 +1,5 @@
 (module BGA-196_15x15mm_P1.0mm (layer F.Cu) (tedit 0)
-  (descr "BGA-196, 14x14, 1.0mm pitch, 15x15mm body, TFLN Modulator")
+  (descr "BGA-196 15x15mm 1mm pitch TFLN")
   (tags "BGA 196")
   (attr smd)
   (fp_text reference REF** (at 0 -9) (layer F.SilkS) (effects (font (size 1 1) (thickness 0.15))))

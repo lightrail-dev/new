@@ -1,6 +1,6 @@
 (module MPO-24_Receptacle (layer F.Cu) (tedit 0)
-  (descr "MPO-24 Fiber Optic Receptacle")
-  (tags "MPO fiber optic")
+  (descr "MPO-24 Fiber Optic")
+  (tags "MPO fiber")
   (attr through_hole)
   (fp_text reference REF** (at 0 -8) (layer F.SilkS) (effects (font (size 1 1) (thickness 0.15))))
   (fp_text value MPO-24_Receptacle (at 0 8) (layer F.Fab) (effects (font (size 1 1) (thickness 0.15))))

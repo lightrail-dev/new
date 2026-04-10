@@ -1,6 +1,6 @@
 (module COB-Photonic_14x10mm (layer F.Cu) (tedit 0)
-  (descr "Chip-on-Board Photonic, 14x10mm, 22 pins, DFB Laser")
-  (tags "COB photonic laser")
+  (descr "COB Photonic 14x10mm DFB Laser")
+  (tags "COB photonic")
   (attr smd)
   (fp_text reference REF** (at 0 -7) (layer F.SilkS) (effects (font (size 1 1) (thickness 0.15))))
   (fp_text value COB-Photonic_14x10mm (at 0 7) (layer F.Fab) (effects (font (size 1 1) (thickness 0.15))))
