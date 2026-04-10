@@ -19,7 +19,7 @@ TAB_X0 = (BW - TAB_W) / 2.0
 TAB_X1 = TAB_X0 + TAB_W
 
 LAYERS_SMD = '"F.Cu" "F.Paste" "F.Mask"'
-LAYERS_SMD_NOMASK = '"F.Cu" "F.Mask"'
+LAYERS_SMD_NOPASTE = '"F.Cu" "F.Mask"'
 LAYERS_TH = '"*.Cu" "*.Mask"'
 LAYERS_BCU = '"B.Cu" "B.Mask"'
 LAYERS_PASTE = '"F.Paste"'
