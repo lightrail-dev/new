@@ -1845,7 +1845,7 @@
     )
   )
 
-  (zone (net 0) (net_name "V_CORE_U0") (layer "In3.Cu") (tstamp f940feac-7008-41b1-822e-3d433c48b08e) (hatch edge 0.508)
+  (zone (net 164) (net_name "V_CORE_U0") (layer "In3.Cu") (tstamp f940feac-7008-41b1-822e-3d433c48b08e) (hatch edge 0.508)
     (connect_pads thru_hole_only (clearance 0.3))
     (fill yes (thermal_gap 0) (thermal_bridge_width 1.0))
     (polygon
@@ -1858,7 +1858,7 @@
     )
   )
 
-  (zone (net 0) (net_name "V_CORE_U0") (layer "In4.Cu") (tstamp 8225464f-eea0-45a5-abc8-47356e82c73b) (hatch edge 0.508)
+  (zone (net 164) (net_name "V_CORE_U0") (layer "In4.Cu") (tstamp 8225464f-eea0-45a5-abc8-47356e82c73b) (hatch edge 0.508)
     (connect_pads thru_hole_only (clearance 0.3))
     (fill yes (thermal_gap 0) (thermal_bridge_width 1.0))
     (polygon
@@ -1871,7 +1871,7 @@
     )
   )
 
-  (zone (net 0) (net_name "V_CORE_U1") (layer "In5.Cu") (tstamp 0656e546-f677-45f7-8b88-60f10ef29f65) (hatch edge 0.508)
+  (zone (net 165) (net_name "V_CORE_U1") (layer "In5.Cu") (tstamp 0656e546-f677-45f7-8b88-60f10ef29f65) (hatch edge 0.508)
     (connect_pads thru_hole_only (clearance 0.3))
     (fill yes (thermal_gap 0) (thermal_bridge_width 1.0))
     (polygon
@@ -1884,7 +1884,7 @@
     )
   )
 
-  (zone (net 0) (net_name "V_CORE_U1") (layer "In6.Cu") (tstamp d359ef34-e3bf-4d09-aa09-6e2e67fd8e7e) (hatch edge 0.508)
+  (zone (net 165) (net_name "V_CORE_U1") (layer "In6.Cu") (tstamp d359ef34-e3bf-4d09-aa09-6e2e67fd8e7e) (hatch edge 0.508)
     (connect_pads thru_hole_only (clearance 0.3))
     (fill yes (thermal_gap 0) (thermal_bridge_width 1.0))
     (polygon
@@ -1897,7 +1897,7 @@
     )
   )
 
-  (zone (net 0) (net_name "GND") (layer "In7.Cu") (tstamp 365ad5d4-f720-4a64-a24c-96a0f53269d9) (hatch edge 0.508)
+  (zone (net 1) (net_name "GND") (layer "In7.Cu") (tstamp 365ad5d4-f720-4a64-a24c-96a0f53269d9) (hatch edge 0.508)
     (connect_pads thru_hole_only (clearance 0.3))
     (fill yes (thermal_gap 0.508) (thermal_bridge_width 0.508))
     (polygon
@@ -1911,22 +1911,22 @@
   )
 
   ;; === DDR5 FLY-BY TOPOLOGY ROUTING STRUCTURES ===
-  (segment (start 15.0 72) (end 29.0 72) (width 0.1) (layer "In1.Cu") (net 0) (tstamp c35def16-013a-43cb-9295-4248a2ba1005))
-  (segment (start 15.0 74) (end 28.0 74) (width 0.1) (layer "In1.Cu") (net 0) (tstamp 6152786d-bda5-48f4-9985-2d9c5e866087))
-  (segment (start 30.0 72) (end 44.0 72) (width 0.1) (layer "In1.Cu") (net 0) (tstamp abc626a9-1878-40a5-ad43-ff56bf1de264))
-  (segment (start 30.0 74) (end 43.0 74) (width 0.1) (layer "In1.Cu") (net 0) (tstamp 30f035d1-cd17-4f78-a916-b57d275357fb))
-  (segment (start 45.0 72) (end 59.0 72) (width 0.1) (layer "In1.Cu") (net 0) (tstamp 1c286332-3edd-4e9b-a0f7-e308e0b873d2))
-  (segment (start 45.0 74) (end 58.0 74) (width 0.1) (layer "In1.Cu") (net 0) (tstamp 20a368b8-cead-484d-b1f2-b324262061bb))
-  (segment (start 60.0 72) (end 74.0 72) (width 0.1) (layer "In1.Cu") (net 0) (tstamp 001d105e-e344-40d8-af90-3bb5c1955087))
-  (segment (start 60.0 74) (end 73.0 74) (width 0.1) (layer "In1.Cu") (net 0) (tstamp b13f5680-addc-4097-a42c-a22bf1b620e4))
-  (segment (start 90.0 72) (end 104.0 72) (width 0.1) (layer "In1.Cu") (net 0) (tstamp 3fa1b9d2-ae55-4a33-ac76-960160b0643b))
-  (segment (start 90.0 74) (end 103.0 74) (width 0.1) (layer "In1.Cu") (net 0) (tstamp 9fc77387-b099-426c-9758-4a7db70531c5))
-  (segment (start 105.0 72) (end 119.0 72) (width 0.1) (layer "In1.Cu") (net 0) (tstamp 532c67be-55ce-461c-b9d3-2a837cc5e2ef))
-  (segment (start 105.0 74) (end 118.0 74) (width 0.1) (layer "In1.Cu") (net 0) (tstamp 4f1a742b-b04f-4910-9bfd-5559c989a570))
-  (segment (start 120.0 72) (end 134.0 72) (width 0.1) (layer "In1.Cu") (net 0) (tstamp bb445628-ed6e-4e97-babc-deeca56c8359))
-  (segment (start 120.0 74) (end 133.0 74) (width 0.1) (layer "In1.Cu") (net 0) (tstamp 3fcb8113-322f-4df9-9725-9dcfc182fbcf))
-  (segment (start 135.0 72) (end 149.0 72) (width 0.1) (layer "In1.Cu") (net 0) (tstamp 787db49c-72be-4b34-8aa5-22a493b46c4e))
-  (segment (start 135.0 74) (end 148.0 74) (width 0.1) (layer "In1.Cu") (net 0) (tstamp 58daefd0-d571-4f9c-927b-54d42adf88c6))
+  (segment (start 15.0 72) (end 29.0 72) (width 0.1) (layer "In1.Cu") (net 152) (tstamp c35def16-013a-43cb-9295-4248a2ba1005))
+  (segment (start 15.0 74) (end 28.0 74) (width 0.1) (layer "In1.Cu") (net 153) (tstamp 6152786d-bda5-48f4-9985-2d9c5e866087))
+  (segment (start 30.0 72) (end 44.0 72) (width 0.1) (layer "In1.Cu") (net 152) (tstamp abc626a9-1878-40a5-ad43-ff56bf1de264))
+  (segment (start 30.0 74) (end 43.0 74) (width 0.1) (layer "In1.Cu") (net 153) (tstamp 30f035d1-cd17-4f78-a916-b57d275357fb))
+  (segment (start 45.0 72) (end 59.0 72) (width 0.1) (layer "In1.Cu") (net 152) (tstamp 1c286332-3edd-4e9b-a0f7-e308e0b873d2))
+  (segment (start 45.0 74) (end 58.0 74) (width 0.1) (layer "In1.Cu") (net 153) (tstamp 20a368b8-cead-484d-b1f2-b324262061bb))
+  (segment (start 60.0 72) (end 74.0 72) (width 0.1) (layer "In1.Cu") (net 152) (tstamp 001d105e-e344-40d8-af90-3bb5c1955087))
+  (segment (start 60.0 74) (end 73.0 74) (width 0.1) (layer "In1.Cu") (net 153) (tstamp b13f5680-addc-4097-a42c-a22bf1b620e4))
+  (segment (start 90.0 72) (end 104.0 72) (width 0.1) (layer "In1.Cu") (net 160) (tstamp 3fa1b9d2-ae55-4a33-ac76-960160b0643b))
+  (segment (start 90.0 74) (end 103.0 74) (width 0.1) (layer "In1.Cu") (net 161) (tstamp 9fc77387-b099-426c-9758-4a7db70531c5))
+  (segment (start 105.0 72) (end 119.0 72) (width 0.1) (layer "In1.Cu") (net 160) (tstamp 532c67be-55ce-461c-b9d3-2a837cc5e2ef))
+  (segment (start 105.0 74) (end 118.0 74) (width 0.1) (layer "In1.Cu") (net 161) (tstamp 4f1a742b-b04f-4910-9bfd-5559c989a570))
+  (segment (start 120.0 72) (end 134.0 72) (width 0.1) (layer "In1.Cu") (net 160) (tstamp bb445628-ed6e-4e97-babc-deeca56c8359))
+  (segment (start 120.0 74) (end 133.0 74) (width 0.1) (layer "In1.Cu") (net 161) (tstamp 3fcb8113-322f-4df9-9725-9dcfc182fbcf))
+  (segment (start 135.0 72) (end 149.0 72) (width 0.1) (layer "In1.Cu") (net 160) (tstamp 787db49c-72be-4b34-8aa5-22a493b46c4e))
+  (segment (start 135.0 74) (end 148.0 74) (width 0.1) (layer "In1.Cu") (net 161) (tstamp 58daefd0-d571-4f9c-927b-54d42adf88c6))
 
   ;; === AI SoC BGA AND TFLN PIC FOOTPRINTS ===
 
