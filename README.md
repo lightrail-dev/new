@@ -188,6 +188,7 @@ This produces:
 | 3.0  | 2026-04-11 | Dual AI Compute Node scaffold with TFLN, VRM, DDR5 hierarchy (PR #4).    |
 | 4.0  | 2026-04-17 | Add fab documentation package: BOM, pinouts, stackup, DFM, tapeout list. |
 | 4.1  | 2026-04-17 | Stackup / PCB fixes from Devin Review: V_CORE_U1 planes 2 oz (matches zones), DDR5 CK moved In1.Cu→In2.Cu with P/N endpoints matched, TFLN keep-outs moved off BGA to front-panel fiber-exit area (both F.Cu and B.Cu), DDR5_Data via_diameter 0.3→0.35 mm, `ddr5_ca_stripline_only` DRC rule uses regex on full net names (`.*_CK_P` etc.), `gerber_layers.txt` In5/In6 re-labelled V_CORE_U1. |
+| 4.2  | 2026-04-17 | Scaffold parse-fix + fab export: stripped `;;` line comments and property `(id N)` tokens from `.kicad_pcb` so `kicad-cli` parses; `fab/export_gerbers.sh` no longer aborts on DRC violations; `ddr5_ck_ca_length_match` DRC rule keys off `DDR5_Data` net class + NetName regex (old `DDR5_CK`/`DDR5_CA` classes never existed); `Memory.kicad_sch` instances carry `VDDQ` sheet pin; `AI_Core_Unit[01]` sheet instances + `AI_Core.kicad_sch` now carry `VDDQ` hierarchical pin/label (SoC DDR5 I/O rail); `fab/generate_bom.py` ref-des reconciled with PCB (`U101/U201` SoCs, `U102/U202` TFLN, `U302..U349` DrMOS — was colliding with SoCs). |
 
 ### Residual items flagged by Devin Review that still require human work
 

@@ -329,6 +329,7 @@
   (hierarchical_label "DDR5A_CA3" (shape output) (at 264.16 121.74 0) (effects (font (size 1.27 1.27))) (uuid b068f13c-813a-4b6d-8fd9-dbe5e10bee85))
   (hierarchical_label "V_CORE" (shape input) (at 40.64 60.0 180) (effects (font (size 1.27 1.27))) (uuid 6a0cbdc2-fb6a-4151-b0db-667e831d493a))
   (hierarchical_label "VDD_IO" (shape input) (at 40.64 63.0 180) (effects (font (size 1.27 1.27))) (uuid d7769c6a-f47b-41bc-b613-404201f57578))
+  (hierarchical_label "VDDQ" (shape input) (at 40.64 64.5 180) (effects (font (size 1.27 1.27))) (uuid 9e0b7c12-3a4f-4cba-8b7d-4f0af0a9c101))
   (hierarchical_label "GND" (shape passive) (at 40.64 66.0 180) (effects (font (size 1.27 1.27))) (uuid f1547edb-64c5-40a5-baa4-dafacf19dbd9))
   (hierarchical_label "TFLN_CLK_P" (shape output) (at 40.64 70.0 180) (effects (font (size 1.27 1.27))) (uuid 567dcba0-c235-45b5-bb59-c67652673de0))
   (hierarchical_label "TFLN_CLK_N" (shape output) (at 40.64 73.0 180) (effects (font (size 1.27 1.27))) (uuid bd761b6c-fbe0-4110-9480-798229756581))
