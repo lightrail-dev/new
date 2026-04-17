@@ -108,7 +108,7 @@
 | 3.3 V aux                 | Buck                    | 3.3 V   | 15 A           | TPS54360               |
 | 1.8 V aux                 | LDO                     | 1.8 V   | 3 A            | TPS7A20                |
 | 1.2 V aux                 | LDO                     | 1.2 V   | 2 A            | TPS7A20                |
-| 0.9 V (TFLN RF)           | LDO, low-noise          | 0.9 V   | 1 A            | ADM7150                |
+| 0.9 V (TFLN RF)           | LDO, low-noise          | 0.9 V   | 1 A            | ADP7118-0.9 (fixed)    |
 
 ### 2.6 Management
 

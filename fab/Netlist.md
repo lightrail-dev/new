@@ -22,7 +22,7 @@ reviewer can cross-check the KiCad-generated netlist once routed.
 | `VDD_IO`           | 1.05 V   | U30 (TPS543C20)                | U1/U2 VDD_IO rings                          |
 | `VDDQ`             | 1.1 V    | U31 (TPS544C20)                | DDR5 DIMM VDDQ + SoC DDR5 PHY               |
 | `VPP`              | 1.8 V    | U32 (TPS62810)                 | DDR5 DIMM VPP                                |
-| `+0V9_RF`          | 0.9 V    | U36 (ADM7150)                  | TFLN PIC RF analog supply                   |
+| `+0V9_RF`          | 0.9 V    | U36 (ADP7118-0.9)              | TFLN PIC RF analog supply                   |
 | `+5V_BIAS`         | 5 V      | LDO (from 12V)                 | TFLN PIC bias                               |
 | `VTT_DDR`          | 0.55 V   | derived on DIMM                | DIMM termination                            |
 | `GND`              | 0 V      | all planes                     | everyone                                    |

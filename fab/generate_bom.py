@@ -148,12 +148,12 @@ rows.append(Part(ref="U35", qty=1, value="TPS7A20-1V2",
                  manufacturer="TI", mpn="TPS7A2012PDQNR",
                  distributor="Digi-Key", distributor_pn="296-TPS7A2012PDQNRCT-ND",
                  package="X2SON-6", description="LDO 1.2V"))
-rows.append(Part(ref="U36", qty=1, value="ADM7150",
-                 footprint="Package_SO:SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.29x3.0mm",
-                 manufacturer="Analog Devices", mpn="ADM7150ARDZ-5.0",
-                 distributor="Digi-Key", distributor_pn="ADM7150ARDZ-5.0-ND",
-                 package="SOIC-8 exposed pad",
-                 description="Ultra-low-noise LDO for TFLN 0.9V RF supply (configured 0.9V)"))
+rows.append(Part(ref="U36", qty=1, value="ADP7118-0.9",
+                 footprint="Package_DFN_QFN:LFCSP-6-1EP_2x2mm_P0.65mm_EP0.7x1.0mm",
+                 manufacturer="Analog Devices", mpn="ADP7118ACPZ-0.9-R7",
+                 distributor="Digi-Key", distributor_pn="ADP7118ACPZ-0.9-R7CT-ND",
+                 package="LFCSP-6 2x2 exposed pad",
+                 description="Ultra-low-noise fixed 0.9 V LDO for TFLN RF supply (+0V9_RF)"))
 
 # -------- Clock generation --------
 rows.append(Part(ref="U40", qty=1, value="Si5395A",

@@ -5,7 +5,7 @@
 
   (title_block
     (title "LightRail LPO 1.6T Photonic Accelerator")
-    (date "2026-04-10")
+    (date "2026-04-11")
     (rev "4.0")
     (company "LightRail AI")
     (comment 1 "Model: LR-P3A | Gen3 Photonic Engine")

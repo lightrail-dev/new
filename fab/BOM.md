@@ -30,7 +30,7 @@
 | SO-8 PowerPak | 2 |
 | WSON-10 3x3 | 1 |
 | HSOP-8 | 1 |
-| SOIC-8 exposed pad | 1 |
+| LFCSP-6 2x2 exposed pad | 1 |
 | QFN-44 7x7 | 1 |
 | 3.2x2.5mm TCXO | 1 |
 | BGA-456 0.8mm | 1 |
