@@ -1922,6 +1922,32 @@
     )
   )
 
+  (zone (net 1) (net_name "GND") (layer "In5.Cu") (tstamp 7c0a1e4f-2b3d-4a5c-9e8f-0a1b2c3d4e61) (hatch edge 0.508)
+    (connect_pads thru_hole_only (clearance 0.3))
+    (fill yes (thermal_gap 0.508) (thermal_bridge_width 0.508))
+    (polygon
+      (pts
+        (xy 0 0)
+        (xy 88 0)
+        (xy 88 100)
+        (xy 0 100)
+      )
+    )
+  )
+
+  (zone (net 1) (net_name "GND") (layer "In6.Cu") (tstamp 7c0a1e4f-2b3d-4a5c-9e8f-0a1b2c3d4e62) (hatch edge 0.508)
+    (connect_pads thru_hole_only (clearance 0.3))
+    (fill yes (thermal_gap 0.508) (thermal_bridge_width 0.508))
+    (polygon
+      (pts
+        (xy 0 0)
+        (xy 88 0)
+        (xy 88 100)
+        (xy 0 100)
+      )
+    )
+  )
+
   (zone (net 1) (net_name "GND") (layer "In7.Cu") (tstamp 365ad5d4-f720-4a64-a24c-96a0f53269d9) (hatch edge 0.508)
     (connect_pads thru_hole_only (clearance 0.3))
     (fill yes (thermal_gap 0.508) (thermal_bridge_width 0.508))
