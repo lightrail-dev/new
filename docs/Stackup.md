@@ -15,30 +15,30 @@
 |   | F.SilkS    | silk        | —         | —            | —            | top silkscreen                   |
 |   | F.Paste    | paste       | —         | —            | —            | top paste stencil                |
 |   | F.Mask     | mask        | 0.010 mm  | LPI          | —            | top soldermask                   |
-| 1 | F.Cu       | copper      | 0.035 mm  | Cu (2 oz)    | —            | SIG: PCIe/TFLN RF + BGA fanout   |
+| 1 | F.Cu       | copper      | 0.070 mm  | Cu (2 oz)    | —            | SIG: PCIe/TFLN RF + BGA fanout   |
 |   | PP1        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
 | 2 | In1.Cu     | copper      | 0.0175 mm | Cu (0.5 oz)  | —            | GND reference (solid)            |
 |   | C1         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
 | 3 | In2.Cu     | copper      | 0.0175 mm | Cu (0.5 oz)  | —            | SIG: DDR5 byte lanes 0–1         |
 |   | PP2        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 4 | In3.Cu     | copper      | 0.035 mm  | Cu (2 oz)    | —            | V_CORE_U0 plane                  |
+| 4 | In3.Cu     | copper      | 0.070 mm  | Cu (2 oz)    | —            | V_CORE_U0 plane                  |
 |   | C2         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 5 | In4.Cu     | copper      | 0.035 mm  | Cu (2 oz)    | —            | V_CORE_U0 plane (split)          |
+| 5 | In4.Cu     | copper      | 0.070 mm  | Cu (2 oz)    | —            | V_CORE_U0 plane (split)          |
 |   | PP3        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 6 | In5.Cu     | copper      | 0.035 mm  | Cu (2 oz)    | —            | V_CORE_U1 plane                  |
+| 6 | In5.Cu     | copper      | 0.070 mm  | Cu (2 oz)    | —            | V_CORE_U1 plane                  |
 |   | C3         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 7 | In6.Cu     | copper      | 0.035 mm  | Cu (2 oz)    | —            | V_CORE_U1 plane (paralleled)     |
+| 7 | In6.Cu     | copper      | 0.070 mm  | Cu (2 oz)    | —            | V_CORE_U1 plane (paralleled)     |
 |   | PP4        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 8 | In7.Cu     | copper      | 0.035 mm  | Cu (2 oz)    | —            | GND reference (solid)            |
+| 8 | In7.Cu     | copper      | 0.070 mm  | Cu (2 oz)    | —            | GND reference (solid)            |
 |   | C4         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
 | 9 | In8.Cu     | copper      | 0.0175 mm | Cu (0.5 oz)  | —            | SIG: aux I/O, PMBus, SPI         |
 |   | PP5        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-|10 | B.Cu       | copper      | 0.035 mm  | Cu (2 oz)    | —            | SIG: NVMe, fanout, decoupling    |
+|10 | B.Cu       | copper      | 0.070 mm  | Cu (2 oz)    | —            | SIG: NVMe, fanout, decoupling    |
 |   | B.Mask     | mask        | 0.010 mm  | LPI          | —            | bottom soldermask                |
 |   | B.Paste    | paste       | —         | —            | —            | bottom paste stencil             |
 |   | B.SilkS    | silk        | —         | —            | —            | bottom silkscreen                |
 
-**Total nominal thickness:** 1.63 mm ± 10 %
+**Total nominal thickness:** 1.86 mm ± 10 %
 **Copper weight:** 2 oz outer / 0.5 oz inner signal / 2 oz power planes
 **Finish:** ENIG (2 µm Au min. over 5 µm Ni)
 **Soldermask:** LPI, green (default); matte black available
