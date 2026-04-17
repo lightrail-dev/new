@@ -207,15 +207,17 @@ This produces:
 These are schematic-side fixes that need a PCB engineer to drive in the KiCad
 GUI (a text-edit pass risks corrupting sheet-pin UUIDs):
 
-- `AI_Core_Unit[01]` sheet instances in root schematic carry the minimal
-  HBM4 side-channel pins (`HBM4_U*_VDDC_S / VDDQL_S / VDDQ_S / VPP_S /
-  REFCK_P / REFCK_N / CATTRIP / PWR_GOOD`) plus `VDDQ`. A PCB engineer
-  should add the IEEE-1500 test-bus pins (`HBM4_U*_TCK / TMS / TDI / TDO`)
-  and verify the composite-BGA power-pin count matches the vendor
-  composite-module datasheet.
-- `VRM_U[01]` sheet instances are missing `VID0/1/2` input pins for the
-  voltage-programming bus. The VID nets exist in the root — just add
-  matching sheet pins.
+- `AI_Core_Unit[01]` sheet instances in root schematic carry the HBM4
+  side-channel pins (`HBM4_U*_VDDC_S / VDDQL_S / VDDQ_S / VPP_S / REFCK_P /
+  REFCK_N / CATTRIP / PWR_GOOD`), `VDDQ`, and the IEEE-1500 test-bus pins
+  (`HBM4_IEEE_TCK / TMS / TDI / TDO`); matching hierarchical labels are in
+  `AI_Core.kicad_sch`. A PCB engineer should verify the composite-BGA
+  power-pin count against the vendor composite-module datasheet once the
+  NCE + interposer vendor is selected.
+- ~~`VRM_U[01]` sheet instances are missing `VID0/1/2` input pins~~ —
+  **resolved**: VID0/1/2 pins are present on both `VRM_Unit0` and
+  `VRM_Unit1` sheet instances and matched by hierarchical labels in
+  `VRM.kicad_sch`.
 - TFLN keep-out polygons on inner copper layers (`In1.Cu`..`In8.Cu`) should
   be added once final placement is locked; the scaffold only declares them
   on `F.Cu` and `B.Cu`.
