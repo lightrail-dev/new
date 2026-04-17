@@ -1,0 +1,97 @@
+(version 1)
+
+# Custom DRC rules — LightRail LPO 1.6T / LR-P3A Rev 4.0
+# Paste into KiCad 8 PCB Editor → File → Custom Rules, or import the file
+# from Board Setup → Custom Rules.
+
+# -- 1. High-current power nets must clear by 0.4 mm --
+(rule "power_high_current_clearance"
+  (constraint clearance (min 0.4mm))
+  (condition "A.NetClass == 'PWR_CORE' || A.NetClass == 'PWR_12V'")
+)
+
+# -- 2. V_core traces must be >= 2.0 mm wide on outer layers --
+(rule "vcore_min_width_outer"
+  (constraint track_width (min 2.0mm))
+  (condition "A.NetClass == 'PWR_CORE' && (A.Layer == 'F.Cu' || A.Layer == 'B.Cu')")
+)
+
+# -- 3. PCIe Gen 6 diff-pair intra-pair skew control --
+(rule "pcie_gen6_diff_pair"
+  (constraint diff_pair_gap (min 0.15mm) (max 0.20mm))
+  (condition "A.NetClass == 'PCIe_Gen6'")
+)
+
+# -- 4. TFLN RF: tighter diff-pair tolerance --
+(rule "tfln_rf_diff_pair"
+  (constraint diff_pair_gap (min 0.18mm) (max 0.22mm))
+  (condition "A.NetClass == 'TFLN_RF'")
+)
+
+# -- 5. DDR5 byte-lane length-match (per-class delay) --
+(rule "ddr5_length_match"
+  (constraint length (min 30mm) (max 70mm))
+  (condition "A.NetClass == 'DDR5_Data'")
+)
+
+# -- 6. Microvia drill minimum --
+(rule "microvia_min"
+  (constraint hole_size (min 0.10mm))
+  (condition "A.Type == 'Via' && A.ViaType == 'Micro'")
+)
+
+# -- 7. Edge clearance bumped to 0.3 mm in RF region --
+(rule "rf_edge_clearance"
+  (constraint edge_clearance (min 0.30mm))
+  (condition "A.NetClass == 'TFLN_RF' || A.NetClass == 'PCIe_Gen6'")
+)
+
+# -- 8. Mounting holes must not be violated by any copper --
+(rule "mounting_hole_keep_out"
+  (constraint clearance (min 0.25mm))
+  (condition "B.hasTag('mount_hole')")
+)
+
+# -- 9. No vias under TFLN optical exit keep-out --
+(rule "tfln_optical_keepout"
+  (constraint physical_clearance (min 0.5mm))
+  (condition "A.Type == 'Via' && B.hasTag('tfln_optical_keepout')")
+  (severity error)
+)
+
+# -- 10. DDR5 CA/CLK must be on internal stripline layers only --
+(rule "ddr5_ca_stripline_only"
+  (constraint assertion "A.Layer == 'In2.Cu' || A.Layer == 'In5.Cu'")
+  (condition "(A.NetName == 'CK_P' || A.NetName == 'CK_N' ||
+               A.NetName ^= 'CA')")
+  (severity error)
+)
+
+# -- 11. V_core vias: minimum 0.4 mm drill (thermal) --
+(rule "vcore_via_min"
+  (constraint hole_size (min 0.4mm))
+  (condition "A.Type == 'Via' && A.NetClass == 'PWR_CORE'")
+)
+
+# -- 12. High-speed lanes must have GND reference within 0.4 mm --
+# (annotation-level — actual check done by SI extraction)
+(rule "ref_plane_reminder"
+  (constraint assertion "true")
+  (condition "A.NetClass == 'PCIe_Gen6' || A.NetClass == 'TFLN_RF' ||
+              A.NetClass == 'DDR5_Data'")
+  (severity warning)
+  (layer outer)
+)
+
+# -- 13. Silk over copper disallowed (mirrors project default) --
+(rule "silk_over_cu"
+  (constraint silk_clearance (min 0.0mm))
+  (condition "A.Layer == 'F.SilkS' || A.Layer == 'B.SilkS'")
+  (severity warning)
+)
+
+# -- 14. BGA breakout neck-down --
+(rule "bga_neckdown"
+  (constraint track_width (min 0.075mm) (opt 0.09mm))
+  (condition "B.hasTag('bga_breakout')")
+)

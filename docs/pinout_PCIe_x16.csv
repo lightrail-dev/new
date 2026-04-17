@@ -1,0 +1,165 @@
+Pin,Signal,Direction,Description,NetClass
+B1,+12V,power,Main 12V rail,PWR_12V
+B2,+12V,power,Main 12V rail,PWR_12V
+B3,+12V,power,Main 12V rail,PWR_12V
+B4,GND,power,Return,GND
+B5,SMCLK,i/o,SMBus clock,I2C_SPI
+B6,SMDAT,i/o,SMBus data,I2C_SPI
+B7,GND,power,Return,GND
+B8,+3.3V,power,3.3V aux,PWR_3V3
+B9,TRST#,in,JTAG reset,I2C_SPI
+B10,3.3Vaux,power,3.3V always-on,PWR_3V3
+B11,WAKE#,o_oc,Wake request,I2C_SPI
+B12,RSVD,nc,Reserved,-
+B13,GND,power,Return,GND
+B14,PET0_P,out,TX lane 0 +,PCIe_Gen6
+B15,PET0_N,out,TX lane 0 −,PCIe_Gen6
+B16,GND,power,Return,GND
+B17,PRSNT#2,in,Presence detect 2,I2C_SPI
+B18,GND,power,Return,GND
+B19,PET1_P,out,TX lane 1 +,PCIe_Gen6
+B20,PET1_N,out,TX lane 1 −,PCIe_Gen6
+B21,GND,power,Return,GND
+B22,PET2_P,out,TX lane 2 +,PCIe_Gen6
+B23,PET2_N,out,TX lane 2 −,PCIe_Gen6
+B24,GND,power,Return,GND
+B25,PET3_P,out,TX lane 3 +,PCIe_Gen6
+B26,PET3_N,out,TX lane 3 −,PCIe_Gen6
+B27,GND,power,Return,GND
+B28,PET4_P,out,TX lane 4 +,PCIe_Gen6
+B29,PET4_N,out,TX lane 4 −,PCIe_Gen6
+B30,GND,power,Return,GND
+B31,PET5_P,out,TX lane 5 +,PCIe_Gen6
+B32,PET5_N,out,TX lane 5 −,PCIe_Gen6
+B33,GND,power,Return,GND
+B34,PET6_P,out,TX lane 6 +,PCIe_Gen6
+B35,PET6_N,out,TX lane 6 −,PCIe_Gen6
+B36,GND,power,Return,GND
+B37,PET7_P,out,TX lane 7 +,PCIe_Gen6
+B38,PET7_N,out,TX lane 7 −,PCIe_Gen6
+B39,GND,power,Return,GND
+B40,PET8_P,out,TX lane 8 +,PCIe_Gen6
+B41,PET8_N,out,TX lane 8 −,PCIe_Gen6
+B42,GND,power,Return,GND
+B43,PET9_P,out,TX lane 9 +,PCIe_Gen6
+B44,PET9_N,out,TX lane 9 −,PCIe_Gen6
+B45,GND,power,Return,GND
+B46,PET10_P,out,TX lane 10 +,PCIe_Gen6
+B47,PET10_N,out,TX lane 10 −,PCIe_Gen6
+B48,GND,power,Return,GND
+B49,PET11_P,out,TX lane 11 +,PCIe_Gen6
+B50,PET11_N,out,TX lane 11 −,PCIe_Gen6
+B51,GND,power,Return,GND
+B52,PET12_P,out,TX lane 12 +,PCIe_Gen6
+B53,PET12_N,out,TX lane 12 −,PCIe_Gen6
+B54,GND,power,Return,GND
+B55,PET13_P,out,TX lane 13 +,PCIe_Gen6
+B56,PET13_N,out,TX lane 13 −,PCIe_Gen6
+B57,GND,power,Return,GND
+B58,PET14_P,out,TX lane 14 +,PCIe_Gen6
+B59,PET14_N,out,TX lane 14 −,PCIe_Gen6
+B60,GND,power,Return,GND
+B61,PET15_P,out,TX lane 15 +,PCIe_Gen6
+B62,PET15_N,out,TX lane 15 −,PCIe_Gen6
+B63,GND,power,Return,GND
+B64,RSVD,nc,Reserved,-
+B65,RSVD,nc,Reserved,-
+B66,RSVD,nc,Reserved,-
+B67,RSVD,nc,Reserved,-
+B68,RSVD,nc,Reserved,-
+B69,RSVD,nc,Reserved,-
+B70,RSVD,nc,Reserved,-
+B71,RSVD,nc,Reserved,-
+B72,RSVD,nc,Reserved,-
+B73,RSVD,nc,Reserved,-
+B74,RSVD,nc,Reserved,-
+B75,RSVD,nc,Reserved,-
+B76,RSVD,nc,Reserved,-
+B77,RSVD,nc,Reserved,-
+B78,RSVD,nc,Reserved,-
+B79,RSVD,nc,Reserved,-
+B80,RSVD,nc,Reserved,-
+B81,RSVD,nc,Reserved,-
+B82,RSVD,nc,Reserved,-
+A1,PRSNT#1,in,Presence detect 1,I2C_SPI
+A2,+12V,power,Main 12V rail,PWR_12V
+A3,+12V,power,Main 12V rail,PWR_12V
+A4,GND,power,Return,GND
+A5,TCK,in,JTAG clock,I2C_SPI
+A6,TDI,in,JTAG data-in,I2C_SPI
+A7,TDO,out,JTAG data-out,I2C_SPI
+A8,TMS,in,JTAG mode select,I2C_SPI
+A9,+3.3V,power,3.3V,PWR_3V3
+A10,+3.3V,power,3.3V,PWR_3V3
+A11,PERST#,in,Fundamental reset,I2C_SPI
+A12,GND,power,Return,GND
+A13,REFCLK+,in,100 MHz ref clock +,RF_50OHM_DIFF
+A14,REFCLK-,in,100 MHz ref clock −,RF_50OHM_DIFF
+A15,GND,power,Return,GND
+A16,PER0_P,in,RX lane 0 +,PCIe_Gen6
+A17,PER0_N,in,RX lane 0 −,PCIe_Gen6
+A18,GND,power,Return,GND
+A19,PER1_P,in,RX lane 1 +,PCIe_Gen6
+A20,PER1_N,in,RX lane 1 −,PCIe_Gen6
+A21,GND,power,Return,GND
+A22,PER2_P,in,RX lane 2 +,PCIe_Gen6
+A23,PER2_N,in,RX lane 2 −,PCIe_Gen6
+A24,GND,power,Return,GND
+A25,PER3_P,in,RX lane 3 +,PCIe_Gen6
+A26,PER3_N,in,RX lane 3 −,PCIe_Gen6
+A27,GND,power,Return,GND
+A28,PER4_P,in,RX lane 4 +,PCIe_Gen6
+A29,PER4_N,in,RX lane 4 −,PCIe_Gen6
+A30,GND,power,Return,GND
+A31,PER5_P,in,RX lane 5 +,PCIe_Gen6
+A32,PER5_N,in,RX lane 5 −,PCIe_Gen6
+A33,GND,power,Return,GND
+A34,PER6_P,in,RX lane 6 +,PCIe_Gen6
+A35,PER6_N,in,RX lane 6 −,PCIe_Gen6
+A36,GND,power,Return,GND
+A37,PER7_P,in,RX lane 7 +,PCIe_Gen6
+A38,PER7_N,in,RX lane 7 −,PCIe_Gen6
+A39,GND,power,Return,GND
+A40,PER8_P,in,RX lane 8 +,PCIe_Gen6
+A41,PER8_N,in,RX lane 8 −,PCIe_Gen6
+A42,GND,power,Return,GND
+A43,PER9_P,in,RX lane 9 +,PCIe_Gen6
+A44,PER9_N,in,RX lane 9 −,PCIe_Gen6
+A45,GND,power,Return,GND
+A46,PER10_P,in,RX lane 10 +,PCIe_Gen6
+A47,PER10_N,in,RX lane 10 −,PCIe_Gen6
+A48,GND,power,Return,GND
+A49,PER11_P,in,RX lane 11 +,PCIe_Gen6
+A50,PER11_N,in,RX lane 11 −,PCIe_Gen6
+A51,GND,power,Return,GND
+A52,PER12_P,in,RX lane 12 +,PCIe_Gen6
+A53,PER12_N,in,RX lane 12 −,PCIe_Gen6
+A54,GND,power,Return,GND
+A55,PER13_P,in,RX lane 13 +,PCIe_Gen6
+A56,PER13_N,in,RX lane 13 −,PCIe_Gen6
+A57,GND,power,Return,GND
+A58,PER14_P,in,RX lane 14 +,PCIe_Gen6
+A59,PER14_N,in,RX lane 14 −,PCIe_Gen6
+A60,GND,power,Return,GND
+A61,PER15_P,in,RX lane 15 +,PCIe_Gen6
+A62,PER15_N,in,RX lane 15 −,PCIe_Gen6
+A63,GND,power,Return,GND
+A64,RSVD,nc,Reserved,-
+A65,RSVD,nc,Reserved,-
+A66,RSVD,nc,Reserved,-
+A67,RSVD,nc,Reserved,-
+A68,RSVD,nc,Reserved,-
+A69,RSVD,nc,Reserved,-
+A70,RSVD,nc,Reserved,-
+A71,RSVD,nc,Reserved,-
+A72,RSVD,nc,Reserved,-
+A73,RSVD,nc,Reserved,-
+A74,RSVD,nc,Reserved,-
+A75,RSVD,nc,Reserved,-
+A76,RSVD,nc,Reserved,-
+A77,RSVD,nc,Reserved,-
+A78,RSVD,nc,Reserved,-
+A79,RSVD,nc,Reserved,-
+A80,RSVD,nc,Reserved,-
+A81,RSVD,nc,Reserved,-
+A82,RSVD,nc,Reserved,-

@@ -1,0 +1,64 @@
+# Gerber layer mapping — LightRail LPO 1.6T / LR-P3A Rev 4.0
+#
+# Fabricator-facing description of each Gerber file. Use this table to
+# cross-reference what comes out of `export_gerbers.sh`.
+#
+# All layers are RS-274X (with X2 attributes where KiCad emits them), units mm.
+# The scaffold is 10-layer; a tape-out 22–24 layer release adds In9..In22.
+
+| Filename suffix             | KiCad layer | Content                              |
+|-----------------------------|-------------|--------------------------------------|
+| -F_Cu.gbr                   | F.Cu        | Top copper (2 oz, signal + fanout)   |
+| -In1_Cu.gbr                 | In1.Cu      | GND reference plane (0.5 oz)         |
+| -In2_Cu.gbr                 | In2.Cu      | Signal: DDR5 byte lanes 0-1 (0.5 oz) |
+| -In3_Cu.gbr                 | In3.Cu      | V_CORE_U0 plane (2 oz)               |
+| -In4_Cu.gbr                 | In4.Cu      | V_CORE_U0 plane (2 oz, split)        |
+| -In5_Cu.gbr                 | In5.Cu      | Signal: DDR5 byte lanes 2-3 (0.5 oz) |
+| -In6_Cu.gbr                 | In6.Cu      | V_CORE_U1 plane (0.5 oz)             |
+| -In7_Cu.gbr                 | In7.Cu      | GND reference plane (2 oz)           |
+| -In8_Cu.gbr                 | In8.Cu      | Signal: aux I/O, PMBus, SPI (0.5 oz) |
+| -B_Cu.gbr                   | B.Cu        | Bottom copper (2 oz, NVMe + decoupling) |
+| -F_Paste.gbr                | F.Paste     | Top solder paste                     |
+| -B_Paste.gbr                | B.Paste     | Bottom solder paste                  |
+| -F_Mask.gbr                 | F.Mask      | Top solder mask                      |
+| -B_Mask.gbr                 | B.Mask      | Bottom solder mask                   |
+| -F_Silkscreen.gbr           | F.SilkS     | Top silkscreen (white)               |
+| -B_Silkscreen.gbr           | B.SilkS     | Bottom silkscreen (white)            |
+| -Edge_Cuts.gbr              | Edge.Cuts   | Board outline, cutouts, fiducials    |
+| -PTH-drl_map.gbr            | —           | Plated-through hole drill map        |
+| -NPTH-drl_map.gbr           | —           | Non-plated hole drill map            |
+
+# Drill files (Excellon 2)
+
+| Filename                              | Content                                  |
+|---------------------------------------|------------------------------------------|
+| LightRail_LPO_1.6T-PTH.drl            | Plated-through drills                    |
+| LightRail_LPO_1.6T-NPTH.drl           | Non-plated drills (mounting holes)       |
+| LightRail_LPO_1.6T-F_Cu-In1_Cu.drl    | Microvia drill F.Cu → In1.Cu             |
+| LightRail_LPO_1.6T-In1_Cu-In2_Cu.drl  | Buried drill In1 → In2                   |
+
+# Misc deliverables
+
+| Filename                              | Format       | Purpose                       |
+|---------------------------------------|--------------|-------------------------------|
+| LightRail_LPO_1.6T.ipc-d-356          | IPC-D-356A   | Bare-board net test           |
+| LightRail_LPO_1.6T.ipc2581            | IPC-2581C    | Combined design transfer      |
+| LightRail_LPO_1.6T-top.pos            | CSV          | P&P top                       |
+| LightRail_LPO_1.6T-bottom.pos         | CSV          | P&P bottom                    |
+| LightRail_LPO_1.6T.bom.csv            | CSV          | BOM from schematic            |
+| LightRail_LPO_1.6T.step               | STEP AP242   | 3D model                      |
+| LightRail_LPO_1.6T-top-assembly.pdf   | PDF          | Assembly drawing, top         |
+| LightRail_LPO_1.6T-bottom-assembly.pdf| PDF          | Assembly drawing, bottom      |
+| LightRail_LPO_1.6T-schematic.pdf      | PDF          | Schematic printout            |
+| drc_report.rpt                        | text         | DRC violations summary        |
+| erc_report.rpt                        | text         | ERC violations summary        |
+
+# Notes for the fab
+
+- All copper layers are RS-274X with extended attributes (KiCad X2).
+- Drills are Excellon 2, mm, absolute origin (drill-file origin matches
+  PCB origin; aux-origin disabled in the project for traceability).
+- PTH and NPTH are in separate files; do not combine.
+- Ferrite/magnetic inclusion and stiffener regions are documented in the
+  fab drawing PDF, not the Gerbers.
+- Impedance coupons are part of the panel, not the design — fab to insert.

@@ -1,0 +1,122 @@
+Signal,Direction,Description,NetClass
+DQ0,i/o,Data byte 0 bit 0,DDR5_Data
+DQ1,i/o,Data byte 0 bit 1,DDR5_Data
+DQ2,i/o,Data byte 0 bit 2,DDR5_Data
+DQ3,i/o,Data byte 0 bit 3,DDR5_Data
+DQ4,i/o,Data byte 0 bit 4,DDR5_Data
+DQ5,i/o,Data byte 0 bit 5,DDR5_Data
+DQ6,i/o,Data byte 0 bit 6,DDR5_Data
+DQ7,i/o,Data byte 0 bit 7,DDR5_Data
+DQS0_t,i/o,Byte 0 strobe +,DDR5_Data
+DQS0_c,i/o,Byte 0 strobe −,DDR5_Data
+DM0,in,Byte 0 data mask,DDR5_Data
+DQ8,i/o,Data byte 1 bit 0,DDR5_Data
+DQ9,i/o,Data byte 1 bit 1,DDR5_Data
+DQ10,i/o,Data byte 1 bit 2,DDR5_Data
+DQ11,i/o,Data byte 1 bit 3,DDR5_Data
+DQ12,i/o,Data byte 1 bit 4,DDR5_Data
+DQ13,i/o,Data byte 1 bit 5,DDR5_Data
+DQ14,i/o,Data byte 1 bit 6,DDR5_Data
+DQ15,i/o,Data byte 1 bit 7,DDR5_Data
+DQS1_t,i/o,Byte 1 strobe +,DDR5_Data
+DQS1_c,i/o,Byte 1 strobe −,DDR5_Data
+DM1,in,Byte 1 data mask,DDR5_Data
+DQ16,i/o,Data byte 2 bit 0,DDR5_Data
+DQ17,i/o,Data byte 2 bit 1,DDR5_Data
+DQ18,i/o,Data byte 2 bit 2,DDR5_Data
+DQ19,i/o,Data byte 2 bit 3,DDR5_Data
+DQ20,i/o,Data byte 2 bit 4,DDR5_Data
+DQ21,i/o,Data byte 2 bit 5,DDR5_Data
+DQ22,i/o,Data byte 2 bit 6,DDR5_Data
+DQ23,i/o,Data byte 2 bit 7,DDR5_Data
+DQS2_t,i/o,Byte 2 strobe +,DDR5_Data
+DQS2_c,i/o,Byte 2 strobe −,DDR5_Data
+DM2,in,Byte 2 data mask,DDR5_Data
+DQ24,i/o,Data byte 3 bit 0,DDR5_Data
+DQ25,i/o,Data byte 3 bit 1,DDR5_Data
+DQ26,i/o,Data byte 3 bit 2,DDR5_Data
+DQ27,i/o,Data byte 3 bit 3,DDR5_Data
+DQ28,i/o,Data byte 3 bit 4,DDR5_Data
+DQ29,i/o,Data byte 3 bit 5,DDR5_Data
+DQ30,i/o,Data byte 3 bit 6,DDR5_Data
+DQ31,i/o,Data byte 3 bit 7,DDR5_Data
+DQS3_t,i/o,Byte 3 strobe +,DDR5_Data
+DQS3_c,i/o,Byte 3 strobe −,DDR5_Data
+DM3,in,Byte 3 data mask,DDR5_Data
+DQ32,i/o,Data byte 4 bit 0,DDR5_Data
+DQ33,i/o,Data byte 4 bit 1,DDR5_Data
+DQ34,i/o,Data byte 4 bit 2,DDR5_Data
+DQ35,i/o,Data byte 4 bit 3,DDR5_Data
+DQ36,i/o,Data byte 4 bit 4,DDR5_Data
+DQ37,i/o,Data byte 4 bit 5,DDR5_Data
+DQ38,i/o,Data byte 4 bit 6,DDR5_Data
+DQ39,i/o,Data byte 4 bit 7,DDR5_Data
+DQS4_t,i/o,Byte 4 strobe +,DDR5_Data
+DQS4_c,i/o,Byte 4 strobe −,DDR5_Data
+DM4,in,Byte 4 data mask,DDR5_Data
+DQ40,i/o,Data byte 5 bit 0,DDR5_Data
+DQ41,i/o,Data byte 5 bit 1,DDR5_Data
+DQ42,i/o,Data byte 5 bit 2,DDR5_Data
+DQ43,i/o,Data byte 5 bit 3,DDR5_Data
+DQ44,i/o,Data byte 5 bit 4,DDR5_Data
+DQ45,i/o,Data byte 5 bit 5,DDR5_Data
+DQ46,i/o,Data byte 5 bit 6,DDR5_Data
+DQ47,i/o,Data byte 5 bit 7,DDR5_Data
+DQS5_t,i/o,Byte 5 strobe +,DDR5_Data
+DQS5_c,i/o,Byte 5 strobe −,DDR5_Data
+DM5,in,Byte 5 data mask,DDR5_Data
+DQ48,i/o,Data byte 6 bit 0,DDR5_Data
+DQ49,i/o,Data byte 6 bit 1,DDR5_Data
+DQ50,i/o,Data byte 6 bit 2,DDR5_Data
+DQ51,i/o,Data byte 6 bit 3,DDR5_Data
+DQ52,i/o,Data byte 6 bit 4,DDR5_Data
+DQ53,i/o,Data byte 6 bit 5,DDR5_Data
+DQ54,i/o,Data byte 6 bit 6,DDR5_Data
+DQ55,i/o,Data byte 6 bit 7,DDR5_Data
+DQS6_t,i/o,Byte 6 strobe +,DDR5_Data
+DQS6_c,i/o,Byte 6 strobe −,DDR5_Data
+DM6,in,Byte 6 data mask,DDR5_Data
+DQ56,i/o,Data byte 7 bit 0,DDR5_Data
+DQ57,i/o,Data byte 7 bit 1,DDR5_Data
+DQ58,i/o,Data byte 7 bit 2,DDR5_Data
+DQ59,i/o,Data byte 7 bit 3,DDR5_Data
+DQ60,i/o,Data byte 7 bit 4,DDR5_Data
+DQ61,i/o,Data byte 7 bit 5,DDR5_Data
+DQ62,i/o,Data byte 7 bit 6,DDR5_Data
+DQ63,i/o,Data byte 7 bit 7,DDR5_Data
+DQS7_t,i/o,Byte 7 strobe +,DDR5_Data
+DQS7_c,i/o,Byte 7 strobe −,DDR5_Data
+DM7,in,Byte 7 data mask,DDR5_Data
+CA0,in,Command/address 0,DDR5_Data
+CA1,in,Command/address 1,DDR5_Data
+CA2,in,Command/address 2,DDR5_Data
+CA3,in,Command/address 3,DDR5_Data
+CA4,in,Command/address 4,DDR5_Data
+CA5,in,Command/address 5,DDR5_Data
+CA6,in,Command/address 6,DDR5_Data
+CA7,in,Command/address 7,DDR5_Data
+CA8,in,Command/address 8,DDR5_Data
+CA9,in,Command/address 9,DDR5_Data
+CA10,in,Command/address 10,DDR5_Data
+CA11,in,Command/address 11,DDR5_Data
+CA12,in,Command/address 12,DDR5_Data
+CA13,in,Command/address 13,DDR5_Data
+CK_t,in,Clock +,DDR5_Data
+CK_c,in,Clock −,DDR5_Data
+CS0#,in,Chip select rank 0,DDR5_Data
+CS1#,in,Chip select rank 1,DDR5_Data
+ODT0,in,On-die termination 0,DDR5_Data
+ODT1,in,On-die termination 1,DDR5_Data
+RESET#,in,Reset,I2C_SPI
+ALERT#,o_oc,Alert,I2C_SPI
+EVENT#,o_oc,Event,I2C_SPI
+SA0,i/o,SPD SA0,I2C_SPI
+SA1,i/o,SPD SA1,I2C_SPI
+SA2,i/o,SPD SA2,I2C_SPI
+SDA,i/o,SPD SDA,I2C_SPI
+SCL,i/o,SPD SCL,I2C_SPI
+WP,i/o,SPD WP,I2C_SPI
+VDDQ,power,"DDR5 VDDQ (1.1V, ~32 pins)",PWR_1V8
+VPP,power,"DDR5 VPP  (1.8V, ~4 pins)",PWR_1V8
+VDD,power,DDR5 VDD  (1.1V),PWR_1V8
+GND,power,Return (≥80 pins),GND

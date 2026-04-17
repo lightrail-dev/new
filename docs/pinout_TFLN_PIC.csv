@@ -1,0 +1,62 @@
+Pin,Direction,Description,NetClass
+RF0_P,in,"RF drive channel 0, + side",TFLN_RF
+RF0_N,in,"RF drive channel 0, − side",TFLN_RF
+BIAS0,in,DC bias tune channel 0 (0-5V),I2C_SPI
+PD0_MON,out,Tap photodiode monitor channel 0,I2C_SPI
+RF1_P,in,"RF drive channel 1, + side",TFLN_RF
+RF1_N,in,"RF drive channel 1, − side",TFLN_RF
+BIAS1,in,DC bias tune channel 1 (0-5V),I2C_SPI
+PD1_MON,out,Tap photodiode monitor channel 1,I2C_SPI
+RF2_P,in,"RF drive channel 2, + side",TFLN_RF
+RF2_N,in,"RF drive channel 2, − side",TFLN_RF
+BIAS2,in,DC bias tune channel 2 (0-5V),I2C_SPI
+PD2_MON,out,Tap photodiode monitor channel 2,I2C_SPI
+RF3_P,in,"RF drive channel 3, + side",TFLN_RF
+RF3_N,in,"RF drive channel 3, − side",TFLN_RF
+BIAS3,in,DC bias tune channel 3 (0-5V),I2C_SPI
+PD3_MON,out,Tap photodiode monitor channel 3,I2C_SPI
+RF4_P,in,"RF drive channel 4, + side",TFLN_RF
+RF4_N,in,"RF drive channel 4, − side",TFLN_RF
+BIAS4,in,DC bias tune channel 4 (0-5V),I2C_SPI
+PD4_MON,out,Tap photodiode monitor channel 4,I2C_SPI
+RF5_P,in,"RF drive channel 5, + side",TFLN_RF
+RF5_N,in,"RF drive channel 5, − side",TFLN_RF
+BIAS5,in,DC bias tune channel 5 (0-5V),I2C_SPI
+PD5_MON,out,Tap photodiode monitor channel 5,I2C_SPI
+RF6_P,in,"RF drive channel 6, + side",TFLN_RF
+RF6_N,in,"RF drive channel 6, − side",TFLN_RF
+BIAS6,in,DC bias tune channel 6 (0-5V),I2C_SPI
+PD6_MON,out,Tap photodiode monitor channel 6,I2C_SPI
+RF7_P,in,"RF drive channel 7, + side",TFLN_RF
+RF7_N,in,"RF drive channel 7, − side",TFLN_RF
+BIAS7,in,DC bias tune channel 7 (0-5V),I2C_SPI
+PD7_MON,out,Tap photodiode monitor channel 7,I2C_SPI
+TEC_TH_A,i/o,TEC thermistor A,I2C_SPI
+TEC_TH_B,i/o,TEC drive B,I2C_SPI
+VCC_RF,power,RF analog supply 0.9V or 1.2V,PWR_1V8
+VCC_BIAS,power,Bias supply (5V),PWR_3V3
+GND,power,Analog / RF ground (≥40 pins),GND
+FIBER01,optical,Fiber 1: TX,-
+FIBER02,optical,Fiber 2: TX,-
+FIBER03,optical,Fiber 3: TX,-
+FIBER04,optical,Fiber 4: TX,-
+FIBER05,optical,Fiber 5: TX,-
+FIBER06,optical,Fiber 6: TX,-
+FIBER07,optical,Fiber 7: TX,-
+FIBER08,optical,Fiber 8: TX,-
+FIBER09,optical,Fiber 9: RX,-
+FIBER10,optical,Fiber 10: RX,-
+FIBER11,optical,Fiber 11: RX,-
+FIBER12,optical,Fiber 12: RX,-
+FIBER13,optical,Fiber 13: RX,-
+FIBER14,optical,Fiber 14: RX,-
+FIBER15,optical,Fiber 15: RX,-
+FIBER16,optical,Fiber 16: RX,-
+FIBER17,optical,Fiber 17: MON,-
+FIBER18,optical,Fiber 18: MON,-
+FIBER19,optical,Fiber 19: MON,-
+FIBER20,optical,Fiber 20: MON,-
+FIBER21,optical,Fiber 21: MON,-
+FIBER22,optical,Fiber 22: MON,-
+FIBER23,optical,Fiber 23: MON,-
+FIBER24,optical,Fiber 24: MON,-
