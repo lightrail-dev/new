@@ -36,7 +36,7 @@ echo "== Exporting Gerbers (RS-274X / X2) =="
 kicad-cli pcb export gerbers \
     --output "$OUT/gerbers" \
     --layers "F.Cu,In1.Cu,In2.Cu,In3.Cu,In4.Cu,In5.Cu,In6.Cu,In7.Cu,In8.Cu,B.Cu,F.SilkS,B.SilkS,F.Mask,B.Mask,F.Paste,B.Paste,Edge.Cuts" \
-    --no-x2 --no-netlist \
+    --no-netlist \
     --subtract-soldermask \
     "$PCB"
 

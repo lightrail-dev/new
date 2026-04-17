@@ -334,6 +334,8 @@
   (hierarchical_label "TFLN_CLK_N" (shape output) (at 40.64 73.0 180) (effects (font (size 1.27 1.27))) (uuid bd761b6c-fbe0-4110-9480-798229756581))
   (hierarchical_label "I2C_SDA" (shape bidirectional) (at 40.64 76.0 180) (effects (font (size 1.27 1.27))) (uuid 74234136-4879-4e28-9988-2f1ba6785f96))
   (hierarchical_label "I2C_SCL" (shape input) (at 40.64 79.0 180) (effects (font (size 1.27 1.27))) (uuid c3a2c5fb-d029-4289-aa5d-b8cfaa3d6f93))
+  (hierarchical_label "DDR5A_DQS0P" (shape bidirectional) (at 264.16 120.47 0) (effects (font (size 1.27 1.27))) (uuid a1b2c3d4-e5f6-4011-8001-000000000001))
+  (hierarchical_label "DDR5A_DQS0N" (shape bidirectional) (at 264.16 119.20 0) (effects (font (size 1.27 1.27))) (uuid a1b2c3d4-e5f6-4011-8001-000000000002))
 
   (text "AI COMPUTE UNIT - CORE\nAI SoC BGA: 2500 pins, 0.8mm pitch\nTFLN Photonic Engine Interface: 8ch RF differential\nDDR5 Memory Controller: Channel A (32-bit + ECC)\nPCIe Gen 6.0 x16: 64 GT/s per lane\nV_core: 0.8V, 1000A (24-phase DrMOS)" (at 152.4 30.48 0) (effects (font (size 2.0 2.0)) (justify left)))
 
