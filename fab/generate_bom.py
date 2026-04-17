@@ -44,7 +44,10 @@ def add(ref_prefix: str, count: int, start: int = 1, **kw):
 # Ref-des scheme reconciled with LightRail_LPO_1.6T.kicad_pcb + schematic sheets:
 #   U101 / U201  : AI SoCs (Unit 0 / Unit 1)           — BGA-2500
 #   U102 / U202  : TFLN PICs (Unit 0 / Unit 1)
-#   U103 / U203  : PCIe Gen 6 retimers per SoC
+#   U103..U106   : HBM4 stacks adjacent to NCE U101 (Unit 0 interposer)
+#   U203..U206   : HBM4 stacks adjacent to NCE U201 (Unit 1 interposer)
+#   U107 / U207  : PCIe Gen 6 retimers per SoC  (moved off U103/U203 to
+#                  avoid ref-des collision with HBM4 stacks on PCB)
 #   U301         : VRM Unit 0 controller (ISL69260)
 #   U302..U325   : VRM Unit 0 DrMOS phases (24)
 #   U326..U349   : VRM Unit 1 DrMOS phases (24)
@@ -69,7 +72,9 @@ for unit, ref in enumerate(["U102", "U202"]):
                      description=f"8-channel TFLN MZ modulator, 200G PAM4/ch, C-band (Unit {unit})"))
 
 # -------- PCIe Gen 6 retimers --------
-for unit, ref in enumerate(["U103", "U203"]):
+# NOTE: U103/U203 are occupied by HBM4 stacks on the PCB; retimers use
+# U107/U207 to avoid a duplicate ref-des in BOM.csv.
+for unit, ref in enumerate(["U107", "U207"]):
     rows.append(Part(ref=ref, qty=1, value="PT6-Retimer",
                      footprint="Package_BGA:BGA-325_17x17mm_Layout18x18_P1.0mm",
                      manufacturer="Astera Labs", mpn="PT6-B0-325",

@@ -1794,10 +1794,10 @@
     (keepout (tracks not_allowed) (vias not_allowed) (pads not_allowed) (copperpour not_allowed) (footprints allowed))
     (polygon
       (pts
-        (xy 47 12)
-        (xy 63 12)
-        (xy 63 28)
-        (xy 47 28)
+        (xy 51 16)
+        (xy 59 16)
+        (xy 59 24)
+        (xy 51 24)
       )
     )
   )
@@ -1808,10 +1808,10 @@
     (keepout (tracks not_allowed) (vias not_allowed) (pads not_allowed) (copperpour not_allowed) (footprints allowed))
     (polygon
       (pts
-        (xy 105 12)
-        (xy 121 12)
-        (xy 121 28)
-        (xy 105 28)
+        (xy 109 16)
+        (xy 117 16)
+        (xy 117 24)
+        (xy 109 24)
       )
     )
   )
@@ -1822,10 +1822,10 @@
     (keepout (tracks not_allowed) (vias not_allowed) (pads not_allowed) (copperpour not_allowed) (footprints allowed))
     (polygon
       (pts
-        (xy 47 12)
-        (xy 63 12)
-        (xy 63 28)
-        (xy 47 28)
+        (xy 51 16)
+        (xy 59 16)
+        (xy 59 24)
+        (xy 51 24)
       )
     )
   )
@@ -1836,10 +1836,10 @@
     (keepout (tracks not_allowed) (vias not_allowed) (pads not_allowed) (copperpour not_allowed) (footprints allowed))
     (polygon
       (pts
-        (xy 105 12)
-        (xy 121 12)
-        (xy 121 28)
-        (xy 105 28)
+        (xy 109 16)
+        (xy 117 16)
+        (xy 117 24)
+        (xy 109 24)
       )
     )
   )
