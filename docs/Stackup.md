@@ -29,7 +29,7 @@
 |   | C3         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
 | 7 | In6.Cu     | copper      | 0.070 mm  | Cu (2 oz)    | —            | V_CORE_U1 plane (paralleled)     |
 |   | PP4        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 8 | In7.Cu     | copper      | 0.070 mm  | Cu (2 oz)    | —            | GND reference (solid)            |
+| 8 | In7.Cu     | copper      | 0.0175 mm | Cu (0.5 oz)  | —            | GND reference (solid)            |
 |   | C4         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
 | 9 | In8.Cu     | copper      | 0.0175 mm | Cu (0.5 oz)  | —            | SIG: aux I/O, PMBus, SPI         |
 |   | PP5        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
@@ -38,8 +38,8 @@
 |   | B.Paste    | paste       | —         | —            | —            | bottom paste stencil             |
 |   | B.SilkS    | silk        | —         | —            | —            | bottom silkscreen                |
 
-**Total nominal thickness:** 1.86 mm ± 10 %
-**Copper weight:** 2 oz outer / 0.5 oz inner signal / 2 oz power planes
+**Total nominal thickness:** 1.81 mm ± 10 %
+**Copper weight:** 2 oz outer / 0.5 oz inner signal & GND references / 2 oz V_core planes (symmetric about stack center for bow/twist control)
 **Finish:** ENIG (2 µm Au min. over 5 µm Ni)
 **Soldermask:** LPI, green (default); matte black available
 
