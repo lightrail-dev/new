@@ -57,7 +57,7 @@ for unit, ref in enumerate(["U101", "U201"]):
                      manufacturer="LightRail AI", mpn="LR-ASIC-A100-B0",
                      distributor="LightRail direct", distributor_pn="LR-ASIC-A100-B0",
                      package="BGA-2500 (50x50, 0.8mm)",
-                     description=f"AI SoC Unit {unit}, BGA-2500, 800W TDP, DDR5-8800 x4, PCIe Gen6 x32, TFLN 16 lanes"))
+                     description=f"AI NCE Unit {unit}, BGA-2500, 800W TDP, HBM4 4-stack co-packaged, PCIe Gen6 x32, TFLN 16 lanes"))
 
 # -------- TFLN Photonic Integrated Circuits --------
 for unit, ref in enumerate(["U102", "U202"]):
@@ -127,7 +127,7 @@ rows.append(Part(ref="U31", qty=1, value="TPS544C20",
                  footprint="Package_QFN:VQFN-24-1EP_4x4mm_P0.5mm",
                  manufacturer="TI", mpn="TPS544C20RVFR",
                  distributor="Digi-Key", distributor_pn="TPS544C20RVFR-ND",
-                 package="VQFN-24 4x4", description="40A buck, VDDQ 1.1V (DDR5)"))
+                 package="VQFN-24 4x4", description="40A buck, VDDQ 1.1V (HBM4 interposer side-channel)"))
 rows.append(Part(ref="U32", qty=1, value="TPS62810",
                  footprint="Package_SON:WSON-10-1EP_3x3mm_P0.5mm",
                  manufacturer="TI", mpn="TPS62810MUPR",
@@ -251,15 +251,21 @@ rows.append(Part(ref="J22", qty=1, value="TPM header",
                  distributor="Digi-Key", distributor_pn="SAM8798-ND",
                  package="2x7 1.27mm", description="TPM 2.0 header"))
 
-# -------- DDR5 DIMM slots: 32 slots (4 channels × 4 DPC × 2 SoCs) --------
-for i in range(32):
-    ref = f"DIMM{1 + i}"
-    rows.append(Part(ref=ref, qty=1, value="DDR5 288p DIMM",
-                     footprint="LightRail:DDR5_DIMM_288pin",
-                     manufacturer="Molex", mpn="2200280001",
-                     distributor="Digi-Key", distributor_pn="WM18002-ND",
-                     package="DDR5 DIMM 288p",
-                     description=f"DDR5 DIMM socket, unbuffered/registered (slot {i+1})"))
+# -------- HBM4 Co-Packaged Memory stacks: 8 total (4 per compute unit) --------
+# NOTE: these are the HBM4 die stacks that sit on the silicon interposer beside
+# the NCE. They are not BOM-assembled on the LightRail PCB line — the composite
+# NCE+4xHBM4 module arrives as a single pre-qualified CoWoS-L package from the
+# SoC vendor. Listed here for architectural traceability only (DNP flag = TP =
+# "To be integrated by Package vendor").
+hbm4_refs = ["U103", "U104", "U105", "U106", "U203", "U204", "U205", "U206"]
+for unit, ref in enumerate(hbm4_refs):
+    rows.append(Part(ref=ref, qty=1, value="HBM4_12Hi_48GB",
+                     footprint="LightRail:HBM4_Stack_11x11mm",
+                     manufacturer="SK hynix", mpn="H56G48AT5DX117",
+                     distributor="SK hynix direct", distributor_pn="H56G48AT5DX117",
+                     package="HBM4 12-Hi KGSD (interposer)",
+                     description=f"HBM4 12-Hi 48 GB, 8 Gbps/pin, 1024-bit bus, co-packaged on interposer (stack {unit%4} of compute unit {unit//4})",
+                     dnp="TP"))
 
 # -------- NVMe slots --------
 for i in range(4):
@@ -296,14 +302,22 @@ for i in range(600):  # 100nF 0201 x 600
                      distributor="Digi-Key", distributor_pn="490-7815-1-ND",
                      package="0201", description="100nF high-freq decoupling"))
 cap_counter += 600
-# DDR5 slot-side decoupling: 8x per DIMM × 32 DIMMs
-for i in range(256):
+# HBM4 power-rail PCB-side decoupling near each compute unit package BGA:
+# 16x 100nF 0201 and 4x 10uF 0402 per HBM4 stack (8 stacks total)
+for i in range(128):
     rows.append(Part(ref=f"C{cap_counter + i}", qty=1, value="100nF 10V X7R",
                      footprint="Capacitor_SMD:C_0201_0603Metric",
                      manufacturer="Murata", mpn="GRM033R71A104KA01D",
                      distributor="Digi-Key", distributor_pn="490-7815-1-ND",
-                     package="0201", description="DDR5 DIMM-local decoupling"))
-cap_counter += 256
+                     package="0201", description="HBM4 package-BGA bypass (VDDC / VDDQL / VDDQ / VPP)"))
+cap_counter += 128
+for i in range(32):
+    rows.append(Part(ref=f"C{cap_counter + i}", qty=1, value="10uF 6.3V X7R",
+                     footprint="Capacitor_SMD:C_0402_1005Metric",
+                     manufacturer="Murata", mpn="GRM155R60J106ME44D",
+                     distributor="Digi-Key", distributor_pn="490-10744-1-ND",
+                     package="0402", description="HBM4 power-rail bulk decoupling (per stack)"))
+cap_counter += 32
 # TFLN local bypass
 for i in range(64):
     rows.append(Part(ref=f"C{cap_counter + i}", qty=1, value="100nF 10V X7R",

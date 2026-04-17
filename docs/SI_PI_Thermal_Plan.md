@@ -34,15 +34,17 @@ the tools, models, and artifacts a simulation team should produce.
 | TFLN model                   | S-parameters from vendor (Lightmatter / HyperLight / Ayar)         |
 | Output artifact              | `sim/si/tfln_rf_s_params.s16p`                                     |
 
-### 1.3 DDR5-8800
+### 1.3 HBM4 (side-channel + interposer PDN)
 
 | Item                         | Value / source                                                     |
 | ---------------------------- | ------------------------------------------------------------------ |
-| Simulator                    | Cadence Sigrity SystemSI + PowerSI                                  |
-| Topology                     | Fly-by CA/CLK, point-to-point DQ                                   |
-| Setup / hold margin          | > 0.1 UI across all corners                                        |
-| SSN (simultaneous switching) | ≤ 150 mV / rail                                                    |
-| Length match                 | ±0.05 mm per byte lane, ±2 mil across lanes                        |
+| Simulator                    | Cadence Sigrity SystemSI + PowerSI                                 |
+| Data-bus SI                  | **NOT simulated at PCB level** — the 1024-lane data bus lives      |
+|                              | inside the vendor-supplied silicon interposer; the interposer      |
+|                              | vendor delivers a pre-qualified composite module                   |
+| PCB-side SI                  | REFCK_P/N differential, IEEE-1500 JTAG, CATTRIP / PWR_GOOD         |
+| REFCK margin                 | Jitter < 150 fs RMS (10 kHz – 20 MHz)                              |
+| Length match (REFCK)         | ±0.025 mm P-to-N within pair                                      |
 | Output artifact              | `sim/si/ddr5_timing_report.xlsx`                                    |
 
 ### 1.4 REFCLK / SerDes reference
@@ -70,7 +72,13 @@ the tools, models, and artifacts a simulation team should produce.
 ### 2.2 Aux rails
 
 - 3.3 V, 1.8 V, 1.2 V, 1.05 V, 0.9 V each simulated for IR drop and PDN Z.
-- 1.1 V VDDQ + 1.8 V VPP: DDR5 DIMM load models included.
+- 0.7 V VDDC + 0.4 V VDDQL + 1.1 V VDDQ + 1.8 V VPP: HBM4 composite-module
+  load models (per-module aggregate of 4× HBM4 stacks + interposer PDN;
+  vendor-supplied `.ibis-ami` + `.cir`).
+- Interposer PDN impedance target < 0.1 mΩ @ 1 MHz–10 MHz on V_CORE
+  (solved jointly between PCB-side decoupling and the interposer's own
+  high-density MIM capacitors; board simulation sees this as an effective
+  shunt impedance, not a discrete routing problem).
 
 ### 2.3 Decoupling strategy (by frequency)
 
@@ -111,10 +119,15 @@ the tools, models, and artifacts a simulation team should produce.
 - TEC power 15–20 W per PIC at 15 °C ambient delta.
 - Thermal bypass to chassis cold plate via a short copper strap.
 
-### 3.4 DDR5 DIMMs
+### 3.4 HBM4 stacks (inside composite module)
 
-- Airflow across the DIMM bank.
-- Target Ta ≤ 85 °C at 5 W per module (DDR5-8800 RDIMM).
+- Heat from the 4× HBM4 stacks is extracted through the same liquid cold
+  plate that covers the composite BGA; the interposer thermally couples
+  NCE + HBM4 into a single hot-spot zone (~50 × 50 mm) rather than the
+  distributed memory bank of a DDR-DIMM variant.
+- Target Tj (per HBM4 stack) ≤ 95 °C under 100 W/stack worst-case.
+- Junction-to-coolant resistance budget: ≤ 0.1 °C / W including interposer,
+  TIM-1, and cold-plate.
 
 ### 3.5 Whole-board CFD
 
@@ -157,7 +170,7 @@ sim/
 | Domain     | Criterion                                                 | Owner |
 | ---------- | --------------------------------------------------------- | ----- |
 | SI PCIe    | All receiver masks pass margin ≥ 10 %                     | SI lead |
-| SI DDR5    | Setup/hold margin > 0.1 UI at all corners                 | SI lead |
+| SI HBM4 SC | REFCK jitter < 150 fs RMS; IEEE-1500 SI eye opens cleanly | SI lead |
 | SI TFLN    | Insertion loss ≤ 6 dB, CMRR ≥ 30 dB @ 16 GHz              | SI lead |
 | PI V_core  | IR drop ≤ 10 mV; Z ≤ 0.5 mΩ in-band                       | PI lead |
 | Thermal    | Tj ≤ 95 °C, TFLN at 25 °C ± 2 °C                          | Thermal lead |

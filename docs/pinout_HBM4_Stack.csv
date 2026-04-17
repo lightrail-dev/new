@@ -1,0 +1,15 @@
+Signal,Direction,Description,NetClass
+VDDC,power,"HBM4 core supply      (0.7 V, ~32 bumps/stack, interposer-side)",HBM4_Interposer
+VDDQL,power,"HBM4 low-swing I/O    (0.4 V, ~24 bumps/stack, interposer-side)",HBM4_Interposer
+VDDQ,power,"HBM4 I/O supply       (1.1 V, ~16 bumps/stack, interposer-side)",HBM4_Interposer
+VPP,power,"HBM4 wordline boost   (1.8 V, ~4  bumps/stack, interposer-side)",HBM4_Interposer
+VSS,power,HBM4 return / ground  (≥80 bumps/stack),GND
+REFCK_P,in,Reference clock + (differential 100 Ω),HBM4_Interposer
+REFCK_N,in,Reference clock − (differential 100 Ω),HBM4_Interposer
+CATTRIP,o_oc,Catastrophic thermal trip (open-drain),HBM4_Interposer
+PWR_GOOD,out,Stack power-good status,HBM4_Interposer
+IEEE1500_TCK,in,IEEE-1500 test clock,I2C_SPI
+IEEE1500_TMS,in,IEEE-1500 mode select,I2C_SPI
+IEEE1500_TDI,in,IEEE-1500 data-in,I2C_SPI
+IEEE1500_TDO,out,IEEE-1500 data-out,I2C_SPI
+HBM4_DATA[1023:0],i/o,"1024-lane data bus @ 8 Gbps/pin — INTERPOSER-INTERNAL, not routed on PCB",-

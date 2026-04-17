@@ -1,20 +1,20 @@
 # BOM summary
 
-**Total part instances:** 1948
+**Total part instances:** 1828
 
-**Unique line items:** 1948
+**Unique line items:** 1828
 
 ## Package distribution
 
 | Package | Count |
 |---------|-------|
-| 0201 | 1184 |
-| 0402 | 496 |
+| 0201 | 1056 |
+| 0402 | 528 |
 | 0402 thin-film | 64 |
 | PowerPAK 8x8 1EP | 48 |
 | 2525 | 48 |
-| DDR5 DIMM 288p | 32 |
 | D6.3 radial SMD | 20 |
+| HBM4 12-Hi KGSD (interposer) | 8 |
 | WSON-8 2x2 | 6 |
 | 1x4 2.54mm header | 6 |
 | 0603 | 6 |

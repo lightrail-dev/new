@@ -22,20 +22,22 @@
                        │ RF diff drive              │ RF diff drive
                        ▼                            ▼
      ┌──────────────────────────┐        ┌──────────────────────────┐
-     │ AI SoC A                 │◀──PCIe Gen 6 x16──▶│ PCIe Switch   │
-     │ BGA-2500, 40×40, 0.8mm   │        │ AI SoC B                 │
-     │ — TFLN SerDes (16×)      │        │ BGA-2500, 40×40, 0.8mm   │
-     │ — DDR5 PHY (4 ch)        │        │ — same as A              │
-     │ — PCIe Gen 6 root (x32)  │        └──────┬──────┬────────────┘
-     │ — V_core: 0.8 V, 1000 A  │               │      │
-     └──┬───┬───┬───┬────┬──────┘               │      │
-        │   │   │   │    │                       │      │
-        │   │   │   │    └── PCIe Gen 6 edge ───►│      │── NVMe M.2 / U.3
-        │   │   │   │                                   │
-        │   │   │   └───── DDR5-8800 Ch3 DIMM ─┐        │
-        │   │   └──────── DDR5-8800 Ch2 DIMM ─┤        │
-        │   └─────────── DDR5-8800 Ch1 DIMM ─┤        │
-        └──────────────── DDR5-8800 Ch0 DIMM ─┘        │
+     │ NCE A + 4× HBM4          │◀──PCIe Gen 6 x16──▶│ PCIe Switch   │
+     │ (co-packaged on silicon  │        │ NCE B + 4× HBM4          │
+     │  interposer, BGA-2500)   │        │ (same composite module)  │
+     │ — NCE die, 40×40, 0.8mm  │        │ — same as A              │
+     │ — 4× HBM4 12-Hi stacks   │        └──────┬──────┬────────────┘
+     │ — TFLN SerDes (16×)      │               │      │
+     │ — PCIe Gen 6 root (x32)  │               │      │── NVMe M.2 / U.3
+     │ — V_core: 0.8 V, 1000 A+ │               │      │
+     └─────────────┬────────────┘               │      │
+                   │                            │      │
+                   │ 1024-lane HBM4 data bus is INTERNAL to the interposer
+                   │ (never reaches PCB copper). PCB only carries HBM4
+                   │ side-channel signals: REFCK_P/N, CATTRIP, PWR_GOOD,
+                   │ IEEE1500 test bus (TCK/TMS/TDI/TDO), and the
+                   │ VDDC/VDDQL/VDDQ/VPP power rails into the module BGA.
+                   └── PCIe Gen 6 edge ──────────┘
                                                        │
                                          EC / PMBus / I²C / SPI flash
                                                        │
@@ -54,11 +56,11 @@
 | Parameter                 | Value                                                          |
 | ------------------------- | -------------------------------------------------------------- |
 | AI SoC count              | 2                                                              |
-| SoC package               | BGA-2500 (50 × 50 grid, 40 mm × 40 mm, 0.8 mm pitch)           |
-| SoC V_core                | 0.8 V typ., 1000 A+ peak per SoC                               |
-| SoC I/O                   | VDD_IO 1.05 V / 1.2 V, VDDQ 1.1 V (DDR5)                       |
+| SoC package               | BGA-2500 composite (NCE + interposer + 4× HBM4), 40 × 40 mm    |
+| SoC V_core                | 0.8 V typ., 1000 A+ peak per module (NCE + 4× HBM4 combined)   |
+| SoC I/O                   | VDD_IO 1.05 V / 1.2 V, HBM4 VDDQ 1.1 V                         |
 | PCIe root                 | Gen 6.0, x32 per SoC (split x16 + x16)                         |
-| DDR5 channels             | 4 per SoC, DDR5-8800 (4400 MT/s clock)                          |
+| Memory                    | 4× HBM4 12-Hi per module (interposer-coupled, see §2.3)        |
 | TFLN SerDes               | 16 lanes @ 200 G PAM4 per SoC (8 TX + 8 RX)                    |
 | Power target (peak)       | 800 W per SoC (V_core) + 100 W (I/O + mem) = 900 W per SoC     |
 
@@ -77,15 +79,19 @@
 | Detector                  | InGaAs PIN-PD, TIA (on TFLN carrier or chiplet)                |
 | Optical connector         | MPO-24 (16 fiber SM + 8 fiber monitor/cal)                      |
 
-### 2.3 Memory
+### 2.3 Memory (HBM4, co-packaged)
 
 | Parameter                 | Value                                                          |
 | ------------------------- | -------------------------------------------------------------- |
-| DIMMs                     | Up to 4 per channel × 4 channels × 2 SoCs = 32 max (1 DPC min) |
-| Speed                     | DDR5-8800 (JEDEC target)                                        |
-| Topology                  | Fly-by CA/CLK, T-branch DQ, on-DIMM RCD                        |
-| ODT / termination         | On-die; VTT derived from VPP                                   |
-| VDDQ / VPP                | 1.1 V / 1.8 V                                                  |
+| Topology                  | HBM4 on silicon interposer, co-packaged with NCE as single BGA |
+| Stacks per module         | 4 × HBM4 12-Hi, 48 GB per stack → 192 GB per module            |
+| Modules                   | 2 (one per NCE) → 384 GB aggregate                             |
+| Data bus per stack        | 1024 lanes @ 8 Gbps/pin (1.0 TB/s per stack, 4.0 TB/s/module)  |
+| Data-bus routing          | Entirely INTERPOSER-INTERNAL — never reaches PCB copper        |
+| PCB-routed side-channel   | REFCK_P/N, CATTRIP, PWR_GOOD, IEEE1500 (TCK/TMS/TDI/TDO)       |
+| Power rails (into module) | VDDC 0.7 V, VDDQL 0.4 V, VDDQ 1.1 V, VPP 1.8 V, VSS            |
+| Interposer                | Vendor-supplied (TSMC CoWoS-L / Intel Foveros-S class); board  |
+|                           | sees only the composite BGA footprint + side-channel pins      |
 
 ### 2.4 PCIe
 
@@ -103,8 +109,10 @@
 | +12 V input               | PCIe 12VHPWR (600 W×2)  | 12 V    | 150 A          | —                      |
 | V_core A / B              | 24-phase DrMOS          | 0.8 V   | 1000 A+        | ISL69260 + 24× ISL99390 |
 | VDD_IO                    | Multi-phase buck        | 1.05 V  | 40 A           | TPS543C20 × 4          |
-| VDDQ (DDR5)               | Buck                    | 1.1 V   | 40 A           | TPS544C20              |
-| VPP (DDR5)                | Buck                    | 1.8 V   | 8 A            | TPS62810               |
+| VDDC (HBM4)               | Buck                    | 0.7 V   | 60 A           | TPS543C20              |
+| VDDQL (HBM4)              | Buck                    | 0.4 V   | 30 A           | TPS543C20              |
+| VDDQ (HBM4)               | Buck                    | 1.1 V   | 40 A           | TPS544C20              |
+| VPP (HBM4)                | Buck                    | 1.8 V   | 8 A            | TPS62810               |
 | 3.3 V aux                 | Buck                    | 3.3 V   | 15 A           | TPS54360               |
 | 1.8 V aux                 | LDO                     | 1.8 V   | 3 A            | TPS7A20                |
 | 1.2 V aux                 | LDO                     | 1.2 V   | 2 A            | TPS7A20                |
@@ -114,7 +122,7 @@
 
 - **BMC / EC:** AST2600 or MEC172x (footprint placeholder)
 - **PMBus:** VRM telemetry (V, I, T, phase count) @ 400 kHz
-- **I²C:** DIMM SPD, TFLN TEC driver, sensors
+- **I²C:** HBM4 module SPD/ID (via module BGA), TFLN TEC driver, sensors
 - **SPI flash:** UEFI/BIOS + BMC firmware, redundant (A/B)
 - **TPM 2.0:** SLB 9670 on LPC/SPI
 - **Sensors:** 6× thermal diodes (2 per SoC, 1 per VRM, 1 inlet)
@@ -127,7 +135,7 @@
 | SoC A V_core              | 400 W   | 800 W |
 | SoC B V_core              | 400 W   | 800 W |
 | SoC I/O + TFLN RF (both)  | 80 W    | 140 W |
-| DDR5 (up to 32 DIMM)      | 120 W   | 200 W |
+| HBM4 (8 stacks, 2 mods)   | 120 W   | 200 W |
 | PCIe retimers + switch    | 25 W    | 40 W  |
 | BMC + aux                 | 15 W    | 20 W  |
 | **Total**                 | **1040 W** | **2000 W** |
@@ -139,8 +147,8 @@
 - **Optical TX path:** SoC SerDes → TFLN RF drive (differential, 100 Ω diff) →
   TFLN modulator → DFB laser bias tee → MPO-24.
 - **Optical RX path:** MPO-24 → PD array → TIA → SoC SerDes RX.
-- **DDR5 CA/CLK:** Fly-by to DIMM slots, matched length ±2 mil per rank.
-- **DDR5 DQ/DQS:** Point-to-point SoC ↔ DIMM, matched within byte lane ±2 mil.
+- **HBM4 side-channel (PCB):** REFCK_P/N differential pair (100 Ω) ±2 mil; CATTRIP / PWR_GOOD routed as single-ended slow status signals; IEEE1500 JTAG routed as 50 Ω SE with series-term.
+- **HBM4 data bus:** NOT on PCB — 1024 lanes × 4 stacks = 4096 lanes per module routed inside the vendor-supplied silicon interposer.
 - **V_core:** Plane-to-plane delivery; ≥4 mΩ target DC, <1 mΩ AC @ 1 MHz–100 MHz.
 
 ## 5. Clock tree
@@ -148,7 +156,7 @@
 ```
 12 MHz XTAL ─► Si5395A (jitter cleaner) ─┬─► 100 MHz HCSL → PCIe REFCLK (4×)
                                          ├─► 156.25 MHz LVPECL → SerDes ref
-                                         ├─► 200 MHz LVDS → DDR5 PHY PLL
+                                         ├─► 200 MHz LVDS → HBM4 REFCK (per stack)
                                          └─► 10 MHz sync → TFLN DAC trigger
 ```
 

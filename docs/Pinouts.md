@@ -43,18 +43,21 @@ Summary by functional domain:
 | V_CORE               | 612   | Central core (cols N–AK, rows 10–38) |
 | GND                  | 624   | Distributed                        |
 | VDD_IO (1.05 V)      | 96    | Peripheral rings                   |
-| VDDQ_DDR5 (1.1 V)    | 80    | DDR5 PHY region (east side)        |
-| VPP_DDR5 (1.8 V)     | 16    | DDR5 PHY region                    |
-| DDR5 Ch0 (DQ/DQS/CA) | 160   | East-north quadrant                |
-| DDR5 Ch1             | 160   | East-south quadrant                |
-| DDR5 Ch2             | 160   | West-north quadrant                |
-| DDR5 Ch3             | 160   | West-south quadrant                |
+| VDDC_HBM4 (0.7 V)    | 40    | Interposer face (east)             |
+| VDDQL_HBM4 (0.4 V)   | 40    | Interposer face (east)             |
+| VDDQ_HBM4 (1.1 V)    | 40    | Interposer face (east)             |
+| VPP_HBM4 (1.8 V)     | 16    | Interposer face (east)             |
+| HBM4 side-channel ¹   | 32    | Interposer face (4 stacks)         |
+| HBM4 data bus ²       | 4096  | INTERPOSER-INTERNAL — NOT on PCB    |
 | PCIe Gen 6 x32       | 144   | South edge (x16 + x16)             |
 | TFLN SerDes 16 ch    | 96    | North edge                         |
 | Mgmt I²C / SPI / JTAG| 32    | Corner (NW)                        |
 | Thermal diode        | 4     | Center                             |
 | Reserved / NC        | 156   | Distributed                        |
-| **Total**            | **2500** |                                 |
+| **Total (PCB-visible)** | **2500** | (data-bus 4096 lanes route inside interposer) |
+
+¹ `HBM4 side-channel` = 4 stacks × (REFCK_P/N + CATTRIP + PWR_GOOD + IEEE1500 TCK/TMS/TDI/TDO) ≈ 32 balls on the composite BGA.
+² The 1024-lane per-stack HBM4 data bus (4096 lanes per module) is routed on the vendor-supplied silicon interposer and never leaves the package.
 
 Ball pitch: 0.8 mm. Package size: 40 mm × 40 mm. Collapse height 0.45 mm.
 
@@ -76,29 +79,29 @@ Ayar Labs, HyperLight). Typical RF interface, 8-channel push-pull drive:
 
 See [`pinout_TFLN_PIC.csv`](pinout_TFLN_PIC.csv).
 
-## 4. DDR5 DIMM 288-pin connector (per slot)
+## 4. HBM4 stack (per stack, PCB-visible side-channel only)
 
-Full pin map in [`pinout_DDR5_DIMM.csv`](pinout_DDR5_DIMM.csv). Summary:
+Full pin map in [`pinout_HBM4_Stack.csv`](pinout_HBM4_Stack.csv). The HBM4
+1024-lane data bus is routed inside the vendor-supplied silicon interposer
+and never reaches PCB copper, so from the PCB's perspective each HBM4
+stack contributes only power rails and a small side-channel bus.
 
-| Group            | Pins       | Count | Topology  |
-| ---------------- | ---------- | ----- | --------- |
-| DQ0..DQ63        | per byte   | 64    | Point-to-point (T-branch) |
-| DQS0..DQS7 P/N   | per byte   | 16    | Differential              |
-| DM0..DM7 / DBI#  | per byte   | 8     | Point-to-point            |
-| CA0..CA13        | —          | 14    | Fly-by                    |
-| CK_t / CK_c      | —          | 2     | Fly-by differential       |
-| CS0# / CS1#      | —          | 2     | Fly-by                    |
-| ODT0 / ODT1      | —          | 2     | Fly-by                    |
-| RESET#           | —          | 1     | —                         |
-| SPD (I²C)        | SA0..2, SDA, SCL, WP | 6 | I²C               |
-| PMIC (DIMM)      | —          | 6     | Control                   |
-| ALERT#, EVENT#   | —          | 2     | Open-drain                |
-| VDDQ (1.1 V)     | —          | 32    | Plane                     |
-| VPP (1.8 V)      | —          | 4     | Plane                     |
-| GND              | —          | ≥80   | Plane                     |
-| **Total**        |            | **288** |                         |
+| Group            | Count | Topology / note                                            |
+| ---------------- | ----- | ---------------------------------------------------------- |
+| VDDC (0.7 V)     | ~32   | Interposer-side power plane, fed from V_CORE buck cluster  |
+| VDDQL (0.4 V)    | ~24   | Interposer-side power plane                                |
+| VDDQ (1.1 V)     | ~16   | Interposer-side power plane                                |
+| VPP (1.8 V)      | ~4    | Interposer-side power plane                                |
+| VSS / GND        | ≥80   | Return                                                     |
+| REFCK_P / REFCK_N | 2    | Differential reference clock (100 Ω)                       |
+| CATTRIP          | 1     | Open-drain catastrophic thermal trip                        |
+| PWR_GOOD         | 1     | Stack power-good status                                     |
+| IEEE1500 (TCK/TMS/TDI/TDO) | 4 | Scan / BIST test bus                                    |
+| HBM4_DATA[1023:0] | 1024 | **Interposer-internal, NOT on PCB copper**                 |
 
-Termination: on-DIMM RCD (Register Clock Driver); on-die termination for DQ.
+Termination / SI: REFCK matches `HBM4_Interposer` net class (100 Ω diff
+stripline); IEEE-1500 single-ended 50 Ω with series termination at the
+composite-BGA escape pad.
 
 ## 5. NVMe M.2 (key-M) / U.3 SFF-TA-1001
 
@@ -125,7 +128,7 @@ MPO-24 for PIC B; this scaffold provisions one connector for simplicity.)
 | Header | Pin count | Interface                           |
 | ------ | --------- | ----------------------------------- |
 | J_BMC_DBG | 20     | BMC UART0, JTAG, GPIO, I²C          |
-| J_EC_PMBUS | 10    | PMBus to VRMs, DIMM PMIC telemetry  |
+| J_EC_PMBUS | 10    | PMBus to VRMs, HBM4 module telemetry |
 | J_FP_USB  | 4      | USB-C BMC management                |
 | J_FAN     | 6×4    | PWM + tach per fan, 12 V            |
 | J_TPM     | 14     | SPI + INT + RST                     |

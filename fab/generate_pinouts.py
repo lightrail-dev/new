@@ -97,15 +97,18 @@ write_csv("pinout_PCIe_x16.csv",
 # plus every 100th ball explicit for illustration.
 soc_rows = []
 domains = [
-    ("V_CORE",    "N10..AK38",  612, "V_CORE_U{unit}",        "PWR_CORE"),
+    ("V_CORE (NCE+HBM4)", "N10..AK38", 612, "V_CORE_U{unit}",    "PWR_CORE"),
     ("GND",       "distributed", 624, "GND",                  "GND"),
     ("VDD_IO",    "rings",       96,  "VDD_IO",               "PWR_1V8"),
-    ("VDDQ_DDR5", "east",        80,  "VDDQ",                 "PWR_1V8"),
-    ("VPP_DDR5",  "east",        16,  "VPP",                  "PWR_1V8"),
-    ("DDR5_Ch0",  "NE quad",    160, "DDR5_CH0_*",           "DDR5_Data"),
-    ("DDR5_Ch1",  "SE quad",    160, "DDR5_CH1_*",           "DDR5_Data"),
-    ("DDR5_Ch2",  "NW quad",    160, "DDR5_CH2_*",           "DDR5_Data"),
-    ("DDR5_Ch3",  "SW quad",    160, "DDR5_CH3_*",           "DDR5_Data"),
+    ("VDDC_HBM4", "interposer-face east", 40, "HBM4_U{unit}_VDDC_S", "HBM4_Interposer"),
+    ("VDDQL_HBM4","interposer-face east", 40, "HBM4_U{unit}_VDDQL_S","HBM4_Interposer"),
+    ("VDDQ_HBM4", "interposer-face east", 40, "HBM4_U{unit}_VDDQ_S", "HBM4_Interposer"),
+    ("VPP_HBM4",  "interposer-face east", 16, "HBM4_U{unit}_VPP_S",  "HBM4_Interposer"),
+    ("HBM4_side-channel (4 stacks)", "interposer-face", 32,
+     "HBM4_U{unit}_REFCK_P/N,CATTRIP,PWR_GOOD,IEEE1500(TCK/TMS/TDI/TDO)",
+     "HBM4_Interposer"),
+    ("HBM4 data bus (1024 \u00d7 4 stacks)", "INTERPOSER-INTERNAL", 4096,
+     "NOT ROUTED ON PCB", "-"),
     ("PCIe_x16_0","S edge",     72,  "PET0_*/PER0_*",        "PCIe_Gen6"),
     ("PCIe_x16_1","S edge",     72,  "PET1_*/PER1_*",        "PCIe_Gen6"),
     ("TFLN_SerDes 16ch","N edge",96, "TFLN_TX*/TFLN_RX*",    "TFLN_RF"),
@@ -144,40 +147,38 @@ write_csv("pinout_TFLN_PIC.csv",
           tfln_rows)
 
 
-# -------- DDR5 DIMM 288-pin summary --------
-ddr5_rows = []
-# Byte lanes 0..7
-for byte in range(8):
-    for bit in range(8):
-        ddr5_rows.append([f"DQ{byte*8+bit}", "i/o", f"Data byte {byte} bit {bit}", "DDR5_Data"])
-    ddr5_rows.append([f"DQS{byte}_t", "i/o", f"Byte {byte} strobe +", "DDR5_Data"])
-    ddr5_rows.append([f"DQS{byte}_c", "i/o", f"Byte {byte} strobe −", "DDR5_Data"])
-    ddr5_rows.append([f"DM{byte}",   "in",  f"Byte {byte} data mask", "DDR5_Data"])
-# Command / address
-for i in range(14):
-    ddr5_rows.append([f"CA{i}", "in", f"Command/address {i}", "DDR5_Data"])
-ddr5_rows.extend([
-    ["CK_t",    "in",    "Clock +",              "DDR5_Data"],
-    ["CK_c",    "in",    "Clock −",              "DDR5_Data"],
-    ["CS0#",    "in",    "Chip select rank 0",   "DDR5_Data"],
-    ["CS1#",    "in",    "Chip select rank 1",   "DDR5_Data"],
-    ["ODT0",    "in",    "On-die termination 0", "DDR5_Data"],
-    ["ODT1",    "in",    "On-die termination 1", "DDR5_Data"],
-    ["RESET#",  "in",    "Reset",                "I2C_SPI"],
-    ["ALERT#",  "o_oc",  "Alert",                "I2C_SPI"],
-    ["EVENT#",  "o_oc",  "Event",                "I2C_SPI"],
+# -------- HBM4 stack external (side-channel) pinout --------
+# NOTE: The HBM4 1024-lane data bus is routed inside the silicon interposer
+# and never reaches PCB copper. The only PCB-facing signals per HBM4 stack
+# are power rails + a short side-channel bus (reference clock, thermal trip,
+# power-good, IEEE-1500 test bus). This is why the external pin count for an
+# HBM4 stack (as seen from the PCB) is ~9 pins + test bus, *not* the full
+# JEDEC HBM4 pin list.
+hbm4_rows = []
+hbm4_rows.extend([
+    ["VDDC",        "power", "HBM4 core supply      (0.7 V, ~32 bumps/stack, interposer-side)", "HBM4_Interposer"],
+    ["VDDQL",       "power", "HBM4 low-swing I/O    (0.4 V, ~24 bumps/stack, interposer-side)", "HBM4_Interposer"],
+    ["VDDQ",        "power", "HBM4 I/O supply       (1.1 V, ~16 bumps/stack, interposer-side)", "HBM4_Interposer"],
+    ["VPP",         "power", "HBM4 wordline boost   (1.8 V, ~4  bumps/stack, interposer-side)", "HBM4_Interposer"],
+    ["VSS",         "power", "HBM4 return / ground  (≥80 bumps/stack)",                          "GND"],
+    ["REFCK_P",     "in",    "Reference clock + (differential 100 Ω)",                          "HBM4_Interposer"],
+    ["REFCK_N",     "in",    "Reference clock − (differential 100 Ω)",                          "HBM4_Interposer"],
+    ["CATTRIP",     "o_oc",  "Catastrophic thermal trip (open-drain)",                          "HBM4_Interposer"],
+    ["PWR_GOOD",    "out",   "Stack power-good status",                                         "HBM4_Interposer"],
+    ["IEEE1500_TCK","in",    "IEEE-1500 test clock",                                            "I2C_SPI"],
+    ["IEEE1500_TMS","in",    "IEEE-1500 mode select",                                           "I2C_SPI"],
+    ["IEEE1500_TDI","in",    "IEEE-1500 data-in",                                               "I2C_SPI"],
+    ["IEEE1500_TDO","out",   "IEEE-1500 data-out",                                              "I2C_SPI"],
 ])
-# SPD + PMIC
-for p in ["SA0", "SA1", "SA2", "SDA", "SCL", "WP"]:
-    ddr5_rows.append([p, "i/o", f"SPD {p}", "I2C_SPI"])
-# Power
-ddr5_rows.append(["VDDQ",  "power", "DDR5 VDDQ (1.1V, ~32 pins)",  "PWR_1V8"])
-ddr5_rows.append(["VPP",   "power", "DDR5 VPP  (1.8V, ~4 pins)",   "PWR_1V8"])
-ddr5_rows.append(["VDD",   "power", "DDR5 VDD  (1.1V)",            "PWR_1V8"])
-ddr5_rows.append(["GND",   "power", "Return (≥80 pins)",            "GND"])
-write_csv("pinout_DDR5_DIMM.csv",
+# And the big one — explicitly document that the data bus is NOT PCB-routed
+hbm4_rows.append([
+    "HBM4_DATA[1023:0]", "i/o",
+    "1024-lane data bus @ 8 Gbps/pin — INTERPOSER-INTERNAL, not routed on PCB",
+    "-"
+])
+write_csv("pinout_HBM4_Stack.csv",
           ["Signal", "Direction", "Description", "NetClass"],
-          ddr5_rows)
+          hbm4_rows)
 
 
 # -------- NVMe M.2 Key-M --------

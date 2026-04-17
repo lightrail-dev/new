@@ -10,7 +10,7 @@
 |-----------------------------|-------------|--------------------------------------|
 | -F_Cu.gbr                   | F.Cu        | Top copper (2 oz, signal + fanout)   |
 | -In1_Cu.gbr                 | In1.Cu      | GND reference plane (0.5 oz)         |
-| -In2_Cu.gbr                 | In2.Cu      | Signal: DDR5 byte lanes 0-1 (0.5 oz) |
+| -In2_Cu.gbr                 | In2.Cu      | Signal: HBM4 side-channel (REFCK, JTAG) (0.5 oz) |
 | -In3_Cu.gbr                 | In3.Cu      | V_CORE_U0 plane (2 oz)               |
 | -In4_Cu.gbr                 | In4.Cu      | V_CORE_U0 plane (2 oz, split)        |
 | -In5_Cu.gbr                 | In5.Cu      | V_CORE_U1 plane (2 oz)               |

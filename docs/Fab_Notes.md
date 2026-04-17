@@ -31,8 +31,9 @@ with Gerbers, drills, IPC-D-356 netlist, pick-and-place, BOM, and 3D STEP.
 
 This scaffold inherits the 168 × 100 mm PCIe HHHL outline from PR #1
 (a single-SoC LPO photonic accelerator card). A genuine Dual AI Compute Node
-with 2× BGA-2500, 2× 24-phase VRM (48 total DrMOS phases), 4 DDR5 channels,
-PCIe Gen 6 edge, NVMe, and TFLN optics cannot fit in 168 × 100 mm. The
+with 2× co-packaged composite BGA-2500 (NCE + 4× HBM4 + silicon interposer
+each), 2× 24-phase VRM (48 total DrMOS phases), PCIe Gen 6 edge, NVMe, and
+TFLN optics cannot fit in 168 × 100 mm. The
 recommended tape-out outline is **420 × 350 mm** (server-board class),
 4 × M3 tool hole, matching the user's reference image.
 
@@ -42,7 +43,9 @@ Before tapeout, update `LightRail_LPO_1.6T.kicad_pcb` with:
 2. Mounting holes per the chassis spec (typically 9–12 × M3).
 3. 12VHPWR input connector footprints (2 × Molex 203713-2001 or equivalent).
 4. Compute-unit cold-plate bolster pattern: 4 × M3 at 50 mm square per SoC.
-5. DDR5 DIMM slot footprints placed flush with the north edge, fly-by order.
+5. HBM4 stack footprints sit on the silicon interposer co-packaged with the
+   NCE — no discrete north-edge DIMM slots; only the composite module BGA
+   (U101 / U201) is escaped out to the PCB fanout.
 
 ## 2. Copper weights — sanity check for 1000 A V_core
 
@@ -115,7 +118,13 @@ For a 2 oz (70 µm) copper plane carrying 1000 A at 0.8 V:
 - TFLN PIC modules: machine-placed on interposer carriers pre-assembled by
   the photonics vendor. Do **not** reflow TFLN directly on the main PCB —
   attach via socket/interposer after full burn-in of the base board.
-- DDR5 DIMMs: populated post-assembly by the user.
+- HBM4 stacks: arrive already co-packaged on the silicon interposer with
+  the NCE die (vendor-assembled composite BGA module — SK hynix / Micron /
+  Samsung HBM4 × TSMC CoWoS-L / Intel Foveros-S class). No separate HBM4
+  reflow step on the main PCB. The composite module is placed and reflowed
+  like any other BGA; DNP the `U103..U106 / U203..U206` reference-designator
+  placeholders — they exist only in the schematic/BOM as documentation of
+  which stacks sit inside each module.
 
 ## 9. Shipping
 

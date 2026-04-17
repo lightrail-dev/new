@@ -28,19 +28,19 @@
   (condition "A.NetClass == 'TFLN_RF'")
 )
 
-# -- 5. DDR5 byte-lane length-match (per-class delay) --
-(rule "ddr5_length_match"
-  (constraint length (min 30mm) (max 70mm))
-  (condition "A.NetClass == 'DDR5_Data'")
+# -- 5. HBM4 interposer side-channel length-match (REFCK, CATTRIP, PWR_GOOD) --
+# The HBM4 data bus (1024+ lanes/stack at 8 Gbps/pin) lives *inside* the silicon
+# interposer and never reaches PCB copper. Only the package-level side-channel
+# signals (reference clock, thermal trip, power-good) are routed on the board.
+(rule "hbm4_side_channel_length"
+  (constraint length (min 5mm) (max 35mm))
+  (condition "A.NetClass == 'HBM4_Interposer'")
 )
 
-# -- 5b. DDR5 CK / CA / CS group delay match (intra-group ±0.05 mm) --
-# Note: only DDR5_Data net class exists in the .kicad_pro; CK/CA/CS nets
-# live inside that class. Disambiguate with NetName regex on *_CK_P/N,
-# *_CA<n>, *_CS<n> so this skew rule actually fires.
-(rule "ddr5_ck_ca_length_match"
+# -- 5b. HBM4 REFCK diff-pair skew --
+(rule "hbm4_refck_skew"
   (constraint skew (max 0.05mm))
-  (condition "A.NetClass == 'DDR5_Data' && (A.NetName =~ '.*_CK_[PN]$' || A.NetName =~ '.*_CA[0-9]+$' || A.NetName =~ '.*_CS[0-9]+$')")
+  (condition "A.NetClass == 'HBM4_Interposer' && A.NetName =~ '.*_REFCK_[PN]$'")
   (severity warning)
 )
 
@@ -69,14 +69,12 @@
   (severity error)
 )
 
-# -- 10. DDR5 CA/CLK must be on internal stripline layers only --
-# Net names carry the full subsystem prefix (DDR5_U0_CK_P, DDR5_U0_CA0, ...)
-# so we match with KiCad 8 regex operator =~ against a wildcard pattern.
-(rule "ddr5_ca_stripline_only"
+# -- 10. HBM4 REFCK differential pair must be on internal stripline layers --
+# REFCK is the only HBM4-related high-speed signal on PCB copper; the data bus
+# is entirely internal to the interposer.
+(rule "hbm4_refck_stripline_only"
   (constraint assertion "A.Layer == 'In2.Cu' || A.Layer == 'In8.Cu'")
-  (condition "(A.NetName =~ '.*_CK_P' || A.NetName =~ '.*_CK_N' ||
-               A.NetName =~ '.*_CA[0-9]+' ||
-               A.NetName =~ '.*_CS[0-9]+')")
+  (condition "A.NetName =~ '.*_REFCK_[PN]$'")
   (severity error)
 )
 
@@ -91,7 +89,7 @@
 (rule "ref_plane_reminder"
   (constraint assertion "true")
   (condition "A.NetClass == 'PCIe_Gen6' || A.NetClass == 'TFLN_RF' ||
-              A.NetClass == 'DDR5_Data'")
+              A.NetClass == 'HBM4_Interposer'")
   (severity warning)
   (layer outer)
 )
@@ -107,4 +105,13 @@
 (rule "bga_neckdown"
   (constraint track_width (min 0.075mm) (opt 0.09mm))
   (condition "B.hasTag('bga_breakout')")
+)
+
+
+# -- 15. HBM4 interposer courtyard: PCB copper must stay off the silicon
+# interposer outline (managed by the co-packaged module vendor). --
+(rule "hbm4_interposer_keepout"
+  (constraint physical_clearance (min 0.5mm))
+  (condition "A.Type == 'Track' && B.hasTag('hbm4_interposer')")
+  (severity warning)
 )

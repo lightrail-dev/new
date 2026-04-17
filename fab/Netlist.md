@@ -17,14 +17,13 @@ reviewer can cross-check the KiCad-generated netlist once routed.
 | `V_CORE_U1`        | 0.8 V    | VRM_Unit1 (24 phases)          | U2 V_core balls (612)                       |
 | `+3V3`             | 3.3 V    | U33 (TPS54360)                 | BMC, flash, aux                             |
 | `+3V3_AUX`         | 3.3 V    | always-on rail                 | PCIe slot aux, BMC standby                  |
-| `+1V8`             | 1.8 V    | U34 (TPS7A20)                  | Misc logic, VPP_DDR5                        |
+| `+1V8`             | 1.8 V    | U34 (TPS7A20)                  | Misc logic, HBM4 VPP feed                   |
 | `+1V2`             | 1.2 V    | U35 (TPS7A20-1V2)              | SoC misc                                    |
-| `VDD_IO`           | 1.05 V   | U30 (TPS543C20)                | U1/U2 VDD_IO rings                          |
-| `VDDQ`             | 1.1 V    | U31 (TPS544C20)                | DDR5 DIMM VDDQ + SoC DDR5 PHY               |
-| `VPP`              | 1.8 V    | U32 (TPS62810)                 | DDR5 DIMM VPP                                |
+| `VDD_IO`           | 1.05 V   | U30 (TPS543C20)                | NCE composite-module VDD_IO rings           |
+| `VDDQ`             | 1.1 V    | U31 (TPS544C20)                | HBM4 VDDQ (composite module side-channel)   |
+| `VPP`              | 1.8 V    | U32 (TPS62810)                 | HBM4 VPP (composite module)                 |
 | `+0V9_RF`          | 0.9 V    | U36 (ADP7118-0.9)              | TFLN PIC RF analog supply                   |
 | `+5V_BIAS`         | 5 V      | LDO (from 12V)                 | TFLN PIC bias                               |
-| `VTT_DDR`          | 0.55 V   | derived on DIMM                | DIMM termination                            |
 | `GND`              | 0 V      | all planes                     | everyone                                    |
 
 ## 2. High-speed signal groups
@@ -60,25 +59,34 @@ Net naming: `TFLN_A_TX<n>_P/N`, `TFLN_A_RX<n>_P/N` for n in 0..7 per PIC.
 Termination: 100 Ω differential at destination; AC-coupling caps (100 nF 0201)
 at the TFLN input.
 
-### 2.3 DDR5 channels
+### 2.3 HBM4 side-channel (composite NCE+HBM4 module)
 
-Each of 4 channels per SoC uses the following nets (example Ch0 of U1):
+The 1024-lane HBM4 data bus does **not** appear on PCB copper — it is
+routed inside the vendor-supplied silicon interposer that co-packages
+the NCE die with 4× HBM4 12-Hi stacks. The PCB only carries per-unit
+side-channel signals:
 
-| Signal group      | Nets                                                 |
-| ----------------- | ---------------------------------------------------- |
-| Clock             | `DDR5_U0_CH0_CK_t`, `DDR5_U0_CH0_CK_c`               |
-| Command/Address   | `DDR5_U0_CH0_CA0` .. `CA13`                          |
-| Chip select       | `DDR5_U0_CH0_CS0#`, `CS1#`                           |
-| ODT               | `DDR5_U0_CH0_ODT0`, `ODT1`                           |
-| Data (per byte)   | `DDR5_U0_CH0_DQ0` .. `DQ63`                          |
-| Strobes           | `DDR5_U0_CH0_DQS0_t/c` .. `DQS7_t/c`                 |
-| Data mask         | `DDR5_U0_CH0_DM0` .. `DM7`                           |
-| Reset / Alert     | `DDR5_U0_CH0_RESET#`, `ALERT#`, `EVENT#`             |
-| SPD bus           | `DDR5_U0_CH0_SDA`, `SCL`, `SA0..SA2`                 |
+| Signal group      | Nets (example Unit 0)                                        |
+| ----------------- | ------------------------------------------------------------ |
+| Power rails       | `HBM4_U0_VDDC_S` (0.7 V), `HBM4_U0_VDDQL_S` (0.4 V),         |
+|                   | `HBM4_U0_VDDQ_S` (1.1 V), `HBM4_U0_VPP_S` (1.8 V)            |
+| Reference clock   | `HBM4_U0_REFCK_P`, `HBM4_U0_REFCK_N` (100 Ω diff)            |
+| Thermal trip      | `HBM4_U0_CATTRIP` (open-drain)                               |
+| Power-good        | `HBM4_U0_PWR_GOOD`                                           |
+| IEEE-1500 test    | `HBM4_U0_TCK`, `HBM4_U0_TMS`, `HBM4_U0_TDI`, `HBM4_U0_TDO`   |
+| Data bus          | `HBM4_U0_DATA[1023:0]` — **interposer-internal**, not routed |
 
-Topologies:
-- CA / CK: fly-by through up to 4 DIMMs, terminated on the last DIMM RCD.
-- DQ / DQS: point-to-point from SoC to each DIMM (T-branch for 2-DPC mode).
+Unit 1 uses `HBM4_U1_*`. All side-channel signals belong to the
+`HBM4_Interposer` net class (see `.kicad_pro`).
+
+Topology:
+- REFCK: differential 100 Ω stripline from the on-board clock generator
+  (Si5395A output) to the composite-BGA input; length budget 5–35 mm,
+  P/N length-matched to ±0.025 mm.
+- IEEE-1500: slow (< 50 MHz) 50 Ω single-ended from the BMC JTAG
+  controller; series-terminated at source.
+- CATTRIP / PWR_GOOD: routed to the EC/PMBus domain for system-level
+  thermal kill / power sequencing interlock.
 
 ### 2.4 NVMe (x4 per slot)
 
@@ -90,7 +98,7 @@ Routed from the PCIe switch (or SoC root directly) to each M.2 slot.
 
 | Bus             | Lines                                       | Devices                          |
 | --------------- | ------------------------------------------- | -------------------------------- |
-| `I2C_MGMT`      | SDA, SCL (3.3 V, 400 kHz)                   | TMP461×6, DIMM SPD×32, DAC, ADC  |
+| `I2C_MGMT`      | SDA, SCL (3.3 V, 400 kHz)                   | TMP461×6, HBM4 side-channel PMIC×8, DAC, ADC |
 | `PMBus`         | PMB_CLK, PMB_DAT, ALERT#                    | ISL69260×2, TPS*, DrMOS (daisy)  |
 | `SPI_FLASH`     | MOSI, MISO, CLK, CS# (×2)                   | W25Q256×2 (host + BMC)            |
 | `SPI_TPM`       | MOSI, MISO, CLK, CS#, IRQ                   | U51 (SLB9670)                    |

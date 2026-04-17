@@ -339,7 +339,7 @@
         "line_style": 0,
         "microvia_diameter": 0.3,
         "microvia_drill": 0.1,
-        "name": "DDR5_Data",
+        "name": "HBM4_Interposer",
         "pcb_color": "rgba(0, 200, 200, 1.000)",
         "schematic_color": "rgba(0, 200, 200, 1.000)",
         "track_width": 0.1,

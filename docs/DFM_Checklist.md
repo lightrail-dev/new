@@ -94,9 +94,10 @@ Severity: `M` = must-pass before tapeout, `S` = should-pass, `N` = note.
 | # | Rule                                                                    | Value          | Sev | Status |
 |---|-------------------------------------------------------------------------|----------------|-----|--------|
 | 7.1 | Impedance coupons on every panel                                       | 4 per target Z | M   | pend.  |
-| 7.2 | Differential pair length-match within byte lane (DDR5)                 | ±0.05 mm       | M   | pend.  |
+| 7.2 | Differential pair length-match HBM4 REFCK (P/N within pair)            | ±0.025 mm      | M   | pend.  |
 | 7.3 | Differential pair length-match within diff (PCIe/TFLN)                 | ±0.025 mm      | M   | pend.  |
-| 7.4 | Stub length on DDR5 DQ                                                 | ≤ 0.5 mm       | M   | pend.  |
+| 7.4 | Keep-clear around HBM4 composite-module courtyard (no PCB signals      |
+|     | under interposer footprint)                                            | yes            | M   | pend.  |
 | 7.5 | Reference-plane continuity under every high-speed diff pair            | yes            | M   | pend.  |
 | 7.6 | Guard trace or grounded stitch via between TFLN RF and digital        | ≤ 2 mm pitch   | M   | pend.  |
 | 7.7 | No right-angle bends on diff pairs                                     | enforced       | M   | pend.  |

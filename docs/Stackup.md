@@ -19,7 +19,7 @@
 |   | PP1        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
 | 2 | In1.Cu     | copper      | 0.0175 mm | Cu (0.5 oz)  | —            | GND reference (solid)            |
 |   | C1         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 3 | In2.Cu     | copper      | 0.0175 mm | Cu (0.5 oz)  | —            | SIG: DDR5 byte lanes 0–1         |
+| 3 | In2.Cu     | copper      | 0.0175 mm | Cu (0.5 oz)  | —            | SIG: HBM4 side-channel (REFCK, JTAG) |
 |   | PP2        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
 | 4 | In3.Cu     | copper      | 0.070 mm  | Cu (2 oz)    | —            | V_CORE_U0 plane                  |
 |   | C2         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
@@ -43,20 +43,25 @@
 **Finish:** ENIG (2 µm Au min. over 5 µm Ni)
 **Soldermask:** LPI, green (default); matte black available
 
-> **DDR5 byte lanes 2–3 in the 10-layer scaffold** are planned for outer
-> (B.Cu) + In8.Cu stripline-like routing in the scaffold. A genuine
-> tape-out build must adopt the 22–24 layer target in §1.2 where each
-> DDR5 byte lane has its own dedicated stripline between two GND planes.
+> **HBM4 PCB-side routing is side-channel only.** Because the HBM4
+> 1024-lane data bus lives inside the vendor-supplied silicon interposer
+> co-packaged with the NCE, the PCB only carries per-stack power
+> (VDDC / VDDQL / VDDQ / VPP / VSS), a differential REFCK pair, CATTRIP,
+> PWR_GOOD, and IEEE-1500 JTAG. These fit on In2.Cu (stripline) plus
+> In8.Cu (slow status), so the 10-layer scaffold is viable for signal
+> routing. The 22–24 layer tape-out target in §1.2 still applies because
+> of PCIe Gen 6 + TFLN RF density, not HBM4.
 
 ### 1.2 Tape-out target stackup (recommended)
 
-For 1000 A V_core + 32 DDR5 DIMM + PCIe Gen 6 + TFLN RF, a realistic
-production stackup is 22–24 layers along these lines:
+For 1000 A+ V_core (NCE + 4× HBM4 composite load) + PCIe Gen 6 +
+TFLN RF, a realistic production stackup is 22–24 layers along these lines:
 
 - 4× dedicated V_core planes (each 2 oz, ~8 oz total for <1 mΩ AC PDN)
 - 4× GND reference planes (one per signal cluster)
-- 6–8× signal layers split between DDR5 (stripline pairs) and PCIe/TFLN
-  (stripline pairs with dedicated GND reference on each side)
+- 6–8× signal layers dedicated to PCIe Gen 6, TFLN RF, and HBM4
+  side-channel / reference-clock pairs (all stripline with dedicated
+  GND reference on each side)
 - Buried capacitance layer (Faradflex or equivalent) across one core for
   bulk decoupling
 - M6 prepreg on inner high-speed layers for lower insertion loss at 16 GHz
@@ -76,25 +81,25 @@ coupon-measured εr and tolerance.
 | `PCIe_Gen6`        | stripline   | 0.12 mm | 0.18 mm  | GND (In1) / V_CORE (In3) | 85 Ω diff  | ±10 %    |
 | `TFLN_RF`          | microstrip  | 0.15 mm | 0.20 mm  | GND (In1)       | 100 Ω diff | ±7 %     |
 | `RF_50OHM_DIFF`    | stripline   | 0.10 mm | 0.10 mm  | GND (In1) / V_CORE (In3) | 100 Ω diff | ±10 %    |
-| `DDR5_Data`        | stripline   | 0.10 mm | 0.15 mm  | GND (In1) / V_CORE (In3) | 80 Ω diff  | ±10 %    |
-| single-ended DDR5  | stripline   | 0.10 mm | —        | GND (In1) / V_CORE (In3) | 40 Ω SE    | ±10 %    |
+| `HBM4_Interposer`  | stripline   | 0.10 mm | 0.15 mm  | GND (In1) / V_CORE (In3) | 100 Ω diff | ±10 %    |
+| single-ended HBM4  | stripline   | 0.10 mm | —        | GND (In1) / V_CORE (In3) | 50 Ω SE    | ±10 %    |
 | USB3 / USB4        | microstrip  | 0.10 mm | 0.10 mm  | GND (In1)       | 90 Ω diff  | ±10 %    |
 | I²C / SPI / GPIO   | any         | 0.15 mm | —        | GND             | —          | —         |
 
-> **Asymmetric stripline note.** High-speed signals on In2.Cu see In1.Cu
-> (solid GND) above and a split In3.Cu below. In3.Cu contains the
-> `V_CORE_U0` power island (x=5–78, y=25–95) covering Unit 0's BGA +
-> DDR5 breakout, plus a `GND` island (x=80–168, y=0–100) covering
-> Unit 1's DDR5 / PCIe breakout. So signals under Unit 0 run as
-> **asymmetric stripline** (GND / V_CORE) while signals under Unit 1
-> run as **symmetric stripline** (GND / GND). V_CORE acts as an AC
-> reference (decoupled to GND at the BGA via the 1200 µF bulk +
-> 0402/0201 MLCC network). The fab must solve for two trace
-> geometries — one per region — rather than a single board-wide
-> solution. The 10-layer scaffold trades dedicated dual-GND striplines
-> for PDN copper on Unit 0; the 22–24 layer tape-out target in §1.2
-> restores GND-on-both-sides for all DDR5/PCIe/SERDES pairs across
-> both compute units.
+> **Asymmetric stripline note (HBM4 side-channel on In2.Cu).** Signals
+> on In2.Cu see In1.Cu (solid GND) above and a split In3.Cu below.
+> In3.Cu contains the `V_CORE_U0` power island (x=5–78, y=25–95)
+> covering Unit 0's composite module (NCE + 4× HBM4 + interposer) and
+> a `GND` island (x=80–168, y=0–100) covering Unit 1's composite
+> module. HBM4 REFCK pairs therefore run as **asymmetric stripline**
+> (GND / V_CORE) under Unit 0 and **symmetric stripline** (GND / GND)
+> under Unit 1. V_CORE acts as an AC reference (decoupled to GND at
+> the BGA via the 1200 µF bulk + 0402/0201 MLCC network). The fab must
+> solve for two trace geometries — one per region — rather than a
+> single board-wide solution. The 10-layer scaffold trades dedicated
+> dual-GND striplines for PDN copper on Unit 0; the 22–24 layer
+> tape-out target in §1.2 restores GND-on-both-sides for all PCIe /
+> SERDES / HBM4-REFCK pairs across both compute units.
 
 Refer to the fab's impedance control capabilities (e.g. Sierra Circuits, TTM,
 AT&S, NCAB). Request coupons on every panel for Z-measurement sign-off.

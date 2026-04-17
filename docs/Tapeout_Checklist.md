@@ -29,7 +29,7 @@ Owners are suggested; reassign as needed.
 - [ ] All placed parts have footprints; no `missing_footprint`
 - [ ] All nets routed (`unrouted_nets = 0`)
 - [ ] Design Rule Check run with **0 errors**; all exclusions in `fab/dfm/drc_exclusions.md`
-- [ ] Length-matching complete: DDR5 byte lanes, PCIe Gen 6, TFLN RF
+- [ ] Length-matching complete: HBM4 REFCK pairs, PCIe Gen 6, TFLN RF
       (see `docs/DFM_Checklist.md` §7)
 - [ ] Back-drill applied on PCIe Gen 6 edge lanes
 - [ ] Controlled-impedance traces match class targets within ±10 %
@@ -53,8 +53,9 @@ Owners are suggested; reassign as needed.
 - [ ] PCIe Gen 6 end-to-end link budget ≤ 32 dB @ 16 GHz (Nyquist),
       including retimer, via, connector, edge-finger loss
 - [ ] PCIe Gen 6 eye opening: > 20 mV, > 0.25 UI at receiver (statistical, BER 1e-12)
-- [ ] DDR5-8800 timing closure: setup/hold margin > 0.1 UI at all corners
-- [ ] DDR5 SSN analysis: ≤ 150 mV per rail
+- [ ] HBM4 REFCK: jitter < 150 fs RMS at the composite-module input pin
+- [ ] HBM4 data-bus SI: **delegated to interposer vendor**; PCB-side signoff
+      covers only side-channel + PDN
 - [ ] TFLN RF: S-parameters extracted 1 – 80 GHz, insertion loss < 6 dB
 - [ ] TFLN RF common-mode rejection ≥ 30 dB at 16 GHz
 - [ ] SerDes channel operating margin (COM) ≥ 3 dB
@@ -65,7 +66,7 @@ Owners are suggested; reassign as needed.
 - [ ] Compute unit Tj ≤ 95 °C at 800 W TDP with chosen cold plate
 - [ ] DrMOS Tj ≤ 105 °C at 42 A per phase, 55 °C inlet air
 - [ ] TFLN PIC junction held at 25 ± 2 °C; TEC power budget < 20 W
-- [ ] DDR5 DIMM Ta ≤ 85 °C at 5 W per module
+- [ ] HBM4 stack Tj ≤ 95 °C at 100 W/stack under composite-module cold plate
 - [ ] Direct-to-chip cold plate CFD (40 kPa, 1 L/min water) shows < 20 °C rise
 
 ## 6. EMC / ESD — signed by **Compliance lead**
