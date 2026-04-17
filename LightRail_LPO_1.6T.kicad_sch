@@ -577,8 +577,8 @@
     (pin "DDR5A_DQ5" bidirectional (at 110.8 303.62 0) (effects (font (size 1.0 1.0))))
     (pin "DDR5A_DQ6" bidirectional (at 110.8 304.25 0) (effects (font (size 1.0 1.0))))
     (pin "DDR5A_DQ7" bidirectional (at 110.8 304.89 0) (effects (font (size 1.0 1.0))))
-    (pin "DDR5A_DQS0_P" bidirectional (at 110.8 305.52 0) (effects (font (size 1.0 1.0))))
-    (pin "DDR5A_DQS0_N" bidirectional (at 110.8 306.16 0) (effects (font (size 1.0 1.0))))
+    (pin "DDR5A_DQS0P" bidirectional (at 110.8 305.52 0) (effects (font (size 1.0 1.0))))
+    (pin "DDR5A_DQS0N" bidirectional (at 110.8 306.16 0) (effects (font (size 1.0 1.0))))
   )
 
   (sheet (at 200.0 270.0) (size 60.0 40.0)
