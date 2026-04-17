@@ -72,14 +72,23 @@ coupon-measured εr and tolerance.
 
 | Net class          | Topology    | Trace W | Diff gap | Reference plane | Target Z  | Tolerance |
 | ------------------ | ----------- | ------- | -------- | --------------- | --------- | --------- |
-| `SERDES_100G_PAM4` | stripline   | 0.09 mm | 0.09 mm  | GND (In1/In3)   | 100 Ω diff | ±10 %    |
-| `PCIe_Gen6`        | stripline   | 0.12 mm | 0.18 mm  | GND (In1/In3)   | 85 Ω diff  | ±10 %    |
+| `SERDES_100G_PAM4` | stripline   | 0.09 mm | 0.09 mm  | GND (In1) / V_CORE (In3) | 100 Ω diff | ±10 %    |
+| `PCIe_Gen6`        | stripline   | 0.12 mm | 0.18 mm  | GND (In1) / V_CORE (In3) | 85 Ω diff  | ±10 %    |
 | `TFLN_RF`          | microstrip  | 0.15 mm | 0.20 mm  | GND (In1)       | 100 Ω diff | ±7 %     |
-| `RF_50OHM_DIFF`    | stripline   | 0.10 mm | 0.10 mm  | GND (In1/In3)   | 100 Ω diff | ±10 %    |
-| `DDR5_Data`        | stripline   | 0.10 mm | 0.15 mm  | GND (In1/In3)   | 80 Ω diff  | ±10 %    |
-| single-ended DDR5  | stripline   | 0.10 mm | —        | GND (In1/In3)   | 40 Ω SE    | ±10 %    |
+| `RF_50OHM_DIFF`    | stripline   | 0.10 mm | 0.10 mm  | GND (In1) / V_CORE (In3) | 100 Ω diff | ±10 %    |
+| `DDR5_Data`        | stripline   | 0.10 mm | 0.15 mm  | GND (In1) / V_CORE (In3) | 80 Ω diff  | ±10 %    |
+| single-ended DDR5  | stripline   | 0.10 mm | —        | GND (In1) / V_CORE (In3) | 40 Ω SE    | ±10 %    |
 | USB3 / USB4        | microstrip  | 0.10 mm | 0.10 mm  | GND (In1)       | 90 Ω diff  | ±10 %    |
 | I²C / SPI / GPIO   | any         | 0.15 mm | —        | GND             | —          | —         |
+
+> **Asymmetric stripline note.** High-speed signals on In2.Cu sit between
+> In1.Cu (solid GND) and In3.Cu (V_CORE_U0 plane). V_CORE acts as an AC
+> reference (decoupled to GND at the BGA via the 1200 µF bulk + 0402/0201
+> MLCC network), so the pair still sees a coherent return path, but the fab
+> must solve for the asymmetric εr stackup rather than assuming two solid
+> GND planes. The 10-layer scaffold trades dedicated dual-GND striplines
+> for PDN copper — the 22–24 layer tape-out target in §1.2 restores
+> GND-on-both-sides for all DDR5/PCIe/SERDES pairs.
 
 Refer to the fab's impedance control capabilities (e.g. Sierra Circuits, TTM,
 AT&S, NCAB). Request coupons on every panel for Z-measurement sign-off.

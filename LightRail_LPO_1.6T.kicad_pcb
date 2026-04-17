@@ -1,7 +1,7 @@
 (kicad_pcb (version 20211014) (generator pcbnew)
 
   (general
-    (thickness 1.86)
+    (thickness 1.81)
   )
 
   (paper "A4")
@@ -976,36 +976,9 @@
     ))
   )
 
-  (zone (net 1) (net_name "GND") (layer "In5.Cu") (tstamp ed2efa75-0000-0000-0000-000000000001) (hatch edge 0.508)
-    (connect_pads (clearance 0.15))
-    (min_thickness 0.1)
-    (fill yes (thermal_gap 0.3) (thermal_bridge_width 0.3))
-    (polygon (pts
-      (xy 0 0) (xy 168.0 0) (xy 168.0 100.0) (xy 0 100.0)
-    ))
-  )
-
   (zone (net 1) (net_name "GND") (layer "B.Cu") (tstamp e3bd56c5-0000-0000-0000-000000000001) (hatch edge 0.508)
     (connect_pads (clearance 0.15))
     (min_thickness 0.1)
-    (fill yes (thermal_gap 0.3) (thermal_bridge_width 0.3))
-    (polygon (pts
-      (xy 0 0) (xy 168.0 0) (xy 168.0 100.0) (xy 0 100.0)
-    ))
-  )
-
-  (zone (net 2) (net_name "+12V") (layer "In3.Cu") (tstamp ef52a3bf-0000-0000-0000-000000000001) (hatch edge 0.508)
-    (connect_pads (clearance 0.2))
-    (min_thickness 0.15)
-    (fill yes (thermal_gap 0.3) (thermal_bridge_width 0.3))
-    (polygon (pts
-      (xy 0 0) (xy 168.0 0) (xy 168.0 100.0) (xy 0 100.0)
-    ))
-  )
-
-  (zone (net 3) (net_name "+3V3") (layer "In4.Cu") (tstamp e0e951ce-0000-0000-0000-000000000001) (hatch edge 0.508)
-    (connect_pads (clearance 0.2))
-    (min_thickness 0.15)
     (fill yes (thermal_gap 0.3) (thermal_bridge_width 0.3))
     (polygon (pts
       (xy 0 0) (xy 168.0 0) (xy 168.0 100.0) (xy 0 100.0)
