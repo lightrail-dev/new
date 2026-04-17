@@ -708,6 +708,7 @@
     (pin "CS0" input (at 50.8 361.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 62.8 358.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 62.8 359.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 62.8 361.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 65.8 355.0) (size 12.0 15.0)
@@ -721,6 +722,7 @@
     (pin "CS0" input (at 65.8 361.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 77.8 358.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 77.8 359.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 77.8 361.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 80.8 355.0) (size 12.0 15.0)
@@ -734,6 +736,7 @@
     (pin "CS0" input (at 80.8 361.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 92.8 358.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 92.8 359.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 92.8 361.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 95.8 355.0) (size 12.0 15.0)
@@ -747,6 +750,7 @@
     (pin "CS0" input (at 95.8 361.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 107.8 358.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 107.8 359.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 107.8 361.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 50.8 375.0) (size 12.0 15.0)
@@ -760,6 +764,7 @@
     (pin "CS0" input (at 50.8 381.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 62.8 378.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 62.8 379.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 62.8 381.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 65.8 375.0) (size 12.0 15.0)
@@ -773,6 +778,7 @@
     (pin "CS0" input (at 65.8 381.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 77.8 378.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 77.8 379.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 77.8 381.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 80.8 375.0) (size 12.0 15.0)
@@ -786,6 +792,7 @@
     (pin "CS0" input (at 80.8 381.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 92.8 378.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 92.8 379.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 92.8 381.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 95.8 375.0) (size 12.0 15.0)
@@ -799,6 +806,7 @@
     (pin "CS0" input (at 95.8 381.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 107.8 378.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 107.8 379.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 107.8 381.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 50.8 395.0) (size 12.0 15.0)
@@ -812,6 +820,7 @@
     (pin "CS0" input (at 50.8 401.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 62.8 398.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 62.8 399.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 62.8 401.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 65.8 395.0) (size 12.0 15.0)
@@ -825,6 +834,7 @@
     (pin "CS0" input (at 65.8 401.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 77.8 398.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 77.8 399.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 77.8 401.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 80.8 395.0) (size 12.0 15.0)
@@ -838,6 +848,7 @@
     (pin "CS0" input (at 80.8 401.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 92.8 398.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 92.8 399.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 92.8 401.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 95.8 395.0) (size 12.0 15.0)
@@ -851,6 +862,7 @@
     (pin "CS0" input (at 95.8 401.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 107.8 398.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 107.8 399.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 107.8 401.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 50.8 415.0) (size 12.0 15.0)
@@ -864,6 +876,7 @@
     (pin "CS0" input (at 50.8 421.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 62.8 418.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 62.8 419.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 62.8 421.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 65.8 415.0) (size 12.0 15.0)
@@ -877,6 +890,7 @@
     (pin "CS0" input (at 65.8 421.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 77.8 418.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 77.8 419.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 77.8 421.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 80.8 415.0) (size 12.0 15.0)
@@ -890,6 +904,7 @@
     (pin "CS0" input (at 80.8 421.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 92.8 418.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 92.8 419.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 92.8 421.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 95.8 415.0) (size 12.0 15.0)
@@ -903,6 +918,7 @@
     (pin "CS0" input (at 95.8 421.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 107.8 418.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 107.8 419.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 107.8 421.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 200.0 355.0) (size 12.0 15.0)
@@ -916,6 +932,7 @@
     (pin "CS0" input (at 200.0 361.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 212.0 358.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 212.0 359.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 212.0 361.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 215.0 355.0) (size 12.0 15.0)
@@ -929,6 +946,7 @@
     (pin "CS0" input (at 215.0 361.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 227.0 358.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 227.0 359.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 227.0 361.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 230.0 355.0) (size 12.0 15.0)
@@ -942,6 +960,7 @@
     (pin "CS0" input (at 230.0 361.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 242.0 358.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 242.0 359.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 242.0 361.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 245.0 355.0) (size 12.0 15.0)
@@ -955,6 +974,7 @@
     (pin "CS0" input (at 245.0 361.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 257.0 358.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 257.0 359.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 257.0 361.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 200.0 375.0) (size 12.0 15.0)
@@ -968,6 +988,7 @@
     (pin "CS0" input (at 200.0 381.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 212.0 378.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 212.0 379.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 212.0 381.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 215.0 375.0) (size 12.0 15.0)
@@ -981,6 +1002,7 @@
     (pin "CS0" input (at 215.0 381.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 227.0 378.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 227.0 379.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 227.0 381.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 230.0 375.0) (size 12.0 15.0)
@@ -994,6 +1016,7 @@
     (pin "CS0" input (at 230.0 381.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 242.0 378.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 242.0 379.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 242.0 381.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 245.0 375.0) (size 12.0 15.0)
@@ -1007,6 +1030,7 @@
     (pin "CS0" input (at 245.0 381.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 257.0 378.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 257.0 379.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 257.0 381.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 200.0 395.0) (size 12.0 15.0)
@@ -1020,6 +1044,7 @@
     (pin "CS0" input (at 200.0 401.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 212.0 398.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 212.0 399.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 212.0 401.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 215.0 395.0) (size 12.0 15.0)
@@ -1033,6 +1058,7 @@
     (pin "CS0" input (at 215.0 401.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 227.0 398.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 227.0 399.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 227.0 401.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 230.0 395.0) (size 12.0 15.0)
@@ -1046,6 +1072,7 @@
     (pin "CS0" input (at 230.0 401.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 242.0 398.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 242.0 399.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 242.0 401.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 245.0 395.0) (size 12.0 15.0)
@@ -1059,6 +1086,7 @@
     (pin "CS0" input (at 245.0 401.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 257.0 398.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 257.0 399.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 257.0 401.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 200.0 415.0) (size 12.0 15.0)
@@ -1072,6 +1100,7 @@
     (pin "CS0" input (at 200.0 421.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 212.0 418.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 212.0 419.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 212.0 421.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 215.0 415.0) (size 12.0 15.0)
@@ -1085,6 +1114,7 @@
     (pin "CS0" input (at 215.0 421.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 227.0 418.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 227.0 419.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 227.0 421.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 230.0 415.0) (size 12.0 15.0)
@@ -1098,6 +1128,7 @@
     (pin "CS0" input (at 230.0 421.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 242.0 418.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 242.0 419.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 242.0 421.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (sheet (at 245.0 415.0) (size 12.0 15.0)
@@ -1111,6 +1142,7 @@
     (pin "CS0" input (at 245.0 421.0 180) (effects (font (size 0.8 0.8))))
     (pin "VDD" input (at 257.0 418.0 0) (effects (font (size 0.8 0.8))))
     (pin "VSS" passive (at 257.0 419.5 0) (effects (font (size 0.8 0.8))))
+    (pin "VDDQ" input (at 257.0 421.0 0) (effects (font (size 0.8 0.8))))
   )
 
   (text "DUAL AI COMPUTE UNITS\nEach unit: AI SoC BGA (2500 pins) + 16x DDR5 DIMMs + 24-phase VRM\nTFLN Photonic Engine: 8ch RF differential per unit\nTotal: 1.6 Tbps aggregate optical bandwidth\nPCIe Gen6 x16 per unit (64 GT/s per lane)\nV_core: 0.8V, 1000A per unit (24-phase DrMOS)" (at 152.4 260.0 0) (effects (font (size 2.0 2.0)) (justify left)))

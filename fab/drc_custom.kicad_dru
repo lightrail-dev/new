@@ -34,10 +34,13 @@
   (condition "A.NetClass == 'DDR5_Data'")
 )
 
-# -- 5b. DDR5 CK / CA group delay match (intra-group ±0.05 mm) --
+# -- 5b. DDR5 CK / CA / CS group delay match (intra-group ±0.05 mm) --
+# Note: only DDR5_Data net class exists in the .kicad_pro; CK/CA/CS nets
+# live inside that class. Disambiguate with NetName regex on *_CK_P/N,
+# *_CA<n>, *_CS<n> so this skew rule actually fires.
 (rule "ddr5_ck_ca_length_match"
   (constraint skew (max 0.05mm))
-  (condition "A.NetClass == 'DDR5_CK' || A.NetClass == 'DDR5_CA'")
+  (condition "A.NetClass == 'DDR5_Data' && (A.NetName =~ '.*_CK_[PN]$' || A.NetName =~ '.*_CA[0-9]+$' || A.NetName =~ '.*_CS[0-9]+$')")
   (severity warning)
 )
 
