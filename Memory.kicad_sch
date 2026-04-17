@@ -10,7 +10,7 @@
     (comment 1 "DDR5-5600 DIMM Slot with Fly-by Topology")
     (comment 2 "JEDEC DDR5 compliant C/A bus routing")
     (comment 3 "Duplicate this sheet for each DIMM (up to 16 per compute unit)")
-    (comment 4 "85 Ohm differential impedance for DQ/DQS")
+    (comment 4 "80 Ohm differential impedance for DQ/DQS (40 Ohm SE), matches docs/Stackup.md")
   )
 
   (lib_symbols
@@ -156,6 +156,6 @@
   (hierarchical_label "VDDQ" (shape input) (at 40.64 43.0 180) (effects (font (size 1.27 1.27))) (uuid 96a2f961-2a5d-4484-b715-3d8c1d3021c5))
   (hierarchical_label "VSS" (shape passive) (at 40.64 46.0 180) (effects (font (size 1.27 1.27))) (uuid 919513b3-52fe-44bb-aecc-a7a12dafe953))
 
-  (text "DDR5 MEMORY INTERFACE\nDDR5-5600 DIMM Slot (288-pin)\nFly-by Topology: CK slightly longer than C/A (JEDEC)\nImpedance: 85 Ohm differential for DQ/DQS\nDuplicate this sheet for each DIMM slot" (at 152.4 30.48 0) (effects (font (size 2.0 2.0)) (justify left)))
+  (text "DDR5 MEMORY INTERFACE\nDDR5-5600 DIMM Slot (288-pin)\nFly-by Topology: CK slightly longer than C/A (JEDEC)\nImpedance: 80 Ohm differential for DQ/DQS (40 Ohm SE)\nDuplicate this sheet for each DIMM slot" (at 152.4 30.48 0) (effects (font (size 2.0 2.0)) (justify left)))
 
 ) ;; end kicad_sch

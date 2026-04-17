@@ -81,14 +81,20 @@ coupon-measured εr and tolerance.
 | USB3 / USB4        | microstrip  | 0.10 mm | 0.10 mm  | GND (In1)       | 90 Ω diff  | ±10 %    |
 | I²C / SPI / GPIO   | any         | 0.15 mm | —        | GND             | —          | —         |
 
-> **Asymmetric stripline note.** High-speed signals on In2.Cu sit between
-> In1.Cu (solid GND) and In3.Cu (V_CORE_U0 plane). V_CORE acts as an AC
-> reference (decoupled to GND at the BGA via the 1200 µF bulk + 0402/0201
-> MLCC network), so the pair still sees a coherent return path, but the fab
-> must solve for the asymmetric εr stackup rather than assuming two solid
-> GND planes. The 10-layer scaffold trades dedicated dual-GND striplines
-> for PDN copper — the 22–24 layer tape-out target in §1.2 restores
-> GND-on-both-sides for all DDR5/PCIe/SERDES pairs.
+> **Asymmetric stripline note.** High-speed signals on In2.Cu see In1.Cu
+> (solid GND) above and a split In3.Cu below. In3.Cu contains the
+> `V_CORE_U0` power island (x=5–78, y=25–95) covering Unit 0's BGA +
+> DDR5 breakout, plus a `GND` island (x=80–168, y=0–100) covering
+> Unit 1's DDR5 / PCIe breakout. So signals under Unit 0 run as
+> **asymmetric stripline** (GND / V_CORE) while signals under Unit 1
+> run as **symmetric stripline** (GND / GND). V_CORE acts as an AC
+> reference (decoupled to GND at the BGA via the 1200 µF bulk +
+> 0402/0201 MLCC network). The fab must solve for two trace
+> geometries — one per region — rather than a single board-wide
+> solution. The 10-layer scaffold trades dedicated dual-GND striplines
+> for PDN copper on Unit 0; the 22–24 layer tape-out target in §1.2
+> restores GND-on-both-sides for all DDR5/PCIe/SERDES pairs across
+> both compute units.
 
 Refer to the fab's impedance control capabilities (e.g. Sierra Circuits, TTM,
 AT&S, NCAB). Request coupons on every panel for Z-measurement sign-off.
