@@ -41,58 +41,61 @@ def add(ref_prefix: str, count: int, start: int = 1, **kw):
         rows.append(Part(ref=ref, qty=1, **kw))
 
 
+# Ref-des scheme reconciled with LightRail_LPO_1.6T.kicad_pcb + schematic sheets:
+#   U101 / U201  : AI SoCs (Unit 0 / Unit 1)           — BGA-2500
+#   U102 / U202  : TFLN PICs (Unit 0 / Unit 1)
+#   U103 / U203  : PCIe Gen 6 retimers per SoC
+#   U301         : VRM Unit 0 controller (ISL69260)
+#   U302..U325   : VRM Unit 0 DrMOS phases (24)
+#   U326..U349   : VRM Unit 1 DrMOS phases (24)
+#   U350         : VRM Unit 1 controller (ISL69260)
+
 # -------- AI Compute SoCs --------
-rows.append(Part(ref="U1", qty=1, value="LR-ASIC-A100",
-                 footprint="LightRail:BGA-2500_40x40mm_P0.8mm",
-                 manufacturer="LightRail AI", mpn="LR-ASIC-A100-B0",
-                 distributor="LightRail direct", distributor_pn="LR-ASIC-A100-B0",
-                 package="BGA-2500 (50x50, 0.8mm)",
-                 description="AI SoC, BGA-2500, 800W TDP, DDR5-8800 x4, PCIe Gen6 x32, TFLN 16 lanes"))
-rows.append(Part(ref="U2", qty=1, value="LR-ASIC-A100",
-                 footprint="LightRail:BGA-2500_40x40mm_P0.8mm",
-                 manufacturer="LightRail AI", mpn="LR-ASIC-A100-B0",
-                 distributor="LightRail direct", distributor_pn="LR-ASIC-A100-B0",
-                 package="BGA-2500", description="AI SoC (second unit)"))
+for unit, ref in enumerate(["U101", "U201"]):
+    rows.append(Part(ref=ref, qty=1, value="LR-ASIC-A100",
+                     footprint="LightRail:BGA-2500_40x40mm_P0.8mm",
+                     manufacturer="LightRail AI", mpn="LR-ASIC-A100-B0",
+                     distributor="LightRail direct", distributor_pn="LR-ASIC-A100-B0",
+                     package="BGA-2500 (50x50, 0.8mm)",
+                     description=f"AI SoC Unit {unit}, BGA-2500, 800W TDP, DDR5-8800 x4, PCIe Gen6 x32, TFLN 16 lanes"))
 
 # -------- TFLN Photonic Integrated Circuits --------
-rows.append(Part(ref="U3", qty=1, value="TFLN-8CH-200G",
-                 footprint="LightRail:TFLN_PIC_Periphery",
-                 manufacturer="HyperLight", mpn="HL-TFLN-8CH-200G-PAM4",
-                 distributor="HyperLight direct", distributor_pn="HL-TFLN-8CH-200G",
-                 package="Custom periphery carrier",
-                 description="8-channel TFLN MZ modulator, 200G PAM4/ch, C-band"))
-rows.append(Part(ref="U4", qty=1, value="TFLN-8CH-200G",
-                 footprint="LightRail:TFLN_PIC_Periphery",
-                 manufacturer="HyperLight", mpn="HL-TFLN-8CH-200G-PAM4",
-                 distributor="HyperLight direct", distributor_pn="HL-TFLN-8CH-200G",
-                 package="Custom", description="TFLN PIC (second unit)"))
+for unit, ref in enumerate(["U102", "U202"]):
+    rows.append(Part(ref=ref, qty=1, value="TFLN-8CH-200G",
+                     footprint="LightRail:TFLN_PIC_Periphery",
+                     manufacturer="HyperLight", mpn="HL-TFLN-8CH-200G-PAM4",
+                     distributor="HyperLight direct", distributor_pn="HL-TFLN-8CH-200G",
+                     package="Custom periphery carrier",
+                     description=f"8-channel TFLN MZ modulator, 200G PAM4/ch, C-band (Unit {unit})"))
 
 # -------- PCIe Gen 6 retimers --------
-for i, ref in enumerate(["U5", "U6"]):
+for unit, ref in enumerate(["U103", "U203"]):
     rows.append(Part(ref=ref, qty=1, value="PT6-Retimer",
                      footprint="Package_BGA:BGA-325_17x17mm_Layout18x18_P1.0mm",
                      manufacturer="Astera Labs", mpn="PT6-B0-325",
                      distributor="Arrow", distributor_pn="PT6-B0-325-T",
-                     package="BGA-325 1.0mm", description=f"PCIe Gen 6 retimer, x16 (SoC {i})"))
+                     package="BGA-325 1.0mm", description=f"PCIe Gen 6 retimer, x16 (SoC {unit})"))
 
-# -------- VRM Controllers --------
-for i, ref in enumerate(["U10", "U20"]):
+# -------- VRM Controllers (one per SoC) --------
+for unit, ref in enumerate(["U301", "U350"]):
     rows.append(Part(ref=ref, qty=1, value="ISL69260",
                      footprint="Package_QFN:QFN-80-1EP_10x10mm_P0.4mm",
                      manufacturer="Renesas", mpn="ISL69260IRAZ-T",
                      distributor="Digi-Key", distributor_pn="ISL69260IRAZ-T7-ND",
                      package="QFN-80 1EP 10x10 0.4mm",
-                     description=f"Digital multi-phase PWM controller, 16+8-phase (VRM unit {i})"))
+                     description=f"Digital multi-phase PWM controller, 16+8-phase (VRM Unit {unit})"))
 
-# -------- DrMOS (48 total: 24 per VRM) --------
+# -------- DrMOS (48 total: 24 per VRM, contiguous per PCB layout) --------
+# Unit 0 DrMOS occupy U302..U325; Unit 1 DrMOS occupy U326..U349.
 for i in range(48):
-    ref = f"U{101 + i}"  # U101..U148
+    ref = f"U{302 + i}"  # U302..U349
+    unit = 0 if i < 24 else 1
     rows.append(Part(ref=ref, qty=1, value="ISL99390",
                      footprint="LightRail:DrMOS_PowerPAK_8x8mm",
                      manufacturer="Renesas", mpn="ISL99390FRZ-T7A",
                      distributor="Digi-Key", distributor_pn="ISL99390FRZ-T7A-ND",
                      package="PowerPAK 8x8 1EP",
-                     description="90A Smart Power Stage (DrMOS), VRM phase"))
+                     description=f"90A Smart Power Stage (DrMOS), VRM Unit {unit} phase"))
 
 # -------- VRM Inductors (48 total) --------
 for i in range(48):

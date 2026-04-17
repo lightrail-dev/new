@@ -19,6 +19,8 @@
 | 1x4 2.54mm header | 6 |
 | 0603 | 6 |
 | M.2 Key-M | 4 |
+| BGA-2500 (50x50, 0.8mm) | 2 |
+| Custom periphery carrier | 2 |
 | BGA-325 1.0mm | 2 |
 | QFN-80 1EP 10x10 0.4mm | 2 |
 | VQFN-24 4x4 | 2 |
@@ -26,10 +28,6 @@
 | WSON-8 | 2 |
 | Nano2-466 | 2 |
 | SO-8 PowerPak | 2 |
-| BGA-2500 (50x50, 0.8mm) | 1 |
-| BGA-2500 | 1 |
-| Custom periphery carrier | 1 |
-| Custom | 1 |
 | WSON-10 3x3 | 1 |
 | HSOP-8 | 1 |
 | SOIC-8 exposed pad | 1 |
