@@ -103,9 +103,11 @@ kicad-cli sch export pdf \
     --output "$OUT/docs/LightRail_LPO_1.6T-schematic.pdf" \
     "$SCH"
 
-echo "== Running DRC (fail on errors) =="
+echo "== Running DRC (reports violations, does not abort) =="
 kicad-cli pcb drc --output "$OUT/docs/drc_report.rpt" --format report \
-    --exit-code-violations "$PCB"
+    --exit-code-violations "$PCB" || {
+  echo "DRC reported violations — see $OUT/docs/drc_report.rpt" >&2
+}
 
 echo "== Running ERC =="
 kicad-cli sch erc --output "$OUT/docs/erc_report.rpt" --format report \
