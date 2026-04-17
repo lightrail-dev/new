@@ -13,7 +13,7 @@ with Gerbers, drills, IPC-D-356 netlist, pick-and-place, BOM, and 3D STEP.
 | Size (tapeout target)| 420 × 350 mm (recommended; server-board class)      |
 | Layer count          | 10 (scaffold) — tapeout target: 22–24               |
 | Dielectric           | Megtron-7 (εr 3.3, tan δ 0.002 @ 1 GHz)             |
-| Thickness            | 1.60 mm ± 10 %                                      |
+| Thickness            | 1.86 mm ± 10 %                                      |
 | Copper weights       | 2 oz outer / 0.5 oz inner / 2 oz power planes        |
 | Surface finish       | ENIG (Ni ≥ 5 µm, Au ≥ 2 µm)                         |
 | Solder mask          | LPI, matte black, non-conductive                    |
