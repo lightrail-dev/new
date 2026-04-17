@@ -9,12 +9,15 @@
   (fp_rect (start -4.25 -4.25) (end 4.25 4.25) (layer "F.SilkS") (width 0.12) (fill none))
   (fp_text reference "REF**" (at 0 -5.5) (layer "F.SilkS") (effects (font (size 1.0 1.0) (thickness 0.15))))
   (fp_text value "DrMOS" (at 0 5.5) (layer "F.Fab") (effects (font (size 1.0 1.0) (thickness 0.15))))
-  (pad "PGND" smd rect (at 0 0) (size 5.0 5.0) (layers "F.Cu" "F.Paste" "F.Mask") (thermal_bridge_angle 0) (thermal_bridge_width 1.0))
-  (pad "PVCC" smd rect (at -3.75 -3.50) (size 1.0 0.5) (layers "F.Cu" "F.Paste" "F.Mask"))
-  (pad "PWM" smd rect (at -3.75 -2.00) (size 1.0 0.5) (layers "F.Cu" "F.Paste" "F.Mask"))
-  (pad "DRVH" smd rect (at -3.75 -0.50) (size 1.0 0.5) (layers "F.Cu" "F.Paste" "F.Mask"))
-  (pad "DRVL" smd rect (at -3.75 1.00) (size 1.0 0.5) (layers "F.Cu" "F.Paste" "F.Mask"))
-  (pad "BOOT" smd rect (at -3.75 2.50) (size 1.0 0.5) (layers "F.Cu" "F.Paste" "F.Mask"))
-  (pad "PHASE" smd rect (at 3.75 -2.00) (size 1.0 0.5) (layers "F.Cu" "F.Paste" "F.Mask"))
-  (pad "IMON" smd rect (at 3.75 1.00) (size 1.0 0.5) (layers "F.Cu" "F.Paste" "F.Mask"))
+  ;; Pad numbers match ISL99390_DrMOS schematic symbol pin numbers
+  ;; (VRM.kicad_sch): 1=PVCC, 2=PWM, 3=DRVH, 4=DRVL, 5=PHASE, 6=IMON,
+  ;; 7=PGND (thermal pad), 8=BOOT.
+  (pad "7" smd rect (at 0 0) (size 5.0 5.0) (layers "F.Cu" "F.Paste" "F.Mask") (thermal_bridge_angle 0) (thermal_bridge_width 1.0))
+  (pad "1" smd rect (at -3.75 -3.50) (size 1.0 0.5) (layers "F.Cu" "F.Paste" "F.Mask"))
+  (pad "2" smd rect (at -3.75 -2.00) (size 1.0 0.5) (layers "F.Cu" "F.Paste" "F.Mask"))
+  (pad "3" smd rect (at -3.75 -0.50) (size 1.0 0.5) (layers "F.Cu" "F.Paste" "F.Mask"))
+  (pad "4" smd rect (at -3.75 1.00) (size 1.0 0.5) (layers "F.Cu" "F.Paste" "F.Mask"))
+  (pad "8" smd rect (at -3.75 2.50) (size 1.0 0.5) (layers "F.Cu" "F.Paste" "F.Mask"))
+  (pad "5" smd rect (at 3.75 -2.00) (size 1.0 0.5) (layers "F.Cu" "F.Paste" "F.Mask"))
+  (pad "6" smd rect (at 3.75 1.00) (size 1.0 0.5) (layers "F.Cu" "F.Paste" "F.Mask"))
 )
