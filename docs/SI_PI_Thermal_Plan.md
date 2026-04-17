@@ -45,7 +45,7 @@ the tools, models, and artifacts a simulation team should produce.
 | PCB-side SI                  | REFCK_P/N differential, IEEE-1500 JTAG, CATTRIP / PWR_GOOD         |
 | REFCK margin                 | Jitter < 150 fs RMS (10 kHz – 20 MHz)                              |
 | Length match (REFCK)         | ±0.025 mm P-to-N within pair                                      |
-| Output artifact              | `sim/si/ddr5_timing_report.xlsx`                                    |
+| Output artifact              | `sim/si/hbm4_side_channel_report.xlsx`                              |
 
 ### 1.4 REFCLK / SerDes reference
 
@@ -153,7 +153,7 @@ sim/
   si/
     pcie_gen6_channel_report.pdf
     pcie_gen6_eye_corners.csv
-    ddr5_timing_report.xlsx
+    hbm4_side_channel_report.xlsx
     tfln_rf_s_params.s16p
   pi/
     vcore_pdn_report.pdf
