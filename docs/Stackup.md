@@ -25,9 +25,9 @@
 |   | C2         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
 | 5 | In4.Cu     | copper      | 0.035 mm  | Cu (2 oz)    | —            | V_CORE_U0 plane (split)          |
 |   | PP3        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 6 | In5.Cu     | copper      | 0.0175 mm | Cu (0.5 oz)  | —            | SIG: DDR5 byte lanes 2–3         |
+| 6 | In5.Cu     | copper      | 0.035 mm  | Cu (2 oz)    | —            | V_CORE_U1 plane                  |
 |   | C3         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 7 | In6.Cu     | copper      | 0.0175 mm | Cu (0.5 oz)  | —            | V_CORE_U1 plane                  |
+| 7 | In6.Cu     | copper      | 0.035 mm  | Cu (2 oz)    | —            | V_CORE_U1 plane (paralleled)     |
 |   | PP4        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
 | 8 | In7.Cu     | copper      | 0.035 mm  | Cu (2 oz)    | —            | GND reference (solid)            |
 |   | C4         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
@@ -38,10 +38,15 @@
 |   | B.Paste    | paste       | —         | —            | —            | bottom paste stencil             |
 |   | B.SilkS    | silk        | —         | —            | —            | bottom silkscreen                |
 
-**Total nominal thickness:** 1.60 mm ± 10 %
-**Copper weight:** 2 oz outer / 0.5 oz inner (with 2 oz power planes)
+**Total nominal thickness:** 1.63 mm ± 10 %
+**Copper weight:** 2 oz outer / 0.5 oz inner signal / 2 oz power planes
 **Finish:** ENIG (2 µm Au min. over 5 µm Ni)
 **Soldermask:** LPI, green (default); matte black available
+
+> **DDR5 byte lanes 2–3 in the 10-layer scaffold** are planned for outer
+> (B.Cu) + In8.Cu stripline-like routing in the scaffold. A genuine
+> tape-out build must adopt the 22–24 layer target in §1.2 where each
+> DDR5 byte lane has its own dedicated stripline between two GND planes.
 
 ### 1.2 Tape-out target stackup (recommended)
 
@@ -61,7 +66,7 @@ production stackup is 22–24 layers along these lines:
 ## 2. Controlled-impedance table
 
 Impedance targets for the stackup in §1.1, assumed trace geometry
-(stripline on In2/In5, microstrip on F.Cu/B.Cu) at 20 °C. All widths and
+(stripline on In2/In8, microstrip on F.Cu/B.Cu) at 20 °C. All widths and
 gaps are **design intents** — the fab will reconcile with their own
 coupon-measured εr and tolerance.
 

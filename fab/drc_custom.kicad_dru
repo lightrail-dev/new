@@ -34,6 +34,13 @@
   (condition "A.NetClass == 'DDR5_Data'")
 )
 
+# -- 5b. DDR5 CK / CA group delay match (intra-group ±0.05 mm) --
+(rule "ddr5_ck_ca_length_match"
+  (constraint skew (max 0.05mm))
+  (condition "A.NetClass == 'DDR5_CK' || A.NetClass == 'DDR5_CA'")
+  (severity warning)
+)
+
 # -- 6. Microvia drill minimum --
 (rule "microvia_min"
   (constraint hole_size (min 0.10mm))
@@ -60,10 +67,13 @@
 )
 
 # -- 10. DDR5 CA/CLK must be on internal stripline layers only --
+# Net names carry the full subsystem prefix (DDR5_U0_CK_P, DDR5_U0_CA0, ...)
+# so we match with KiCad 8 regex operator =~ against a wildcard pattern.
 (rule "ddr5_ca_stripline_only"
-  (constraint assertion "A.Layer == 'In2.Cu' || A.Layer == 'In5.Cu'")
-  (condition "(A.NetName == 'CK_P' || A.NetName == 'CK_N' ||
-               A.NetName ^= 'CA')")
+  (constraint assertion "A.Layer == 'In2.Cu' || A.Layer == 'In8.Cu'")
+  (condition "(A.NetName =~ '.*_CK_P' || A.NetName =~ '.*_CK_N' ||
+               A.NetName =~ '.*_CA[0-9]+' ||
+               A.NetName =~ '.*_CS[0-9]+')")
   (severity error)
 )
 

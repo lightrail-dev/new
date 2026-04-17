@@ -187,6 +187,24 @@ This produces:
 | 2.0  | 2026-04-11 | DRC-violation sweep (PR #2, not merged).                                 |
 | 3.0  | 2026-04-11 | Dual AI Compute Node scaffold with TFLN, VRM, DDR5 hierarchy (PR #4).    |
 | 4.0  | 2026-04-17 | Add fab documentation package: BOM, pinouts, stackup, DFM, tapeout list. |
+| 4.1  | 2026-04-17 | Stackup / PCB fixes from Devin Review: V_CORE_U1 planes 2 oz (matches zones), DDR5 CK moved In1.Cu→In2.Cu with P/N endpoints matched, TFLN keep-outs moved off BGA to front-panel fiber-exit area (both F.Cu and B.Cu), DDR5_Data via_diameter 0.3→0.35 mm, `ddr5_ca_stripline_only` DRC rule uses regex on full net names (`.*_CK_P` etc.), `gerber_layers.txt` In5/In6 re-labelled V_CORE_U1. |
+
+### Residual items flagged by Devin Review that still require human work
+
+These are schematic-side fixes that need a PCB engineer to drive in the KiCad
+GUI (a text-edit pass risks corrupting sheet-pin UUIDs):
+
+- `AI_Core_Unit[01]` sheet instances in root schematic are missing
+  hierarchical pins for `VDD_IO`, `TFLN_CLK_P/N`, and the full DDR5 lane
+  set (`DQ8..31`, `DQS1..3`, `DM1..3`). Open the sheet symbol properties,
+  Add → Import Hierarchical Sheet Pin until the sheet interface matches
+  `Memory.kicad_sch` and the power tree in `VRM.kicad_sch`.
+- `VRM_U[01]` sheet instances are missing `VID0/1/2` input pins for the
+  voltage-programming bus. The VID nets exist in the root — just add
+  matching sheet pins.
+- TFLN keep-out polygons on inner copper layers (`In1.Cu`..`In8.Cu`) should
+  be added once final placement is locked; the scaffold only declares them
+  on `F.Cu` and `B.Cu`.
 
 ---
 
