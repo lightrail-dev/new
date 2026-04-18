@@ -1,0 +1,76 @@
+Pin,Signal,Direction,Description,NetClass
+1,GND,power,Ground,GND
+2,+3.3V,power,3.3V main,PWR_3V3
+3,GND,power,Ground,GND
+4,+3.3V,power,3.3V main,PWR_3V3
+5,PETn3,out,PCIe TX lane 3 −,PCIe_Gen6
+6,+3.3V,power,3.3V main,PWR_3V3
+7,PETp3,out,PCIe TX lane 3 +,PCIe_Gen6
+8,RSVD,nc,Reserved,I2C_SPI
+9,GND,power,Ground,GND
+10,LED_DAS,o_oc,Drive Activity Status LED,I2C_SPI
+11,PERn3,in,PCIe RX lane 3 −,PCIe_Gen6
+12,+3.3V,power,3.3V main,PWR_3V3
+13,PERp3,in,PCIe RX lane 3 +,PCIe_Gen6
+14,+3.3V,power,3.3V main,PWR_3V3
+15,GND,power,Ground,GND
+16,+3.3V,power,3.3V main,PWR_3V3
+17,PETn2,out,PCIe TX lane 2 −,PCIe_Gen6
+18,+3.3V,power,3.3V main,PWR_3V3
+19,PETp2,out,PCIe TX lane 2 +,PCIe_Gen6
+20,RSVD,nc,Reserved,I2C_SPI
+21,GND,power,Ground,GND
+22,RSVD,nc,Reserved,I2C_SPI
+23,PERn2,in,PCIe RX lane 2 −,PCIe_Gen6
+24,RSVD,nc,Reserved,I2C_SPI
+25,PERp2,in,PCIe RX lane 2 +,PCIe_Gen6
+26,RSVD,nc,Reserved,I2C_SPI
+27,GND,power,Ground,GND
+28,RSVD,nc,Reserved,I2C_SPI
+29,PETn1,out,PCIe TX lane 1 −,PCIe_Gen6
+30,RSVD,nc,Reserved,I2C_SPI
+31,PETp1,out,PCIe TX lane 1 +,PCIe_Gen6
+32,RSVD,nc,Reserved,I2C_SPI
+33,GND,power,Ground,GND
+34,RSVD,nc,Reserved,I2C_SPI
+35,PERn1,in,PCIe RX lane 1 −,PCIe_Gen6
+36,RSVD,nc,Reserved,I2C_SPI
+37,PERp1,in,PCIe RX lane 1 +,PCIe_Gen6
+38,DEVSLP,in,Device sleep,I2C_SPI
+39,GND,power,Ground,GND
+40,SMB_CLK,i/o,SMBus clock,I2C_SPI
+41,PETn0,out,PCIe TX lane 0 −,PCIe_Gen6
+42,SMB_DATA,i/o,SMBus data,I2C_SPI
+43,PETp0,out,PCIe TX lane 0 +,PCIe_Gen6
+44,ALERT#,o_oc,SMBus alert,I2C_SPI
+45,GND,power,Ground,GND
+46,DPWRDIS,in,Dual port disable,I2C_SPI
+47,PERn0,in,PCIe RX lane 0 −,PCIe_Gen6
+48,DPWREN,out,Dual port enable,I2C_SPI
+49,PERp0,in,PCIe RX lane 0 +,PCIe_Gen6
+50,PERST#,out,PCIe reset,I2C_SPI
+51,GND,power,Ground,GND
+52,CLKREQ#,o_oc,Clock request,I2C_SPI
+53,REFCLKn,in,100 MHz ref clock −,RF_50OHM_DIFF
+54,PEWAKE#,o_oc,PCIe wake,I2C_SPI
+55,REFCLKp,in,100 MHz ref clock +,RF_50OHM_DIFF
+56,RSVD,nc,Reserved,I2C_SPI
+57,GND,power,Ground,GND
+58,RSVD,nc,Reserved,I2C_SPI
+59,KEY,nc,Key-M notch,I2C_SPI
+60,KEY,nc,Key-M notch,I2C_SPI
+61,KEY,nc,Key-M notch,I2C_SPI
+62,KEY,nc,Key-M notch,I2C_SPI
+63,KEY,nc,Key-M notch,I2C_SPI
+64,KEY,nc,Key-M notch,I2C_SPI
+65,KEY,nc,Key-M notch,I2C_SPI
+66,KEY,nc,Key-M notch,I2C_SPI
+67,RSVD,nc,Reserved,I2C_SPI
+68,SUSCLK,in,Suspend clock,I2C_SPI
+69,PEDET,o_oc,PCIe detect,I2C_SPI
+70,+3.3V,power,3.3V main,PWR_3V3
+71,GND,power,Ground,GND
+72,+3.3V,power,3.3V main,PWR_3V3
+73,GND,power,Ground,GND
+74,+3.3V,power,3.3V main,PWR_3V3
+75,GND,power,Ground,GND

@@ -1,0 +1,16 @@
+Domain,Ball-Grid Location,Count,Representative Net,NetClass
+V_CORE (NCE+HBM4),N10..AK38,612,V_CORE_U{unit},PWR_CORE
+GND,distributed,624,GND,GND
+VDD_IO,rings,96,VDD_IO,PWR_1V8
+VDDC_HBM4,interposer-face east,40,HBM4_U{unit}_VDDC_S,HBM4_Interposer
+VDDQL_HBM4,interposer-face east,40,HBM4_U{unit}_VDDQL_S,HBM4_Interposer
+VDDQ_HBM4,interposer-face east,40,HBM4_U{unit}_VDDQ_S,HBM4_Interposer
+VPP_HBM4,interposer-face east,16,HBM4_U{unit}_VPP_S,HBM4_Interposer
+HBM4_side-channel (4 stacks),interposer-face,32,"HBM4_U{unit}_REFCK_P/N,CATTRIP,PWR_GOOD,IEEE1500(TCK/TMS/TDI/TDO)",HBM4_Interposer
+HBM4 data bus (1024 × 4 stacks),INTERPOSER-INTERNAL,4096,NOT ROUTED ON PCB,-
+PCIe_x16_0,S edge,72,PET0_*/PER0_*,PCIe_Gen6
+PCIe_x16_1,S edge,72,PET1_*/PER1_*,PCIe_Gen6
+TFLN_SerDes 16ch,N edge,96,TFLN_TX*/TFLN_RX*,TFLN_RF
+Mgmt,NW corner,32,I2C/SPI/JTAG,I2C_SPI
+Thermal,center,4,TDIODE_P/N,-
+Reserved,distributed,156,RSVD,-
