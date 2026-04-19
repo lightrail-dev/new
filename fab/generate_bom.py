@@ -1,11 +1,21 @@
 #!/usr/bin/env python3
 """
-Generates fab/BOM.csv for the LightRail AI Compute Node.
+Generates fab/BOM.csv for the LightRail AI Compute Node (LR-P3A Rev 6.0).
 
-This is a *representative* BOM for the Rev 4.0 scaffold — it reflects the
-intended part selection by domain. Real tapeout BOM must be reconciled against
-the KiCad-exported BOM (from `Tools → Generate BOM`) once the schematic has
-complete ref-des annotations and all pads have nets assigned.
+Rev 6.0 delta vs Rev 5.0 (HBM4 migration scaffold):
+  * Tiered PDN decoupling added per spec §III — 100 µF tantalum bulk at VRM
+    output, 10 µF 0805 mid-range, 1 µF 0402, 100 nF 01005 bypass (≤1 mm from
+    each NCE/HBM4 power ball).
+  * Embedded-capacitance layer (Faradflex BC24) reduces required 100 nF count
+    from Rev 5.0, but we still populate abundant 01005 caps for the GHz band
+    where the embedded plane is self-resonant.
+  * Vendor list constrained to LCSC / Digi-Key / Mouser *Active* parts only
+    (spec §V). No obsolete or NRND parts.
+
+This is a *representative* BOM for the 32-layer HDI scaffold — it reflects
+the intended part selection by domain. Real tapeout BOM must be reconciled
+against the KiCad-exported BOM (from `Tools → Generate BOM`) once the
+schematic has complete ref-des annotations and all pads have nets assigned.
 
 Run:   python3 generate_bom.py  -> writes BOM.csv, BOM.md (ascii summary)
 """
@@ -111,8 +121,9 @@ for i in range(48):
                      distributor="Digi-Key", distributor_pn="IHLE-2525CD-150-ND",
                      package="2525", description="Power inductor 150nH, 42A Isat, DCR 1.6mΩ"))
 
-# -------- VRM bulk caps (polymer, near DrMOS output) --------
-# 10x 470uF polymer per VRM = 20 total
+# -------- Tier-1 VRM bulk caps (polymer, near DrMOS output) --------
+# 10x 470uF polymer per VRM = 20 total (carried from Rev 5.0; conductance
+# polymer, lowest ESR/ESL at kHz band).
 for i in range(20):
     ref = f"C{1000 + i}"
     rows.append(Part(ref=ref, qty=1, value="470uF 2.5V",
@@ -120,7 +131,32 @@ for i in range(20):
                      manufacturer="Panasonic", mpn="EEHZC0E471P",
                      distributor="Digi-Key", distributor_pn="PCE5311CT-ND",
                      package="D6.3 radial SMD",
-                     description="Polymer electrolytic bulk cap, V_core output"))
+                     description="Tier-1 (bulk) V_core polymer electrolytic, at VRM output"))
+
+# -------- Tier-1 VRM bulk tantalum (100 µF tantalum, per spec §III) --------
+# 2x per VRM output rail at each phase group = 12 per VRM = 24 total.
+# Complements the 470 µF polymer caps above (tantalum has flatter impedance
+# response in the 100 kHz - 1 MHz band where DrMOS load steps live).
+for i in range(24):
+    ref = f"C{1100 + i}"
+    rows.append(Part(ref=ref, qty=1, value="100uF 4V tantalum",
+                     footprint="Capacitor_Tantalum_SMD:CP_Tantalum_D_7343-31",
+                     manufacturer="AVX", mpn="TCJD107M004R0045",
+                     distributor="Mouser", distributor_pn="581-TCJD107M004R0045",
+                     package="D 7343-31 tantalum",
+                     description="Tier-1 bulk tantalum 100 µF 4 V (spec §III), at VRM output"))
+
+# -------- Tier-2 mid-range decoupling: 10 µF 0805 X7R --------
+# Mounted on B.Cu directly under the NCE BGA cavity (vertical power
+# delivery escape fence). 80 per NCE = 160 total.
+for i in range(160):
+    ref = f"C{1200 + i}"
+    rows.append(Part(ref=ref, qty=1, value="10uF 6.3V X7R 0805",
+                     footprint="Capacitor_SMD:C_0805_2012Metric",
+                     manufacturer="Murata", mpn="GRM21BR60J106ME19L",
+                     distributor="Digi-Key", distributor_pn="490-3903-1-ND",
+                     package="0805",
+                     description="Tier-2 mid-range V_core decoupling, B.Cu under NCE BGA"))
 
 # -------- Aux buck controllers and LDOs --------
 rows.append(Part(ref="U30", qty=1, value="TPS543C20",
@@ -281,56 +317,76 @@ for i in range(4):
                      distributor="Mouser", distributor_pn="649-10146845-100LF",
                      package="M.2 Key-M", description=f"NVMe Gen 5 M.2 slot {i+1}"))
 
-# -------- Passive decoupling & bulk --------
-# SoC-local decoupling: a lot.
-# 200x 10uF 0402 per SoC, 100x 1uF 0201 per SoC, 300x 100nF 0201 per SoC.
-# => 1200 caps total across both SoCs.
+# -------- Passive decoupling & bulk (Tier-3 + Tier-4) --------
+# Rev 6.0 tiered PDN, spec §III:
+#   * Tier-3 (1 µF 0402) – distributed along power planes for transient
+#     response in the 10-100 MHz band.
+#   * Tier-4 (100 nF 01005) – <1 mm of each NCE / HBM4 power pin for
+#     high-frequency (100 MHz - 3 GHz) bypass; sub-nH ESL.
+# SoC-local decoupling: 200 × 1 µF 0402 per SoC, 400 × 100 nF 01005 per SoC.
 cap_counter = 2000
-for i in range(400):  # 10uF 0402 x 400 total (200 per SoC)
-    rows.append(Part(ref=f"C{cap_counter + i}", qty=1, value="10uF 6.3V X7R",
+for i in range(400):  # 1uF 0402 x 400 total (200 per SoC) - Tier-3
+    rows.append(Part(ref=f"C{cap_counter + i}", qty=1, value="1uF 10V X7R 0402",
                      footprint="Capacitor_SMD:C_0402_1005Metric",
-                     manufacturer="Murata", mpn="GRM155R60J106ME44D",
-                     distributor="Digi-Key", distributor_pn="490-10744-1-ND",
-                     package="0402", description="10uF decoupling, V_core local"))
+                     manufacturer="Murata", mpn="GRM155R71A105KE01D",
+                     distributor="Digi-Key", distributor_pn="490-3262-1-ND",
+                     package="0402",
+                     description="Tier-3 1uF plane-distributed decoupling"))
 cap_counter += 400
-for i in range(200):  # 1uF 0201 x 200
-    rows.append(Part(ref=f"C{cap_counter + i}", qty=1, value="1uF 6.3V X7R",
-                     footprint="Capacitor_SMD:C_0201_0603Metric",
-                     manufacturer="Murata", mpn="GRM033R60J105ME84D",
-                     distributor="Digi-Key", distributor_pn="490-13231-1-ND",
-                     package="0201", description="1uF high-freq decoupling"))
-cap_counter += 200
-for i in range(600):  # 100nF 0201 x 600
-    rows.append(Part(ref=f"C{cap_counter + i}", qty=1, value="100nF 10V X7R",
-                     footprint="Capacitor_SMD:C_0201_0603Metric",
-                     manufacturer="Murata", mpn="GRM033R71A104KA01D",
-                     distributor="Digi-Key", distributor_pn="490-7815-1-ND",
-                     package="0201", description="100nF high-freq decoupling"))
-cap_counter += 600
-# HBM4 power-rail PCB-side decoupling near each compute unit package BGA:
-# 16x 100nF 0201 and 4x 10uF 0402 per HBM4 stack (8 stacks total)
-for i in range(128):
-    rows.append(Part(ref=f"C{cap_counter + i}", qty=1, value="100nF 10V X7R",
-                     footprint="Capacitor_SMD:C_0201_0603Metric",
-                     manufacturer="Murata", mpn="GRM033R71A104KA01D",
-                     distributor="Digi-Key", distributor_pn="490-7815-1-ND",
-                     package="0201", description="HBM4 package-BGA bypass (VDDC / VDDQL / VDDQ / VPP)"))
-cap_counter += 128
-for i in range(32):
-    rows.append(Part(ref=f"C{cap_counter + i}", qty=1, value="10uF 6.3V X7R",
-                     footprint="Capacitor_SMD:C_0402_1005Metric",
-                     manufacturer="Murata", mpn="GRM155R60J106ME44D",
-                     distributor="Digi-Key", distributor_pn="490-10744-1-ND",
-                     package="0402", description="HBM4 power-rail bulk decoupling (per stack)"))
-cap_counter += 32
-# TFLN local bypass
-for i in range(64):
-    rows.append(Part(ref=f"C{cap_counter + i}", qty=1, value="100nF 10V X7R",
-                     footprint="Capacitor_SMD:C_0201_0603Metric",
-                     manufacturer="Murata", mpn="GRM033R71A104KA01D",
-                     distributor="Digi-Key", distributor_pn="490-7815-1-ND",
-                     package="0201", description="TFLN PIC local RF bypass"))
+for i in range(800):  # 100nF 01005 x 800 (400 per SoC) - Tier-4 fine bypass
+    rows.append(Part(ref=f"C{cap_counter + i}", qty=1, value="100nF 6.3V X5R 01005",
+                     footprint="Capacitor_SMD:C_01005_0402Metric",
+                     manufacturer="Murata", mpn="GRM022R60J104ME15L",
+                     distributor="Digi-Key", distributor_pn="490-18187-1-ND",
+                     package="01005",
+                     description="Tier-4 100nF bypass, <1mm from NCE/HBM4 power pin (spec §III)"))
+cap_counter += 800
+# HBM4 package-BGA PCB-side decoupling per spec §III (01005 <1 mm of each
+# HBM4 power ball on the NCE CoWoS module fan-out).
+# 32x 100nF 01005 and 8x 10uF 0805 per HBM4 stack (8 stacks total).
+for i in range(256):  # 32 * 8 stacks
+    rows.append(Part(ref=f"C{cap_counter + i}", qty=1, value="100nF 6.3V X5R 01005",
+                     footprint="Capacitor_SMD:C_01005_0402Metric",
+                     manufacturer="Murata", mpn="GRM022R60J104ME15L",
+                     distributor="Digi-Key", distributor_pn="490-18187-1-ND",
+                     package="01005",
+                     description="HBM4 package-BGA Tier-4 bypass (VDDC/VDDQL/VDDQ/VPP)"))
+cap_counter += 256
+for i in range(64):  # 8 * 8 stacks - 10µF 0805 Tier-2 per HBM4
+    rows.append(Part(ref=f"C{cap_counter + i}", qty=1, value="10uF 6.3V X7R 0805",
+                     footprint="Capacitor_SMD:C_0805_2012Metric",
+                     manufacturer="Murata", mpn="GRM21BR60J106ME19L",
+                     distributor="Digi-Key", distributor_pn="490-3903-1-ND",
+                     package="0805",
+                     description="HBM4 Tier-2 bulk decoupling (per stack)"))
 cap_counter += 64
+# TFLN local RF bypass (01005, directly under TFLN periphery carrier pads)
+for i in range(64):
+    rows.append(Part(ref=f"C{cap_counter + i}", qty=1, value="100nF 6.3V X5R 01005",
+                     footprint="Capacitor_SMD:C_01005_0402Metric",
+                     manufacturer="Murata", mpn="GRM022R60J104ME15L",
+                     distributor="Digi-Key", distributor_pn="490-18187-1-ND",
+                     package="01005",
+                     description="TFLN PIC local RF bypass (direct-drive rail)"))
+cap_counter += 64
+
+# ------- Thermal via array — B.Cu entry under NCE / HBM4 / DrMOS -------
+# Logical BOM line for the thermal-via copper slugs documented in
+# docs/SI_PI_Thermal_Plan.md §2. Counted here so the fab house includes
+# the back-drill + copper-fill cost in the quote; the actual via array is
+# drawn in KiCad as tagged 'thermal_via_array' vias, not discrete parts.
+rows.append(Part(ref="TV1", qty=2048, value="THERMAL_VIA_0p3mm",
+                 footprint="(in-board via, tagged thermal_via_array)",
+                 manufacturer="(fab)", mpn="N/A",
+                 distributor="(fab)", distributor_pn="—",
+                 package="0.3 mm drill, 0.55 mm pad, filled + capped",
+                 description="Thermal via array under NCE BGA + HBM4 stacks (1024 per compute unit)"))
+rows.append(Part(ref="TV2", qty=480, value="THERMAL_VIA_0p4mm",
+                 footprint="(in-board via, tagged thermal_via_array)",
+                 manufacturer="(fab)", mpn="N/A",
+                 distributor="(fab)", distributor_pn="—",
+                 package="0.4 mm drill, 0.70 mm pad, filled + capped",
+                 description="Thermal via under DrMOS PowerPAK (10 per phase × 48 phases)"))
 
 # -------- Resistors: 0201 / 0402 range --------
 res_counter = 1

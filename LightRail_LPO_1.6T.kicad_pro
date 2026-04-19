@@ -100,7 +100,7 @@
         "min_through_hole_diameter": 0.2,
         "min_track_width": 0.075,
         "min_via_annular_width": 0.05,
-        "min_via_diameter": 0.3,
+        "min_via_diameter": 0.25,
         "use_height_for_length_calcs": true
       },
       "teardrop_options": [
@@ -157,11 +157,14 @@
       ],
       "via_dimensions": [
         { "diameter": 0.0, "drill": 0.0 },
+        { "diameter": 0.20, "drill": 0.10 },
+        { "diameter": 0.25, "drill": 0.125 },
         { "diameter": 0.3, "drill": 0.15 },
         { "diameter": 0.4, "drill": 0.2 },
         { "diameter": 0.5, "drill": 0.25 },
         { "diameter": 0.6, "drill": 0.3 },
-        { "diameter": 0.8, "drill": 0.4 }
+        { "diameter": 0.8, "drill": 0.4 },
+        { "diameter": 1.2, "drill": 0.6 }
       ],
       "zones_allow_external_fillets": false,
       "zones_use_no_outline": true
@@ -360,8 +363,42 @@
         "pcb_color": "rgba(200, 0, 0, 1.000)",
         "schematic_color": "rgba(200, 0, 0, 1.000)",
         "track_width": 2.0,
-        "via_diameter": 0.8,
-        "via_drill": 0.4,
+        "via_diameter": 1.2,
+        "via_drill": 0.6,
+        "wire_width": 6.0
+      },
+      {
+        "bus_width": 12.0,
+        "clearance": 0.1,
+        "diff_pair_gap": 0.0,
+        "diff_pair_via_gap": 0.0,
+        "diff_pair_width": 0.0,
+        "line_style": 0,
+        "microvia_diameter": 0.2,
+        "microvia_drill": 0.1,
+        "name": "PDN_BYPASS",
+        "pcb_color": "rgba(255, 153, 51, 1.000)",
+        "schematic_color": "rgba(255, 153, 51, 1.000)",
+        "track_width": 0.2,
+        "via_diameter": 0.3,
+        "via_drill": 0.15,
+        "wire_width": 6.0
+      },
+      {
+        "bus_width": 12.0,
+        "clearance": 0.1,
+        "diff_pair_gap": 0.127,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.09,
+        "line_style": 0,
+        "microvia_diameter": 0.2,
+        "microvia_drill": 0.1,
+        "name": "TFLN_ELEC_TRANSITION",
+        "pcb_color": "rgba(200, 0, 200, 1.000)",
+        "schematic_color": "rgba(200, 0, 200, 1.000)",
+        "track_width": 0.09,
+        "via_diameter": 0.3,
+        "via_drill": 0.15,
         "wire_width": 6.0
       }
     ],
@@ -407,10 +444,12 @@
     [ "e63e39d7-6ac0-4ffd-8aa3-1841a4541b55", "" ]
   ],
   "text_variables": {
-    "BOARD_TITLE": "LightRail LPO 1.6T Photonic Accelerator",
-    "BOARD_REV": "4.0",
-    "BOARD_DATE": "2026-04-11",
+    "BOARD_TITLE": "LightRail AI Compute Node (32-layer HDI, Dual-CPO, HBM4, 1000A PDN)",
+    "BOARD_REV": "6.0",
+    "BOARD_DATE": "2026-04-19",
     "BOARD_COMPANY": "LightRail AI",
-    "BOARD_MODEL": "LR-P3A"
+    "BOARD_MODEL": "LR-P3A",
+    "BOARD_STACKUP": "32-layer HDI Megtron-7 + high-Tg FR-4 + Faradflex BC24",
+    "BOARD_CLASS": "IPC-6012 Class 3"
   }
 }

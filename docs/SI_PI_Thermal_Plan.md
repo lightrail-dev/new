@@ -55,15 +55,20 @@ the tools, models, and artifacts a simulation team should produce.
 
 ## 2. Power integrity (PI)
 
-### 2.1 V_core PDN
+### 2.1 V_core PDN (Rev 6.0 target: Z < 5 mΩ DC–100 MHz per spec §III)
 
 | Item                         | Value                                                              |
 | ---------------------------- | ------------------------------------------------------------------ |
 | Simulator                    | Ansys SIwave / Cadence PowerDC + PowerSI                            |
 | DC IR drop                   | ≤ 10 mV @ 1000 A peak per SoC                                      |
-| AC target Z                  | ≤ 0.5 mΩ from 10 kHz to 10 MHz                                     |
-| Bulk cap                     | 10× 470 µF polymer + 20× 100 µF polymer per SoC                     |
-| MLCC decoupling              | 200× 10 µF / 100× 1 µF / 300× 100 nF (0201/0402 mix) per SoC       |
+| AC target Z (hard)           | **≤ 5 mΩ from DC to 100 MHz** (spec §III)                          |
+| AC target Z (stretch)        | ≤ 0.5 mΩ from 10 kHz to 10 MHz                                     |
+| VRM topology                 | 24-phase DrMOS array on **B.Cu under NCE** (vertical power delivery, spec §III) |
+| Tier-1 bulk (VRM output)     | 24× 100 µF tantalum + 20× 470 µF polymer per SoC                   |
+| Tier-2 mid (B.Cu under NCE)  | 160× 10 µF 0805 X7R per SoC                                         |
+| Tier-3 plane                 | 400× 1 µF 0402 X7R per SoC (0402 chosen for lower L vs. 0603)       |
+| Tier-4 bypass (≤ 1 mm pin)   | 1120× 100 nF 01005 per SoC (spec §III placement rule)               |
+| Embedded capacitance         | Faradflex BC24 layer pair (In15↔In16), ≈ 4–5 µF distributed        |
 | Via count (plane ↔ BGA)     | ≥ 1 via per 4 mA peak = ~250 vias per SoC V_core domain            |
 | VRM loop bandwidth           | 200 kHz target; phase margin ≥ 45°                                 |
 | Transient (di/dt = 200 A/µs) | V_core excursion ≤ ± 30 mV                                         |

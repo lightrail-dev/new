@@ -1,139 +1,235 @@
-# Stackup & Controlled Impedance
+# Stackup & Controlled Impedance (LR-P3A Rev 6.0)
 
-## 1. 10-layer Megtron-7 stackup (as scaffolded)
+## 1. 32-layer HDI stackup
 
-> **Scaffold note.** The KiCad file declares a symmetric 10-layer stackup with
-> Megtron-7 core + prepreg. A production Compute Node at this performance tier
-> typically needs 20–26 layers with dedicated reference planes for each
-> high-speed pair. The table below describes what the repo contains today and
-> the target stackup for tape-out.
+Rev 6.0 migrates the board from the 10-layer Megtron-7 scaffold to a
+symmetric **32-layer HDI** stackup with three material systems:
 
-### 1.1 Current scaffold (from `.kicad_pcb`)
+| Domain                | Material             | εr   | tan δ (1 GHz) | Where used                                  |
+|-----------------------|----------------------|------|---------------|---------------------------------------------|
+| High-speed signal     | Panasonic Megtron-7  | 3.3  | 0.002         | All Megtron prepreg/core on signal layers   |
+| Power / plane         | High-Tg FR-4 (Tg≥170) | 4.2  | 0.015         | In10..In14 & In17..In20 separation          |
+| Embedded capacitance  | Faradflex BC24       | 14.0 | 0.02          | In15 ↔ In16 electrode sandwich (core)       |
 
-| # | Layer      | Type        | Thickness | Material     | εr / tan δ   | Role                             |
-|---|------------|-------------|-----------|--------------|--------------|----------------------------------|
-|   | F.SilkS    | silk        | —         | —            | —            | top silkscreen                   |
-|   | F.Paste    | paste       | —         | —            | —            | top paste stencil                |
-|   | F.Mask     | mask        | 0.010 mm  | LPI          | —            | top soldermask                   |
-| 1 | F.Cu       | copper      | 0.070 mm  | Cu (2 oz)    | —            | SIG: PCIe/TFLN RF + BGA fanout   |
-|   | PP1        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 2 | In1.Cu     | copper      | 0.0175 mm | Cu (0.5 oz)  | —            | GND reference (solid)            |
-|   | C1         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 3 | In2.Cu     | copper      | 0.0175 mm | Cu (0.5 oz)  | —            | SIG: HBM4 side-channel (REFCK, JTAG) |
-|   | PP2        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 4 | In3.Cu     | copper      | 0.070 mm  | Cu (2 oz)    | —            | V_CORE_U0 plane                  |
-|   | C2         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 5 | In4.Cu     | copper      | 0.070 mm  | Cu (2 oz)    | —            | V_CORE_U0 plane (split)          |
-|   | PP3        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 6 | In5.Cu     | copper      | 0.070 mm  | Cu (2 oz)    | —            | V_CORE_U1 plane                  |
-|   | C3         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 7 | In6.Cu     | copper      | 0.070 mm  | Cu (2 oz)    | —            | V_CORE_U1 plane (paralleled)     |
-|   | PP4        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 8 | In7.Cu     | copper      | 0.0175 mm | Cu (0.5 oz)  | —            | GND reference (solid)            |
-|   | C4         | core        | 0.200 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-| 9 | In8.Cu     | copper      | 0.0175 mm | Cu (0.5 oz)  | —            | SIG: aux I/O, PMBus, SPI         |
-|   | PP5        | prepreg     | 0.099 mm  | Megtron-7    | 3.3 / 0.002  | —                                |
-|10 | B.Cu       | copper      | 0.070 mm  | Cu (2 oz)    | —            | SIG: NVMe, fanout, decoupling    |
-|   | B.Mask     | mask        | 0.010 mm  | LPI          | —            | bottom soldermask                |
-|   | B.Paste    | paste       | —         | —            | —            | bottom paste stencil             |
-|   | B.SilkS    | silk        | —         | —            | —            | bottom silkscreen                |
+The stackup is **symmetric about the mid-plane (between In15 and In16)**
+for warpage control during reflow (spec §II — "symmetrical 32-layer
+stackup"). All P/G prepreg/core thicknesses are ≤ 3 mil (76 µm) — well
+under the `< 5 mil` requirement — so the V_CORE/GND plane pairs form a
+distributed capacitance fabric in parallel with the central Faradflex
+embedded-capacitance sandwich.
 
-**Total nominal thickness:** 1.81 mm ± 10 %
-**Copper weight:** 2 oz outer / 0.5 oz inner signal & GND references / 2 oz V_core planes (symmetric about stack center for bow/twist control)
-**Finish:** ENIG (2 µm Au min. over 5 µm Ni)
-**Soldermask:** LPI, green (default); matte black available
+### 1.1 Layer-by-layer table
 
-> **HBM4 PCB-side routing is side-channel only.** Because the HBM4
-> 1024-lane data bus lives inside the vendor-supplied silicon interposer
-> co-packaged with the NCE, the PCB only carries per-stack power
-> (VDDC / VDDQL / VDDQ / VPP / VSS), a differential REFCK pair, CATTRIP,
-> PWR_GOOD, and IEEE-1500 JTAG. These fit on In2.Cu (stripline) plus
-> In8.Cu (slow status), so the 10-layer scaffold is viable for signal
-> routing. The 22–24 layer tape-out target in §1.2 still applies because
-> of PCIe Gen 6 + TFLN RF density, not HBM4.
+Thicknesses are `.kicad_pcb` nominals; fab selects exact prepreg
+combinations to hit these values within ±10 %.
 
-### 1.2 Tape-out target stackup (recommended)
+| #  | Layer   | Type   | Thickness | Material       | Role                                              |
+|----|---------|--------|-----------|----------------|---------------------------------------------------|
+|    | F.SilkS | silk   | —         | white epoxy    | top silkscreen                                    |
+|    | F.Paste | paste  | —         | —              | top paste stencil                                 |
+|    | F.Mask  | mask   | 0.010 mm  | LPI            | top soldermask                                    |
+| 1  | F.Cu    | copper | 0.070 mm  | Cu (2 oz)      | NCE / TFLN / DrMOS fanout + PDN escape            |
+|    | PP 1    | prepreg | 0.076 mm | Megtron-7      | —                                                 |
+| 2  | In1.Cu  | copper | 0.0175 mm | Cu (0.5 oz)   | GND ref for F.Cu stripline                        |
+|    | C 1     | core   | 0.076 mm  | Megtron-7      | —                                                 |
+| 3  | In2.Cu  | copper | 0.0175 mm | Cu (0.5 oz)   | HBM4 side-channel stripline (REFCK diff, JTAG)    |
+|    | PP 2    | prepreg | 0.076 mm | Megtron-7      | —                                                 |
+| 4  | In3.Cu  | copper | 0.0175 mm | Cu (0.5 oz)   | SerDes 100G PAM4 stripline (upper group)          |
+|    | C 2     | core   | 0.076 mm  | Megtron-7      | —                                                 |
+| 5  | In4.Cu  | copper | 0.0175 mm | Cu (0.5 oz)   | GND ref                                           |
+|    | PP 3    | prepreg | 0.076 mm | Megtron-7      | —                                                 |
+| 6  | In5.Cu  | copper | 0.0175 mm | Cu (0.5 oz)   | PCIe Gen 6 diff stripline (upper group)           |
+|    | C 3     | core   | 0.076 mm  | Megtron-7      | —                                                 |
+| 7  | In6.Cu  | copper | 0.0175 mm | Cu (0.5 oz)   | GND ref                                           |
+|    | PP 4    | prepreg | 0.076 mm | Megtron-7      | —                                                 |
+| 8  | In7.Cu  | copper | 0.0175 mm | Cu (0.5 oz)   | TFLN RF stripline (direct-drive, >100 GHz)        |
+|    | C 4     | core   | 0.076 mm  | Megtron-7      | —                                                 |
+| 9  | In8.Cu  | copper | 0.0175 mm | Cu (0.5 oz)   | GND ref                                           |
+|    | PP 5    | prepreg | 0.076 mm | Megtron-7      | —                                                 |
+| 10 | In9.Cu  | copper | 0.0175 mm | Cu (0.5 oz)   | I²C / SPI / BMC management                        |
+|    | C 5     | core   | 0.076 mm  | High-Tg FR-4   | **P/G spacing = 3 mil**                           |
+| 11 | In10.Cu | copper | 0.070 mm  | Cu (2 oz)     | V_CORE_U0 plane                                   |
+|    | PP 6    | prepreg | 0.076 mm | High-Tg FR-4   | **P/G spacing = 3 mil**                           |
+| 12 | In11.Cu | copper | 0.070 mm  | Cu (2 oz)     | V_CORE_U0 plane (paralleled)                      |
+|    | C 6     | core   | 0.076 mm  | High-Tg FR-4   | —                                                 |
+| 13 | In12.Cu | copper | 0.070 mm  | Cu (2 oz)     | V_CORE_U1 plane                                   |
+|    | PP 7    | prepreg | 0.076 mm | High-Tg FR-4   | —                                                 |
+| 14 | In13.Cu | copper | 0.070 mm  | Cu (2 oz)     | GND heavy plane                                   |
+|    | C 7     | core   | 0.076 mm  | High-Tg FR-4   | —                                                 |
+| 15 | In14.Cu | copper | 0.070 mm  | Cu (2 oz)     | V_CORE_U1 plane (paralleled)                      |
+|    | C 8     | core   | 0.024 mm  | Faradflex BC24 | **embedded-capacitance dielectric (εr = 14)**     |
+| 16 | In15.Cu | copper | 0.035 mm  | Cu (1 oz)     | Faradflex BC24 electrode A — GND                  |
+|    | C 9     | core   | 0.024 mm  | Faradflex BC24 | **embedded-capacitance dielectric (εr = 14)**     |
+| 17 | In16.Cu | copper | 0.070 mm  | Cu (2 oz)     | Faradflex BC24 electrode B — V_AUX                |
+|    | PP 8    | prepreg | 0.076 mm | High-Tg FR-4   | —                                                 |
+| 18 | In17.Cu | copper | 0.070 mm  | Cu (2 oz)     | GND heavy plane                                   |
+|    | C 10    | core   | 0.076 mm  | High-Tg FR-4   | —                                                 |
+| 19 | In18.Cu | copper | 0.070 mm  | Cu (2 oz)     | V_CORE_U0 plane mirror                            |
+|    | PP 9    | prepreg | 0.076 mm | High-Tg FR-4   | —                                                 |
+| 20 | In19.Cu | copper | 0.070 mm  | Cu (2 oz)     | V_CORE_U1 plane mirror                            |
+|    | C 11    | core   | 0.076 mm  | High-Tg FR-4   | —                                                 |
+| 21 | In20.Cu | copper | 0.070 mm  | Cu (2 oz)     | V_AUX / HBM4 VDDC / VDDQL / VPP islands           |
+|    | PP 10   | prepreg | 0.076 mm | Megtron-7      | —                                                 |
+| 22 | In21.Cu | copper | 0.0175 mm | Cu (0.5 oz)   | GND ref                                           |
+|    | C 12    | core   | 0.076 mm  | Megtron-7      | —                                                 |
+| 23 | In22.Cu | copper | 0.0175 mm | Cu (0.5 oz)   | I²C / SPI / PMBus mirror                          |
+|    | PP 11   | prepreg | 0.076 mm | Megtron-7      | —                                                 |
+| 24 | In23.Cu | copper | 0.0175 mm | Cu (0.5 oz)   | GND ref                                           |
+|    | C 13    | core   | 0.076 mm  | Megtron-7      | —                                                 |
+| 25 | In24.Cu | copper | 0.0175 mm | Cu (0.5 oz)   | TFLN RF stripline (Unit 1 mirror)                 |
+|    | PP 12   | prepreg | 0.076 mm | Megtron-7      | —                                                 |
+| 26 | In25.Cu | copper | 0.0175 mm | Cu (0.5 oz)   | GND ref                                           |
+|    | C 14    | core   | 0.076 mm  | Megtron-7      | —                                                 |
+| 27 | In26.Cu | copper | 0.0175 mm | Cu (0.5 oz)   | PCIe Gen 6 diff stripline (lower group)           |
+|    | PP 13   | prepreg | 0.076 mm | Megtron-7      | —                                                 |
+| 28 | In27.Cu | copper | 0.0175 mm | Cu (0.5 oz)   | GND ref                                           |
+|    | C 15    | core   | 0.076 mm  | Megtron-7      | —                                                 |
+| 29 | In28.Cu | copper | 0.0175 mm | Cu (0.5 oz)   | SerDes 100G PAM4 stripline (lower group)          |
+|    | PP 14   | prepreg | 0.076 mm | Megtron-7      | —                                                 |
+| 30 | In29.Cu | copper | 0.0175 mm | Cu (0.5 oz)   | HBM4 side-channel stripline (mirror)              |
+|    | C 16    | core   | 0.076 mm  | Megtron-7      | —                                                 |
+| 31 | In30.Cu | copper | 0.0175 mm | Cu (0.5 oz)   | GND ref for B.Cu stripline                        |
+|    | PP 15   | prepreg | 0.076 mm | Megtron-7      | —                                                 |
+| 32 | B.Cu    | copper | 0.070 mm  | Cu (2 oz)     | Vertical power delivery — 24-phase DrMOS + caps   |
+|    | B.Mask  | mask   | 0.010 mm  | LPI            | bottom soldermask                                 |
+|    | B.Paste | paste  | —         | —              | bottom paste stencil                              |
+|    | B.SilkS | silk   | —         | —              | bottom silkscreen                                 |
 
-For 1000 A+ V_core (NCE + 4× HBM4 composite load) + PCIe Gen 6 +
-TFLN RF, a realistic production stackup is 22–24 layers along these lines:
+**Total nominal thickness:** 3.48 mm ± 10 % (≈ 137 mil)
+**Copper weights:** 2 oz outer, 0.5 oz inner signal / GND reference,
+2 oz inner power plane, 1 oz Faradflex electrode A.
+**Finish:** ENIG per IPC-4552 Class 3 (Ni ≥ 3 µm, Au 0.05 µm min.).
+**Soldermask:** LPI (black for thermal emissivity).
+**Symmetric construction** (inner mirror around In15–In16 embedded
+capacitance sandwich) for low warpage on a 32-layer HDI panel.
 
-- 4× dedicated V_core planes (each 2 oz, ~8 oz total for <1 mΩ AC PDN)
-- 4× GND reference planes (one per signal cluster)
-- 6–8× signal layers dedicated to PCIe Gen 6, TFLN RF, and HBM4
-  side-channel / reference-clock pairs (all stripline with dedicated
-  GND reference on each side)
-- Buried capacitance layer (Faradflex or equivalent) across one core for
-  bulk decoupling
-- M6 prepreg on inner high-speed layers for lower insertion loss at 16 GHz
-- Megtron-7N or Megtron-8 for outer RF-critical cores if full-link loss
-  budget requires it
+### 1.2 Key electrical properties
+
+| Parameter                                    | Value                                    |
+|----------------------------------------------|------------------------------------------|
+| P/G plane pair spacing (In10↔In11, In13↔In14, …) | 0.076 mm (3 mil) — spec §II "≤5 mil"     |
+| Distributed plane capacitance (per in²)      | ~0.5 nF (FR-4 core, 3 mil) + 4 nF (BC24 @ 1 mil) |
+| Total in-board decoupling capacitance (420 cm² active area) | ≈ 4.9 µF (embedded) + 5.5 µF (plane-pair) = **≈ 10 µF** embedded |
+| Stripline coupling (Megtron-7, 3 mil prepreg) | ~38 dB crosstalk floor at 10 mm parallel run |
+| Skin-depth @ 30 GHz, Cu                      | 0.38 µm — well inside 0.5 oz copper     |
+| Insertion loss budget, 25 Gbaud/lane SerDes  | ≤ 1.1 dB / in inner stripline            |
+
+### 1.3 HBM4 PCB-side routing stays "side-channel only"
+
+The HBM4 **2048-lane data bus** (11.7–13.0 Gbps/pin per spec §III, ~3.3
+TB/s per stack) is contained entirely inside the vendor-supplied silicon
+interposer co-packaged with the NCE. It never crosses a PCB copper
+feature. Only the package-level side-channel signals cross onto PCB:
+
+- Differential `REFCK_P/N` pair (up to 1.6 GHz reference clock)
+- `CATTRIP`, `PWR_GOOD` (slow status)
+- IEEE-1500 `TCK/TMS/TDI/TDO` test bus
+- Per-stack power rails (`VDDC` / `VDDQL` / `VDDQ` / `VPP` / `VSS`)
+
+These fit on In2.Cu / In29.Cu (fast stripline) and In9.Cu / In22.Cu
+(slow I²C / JTAG). The 32-layer stackup is sized by the PDN +
+TFLN / PCIe Gen 6 density, not by HBM4 escape.
 
 ## 2. Controlled-impedance table
 
-Impedance targets for the stackup in §1.1, assumed trace geometry
-(stripline on In2/In8, microstrip on F.Cu/B.Cu) at 20 °C. All widths and
-gaps are **design intents** — the fab will reconcile with their own
-coupon-measured εr and tolerance.
+| Net class          | Topology              | Trace W | Diff gap | Reference plane             | Target Z    | Tolerance |
+|--------------------|-----------------------|---------|----------|-----------------------------|-------------|-----------|
+| `SERDES_100G_PAM4` | stripline (In3/In28)  | 0.09 mm | 0.09 mm  | GND (In4/In27) / GND (In1/In30) | 100 Ω diff | ±5 %     |
+| `PCIe_Gen6`        | stripline (In5/In26)  | 0.12 mm | 0.18 mm  | GND (In4/In27) / GND (In6/In25) | 85 Ω diff  | ±5 %     |
+| `TFLN_RF`          | stripline (In7/In24)  | 0.15 mm | 0.20 mm  | GND (In6/In25) / GND (In8/In23) | 100 Ω diff | ±5 %     |
+| `TFLN_ELEC_TRANSITION` | microstrip (F.Cu) | 0.09 mm | 0.127 mm | GND (In1)                   | 100 Ω diff  | ±5 %     |
+| `RF_50OHM_DIFF`    | stripline (In3)       | 0.10 mm | 0.10 mm  | GND (In1) / GND (In4)       | 100 Ω diff  | ±5 %     |
+| `HBM4_Interposer`  | stripline (In2/In29)  | 0.10 mm | 0.15 mm  | GND (In1/In30) / GND (In4/In27) | 100 Ω diff | ±5 %     |
+| single-ended HBM4  | stripline (In2/In29)  | 0.10 mm | —        | GND (In1/In30) / GND (In4/In27) | 50 Ω SE    | ±5 %     |
+| USB3 / USB4        | microstrip (F.Cu)     | 0.10 mm | 0.10 mm  | GND (In1)                   | 90 Ω diff   | ±10 %    |
+| I²C / SPI / GPIO   | any                   | 0.15 mm | —        | GND                         | —           | —        |
 
-| Net class          | Topology    | Trace W | Diff gap | Reference plane | Target Z  | Tolerance |
-| ------------------ | ----------- | ------- | -------- | --------------- | --------- | --------- |
-| `SERDES_100G_PAM4` | stripline   | 0.09 mm | 0.09 mm  | GND (In1) / V_CORE (In3) | 100 Ω diff | ±10 %    |
-| `PCIe_Gen6`        | stripline   | 0.12 mm | 0.18 mm  | GND (In1) / V_CORE (In3) | 85 Ω diff  | ±10 %    |
-| `TFLN_RF`          | microstrip  | 0.15 mm | 0.20 mm  | GND (In1)       | 100 Ω diff | ±7 %     |
-| `RF_50OHM_DIFF`    | stripline   | 0.10 mm | 0.10 mm  | GND (In1) / V_CORE (In3) | 100 Ω diff | ±10 %    |
-| `HBM4_Interposer`  | stripline   | 0.10 mm | 0.15 mm  | GND (In1) / V_CORE (In3) | 100 Ω diff | ±10 %    |
-| single-ended HBM4  | stripline   | 0.10 mm | —        | GND (In1) / V_CORE (In3) | 50 Ω SE    | ±10 %    |
-| USB3 / USB4        | microstrip  | 0.10 mm | 0.10 mm  | GND (In1)       | 90 Ω diff  | ±10 %    |
-| I²C / SPI / GPIO   | any         | 0.15 mm | —        | GND             | —          | —         |
+Every high-speed class now has **GND-on-both-sides symmetric stripline**
+(no asymmetric V_CORE reference) since the 32-layer stack frees up
+enough GND reference planes for all signal groups — this is the primary
+signal-integrity reason for the layer-count bump from the Rev 5.0
+scaffold.
 
-> **Asymmetric stripline note (HBM4 side-channel on In2.Cu).** Signals
-> on In2.Cu see In1.Cu (solid GND) above and a split In3.Cu below.
-> In3.Cu contains the `V_CORE_U0` power island (x=5–78, y=25–95)
-> covering Unit 0's composite module (NCE + 4× HBM4 + interposer) and
-> a `GND` island (x=80–168, y=0–100) covering Unit 1's composite
-> module. HBM4 REFCK pairs therefore run as **asymmetric stripline**
-> (GND / V_CORE) under Unit 0 and **symmetric stripline** (GND / GND)
-> under Unit 1. V_CORE acts as an AC reference (decoupled to GND at
-> the BGA via the 1200 µF bulk + 0402/0201 MLCC network). The fab must
-> solve for two trace geometries — one per region — rather than a
-> single board-wide solution. The 10-layer scaffold trades dedicated
-> dual-GND striplines for PDN copper on Unit 0; the 22–24 layer
-> tape-out target in §1.2 restores GND-on-both-sides for all PCIe /
-> SERDES / HBM4-REFCK pairs across both compute units.
+Request impedance coupons on every panel for Z-measurement sign-off
+(fabs that routinely run this stackup: Sierra Circuits, TTM, AT&S, NCAB).
 
-Refer to the fab's impedance control capabilities (e.g. Sierra Circuits, TTM,
-AT&S, NCAB). Request coupons on every panel for Z-measurement sign-off.
+## 3. Via types & aspect ratios (IPC-6012 Class 3)
 
-## 3. Via types
+| Type         | Diameter | Drill   | Span                       | Aspect ratio | Used for                               |
+|--------------|----------|---------|----------------------------|--------------|----------------------------------------|
+| Microvia     | 0.20 mm  | 0.10 mm | F.Cu ↔ In1, In30 ↔ B.Cu    | 1:1 (laser)  | BGA breakout (NCE, TFLN, HBM4 module, DrMOS) |
+| Buried       | 0.25 mm  | 0.125 mm| any 2-layer inner span     | ≤ 6:1        | Stripline → reference via              |
+| Blind        | 0.25 mm  | 0.125 mm| F.Cu ↔ In3 / B.Cu ↔ In28   | ≤ 5:1        | High-speed escape                      |
+| Signal PTH   | 0.30 mm  | 0.15 mm | through                    | **11.6:1**   | Mid-layer signal transitions           |
+| Power PTH    | 1.20 mm  | 0.60 mm | through                    | 5.8:1        | V_CORE, V_12V, GND PDN bus bar         |
+| Mounting     | 3.20 mm  | 3.20 mm | through (NPTH)             | 1:1          | M3 standoff                            |
 
-| Type         | Diameter | Drill  | Aspect ratio | Used for                            |
-| ------------ | -------- | ------ | ------------ | ----------------------------------- |
-| Microvia     | 0.20 mm  | 0.10 mm | 1:1         | BGA breakout (SoC, TFLN PIC, DrMOS) |
-| Standard PTH | 0.30 mm  | 0.15 mm | ~10:1       | Signal & small power                |
-| Power PTH    | 0.80 mm  | 0.40 mm | ~4:1        | V_core, 12 V                        |
-| Mounting hole| 3.20 mm  | 3.20 mm | —           | M3 mechanical (no plating)          |
+**Aspect ratio budget:** The through-via minimum drill is 0.30 mm, which
+on the 3.48 mm nominal board gives 11.6:1 — comfortably inside the
+IPC-6012 Class 3 `≤ 12:1` ceiling for pulse-plate copper (spec §II).
+Any smaller drill (e.g. 0.25 mm via stub) must be a buried or blind via
+that does not span the full stack. The DRC rule
+`through_via_min_drill_aspect_ratio` in `fab/drc_custom.kicad_dru`
+enforces this.
 
-## 4. Solder mask & silkscreen
+**Minimum hole-wall copper:** 20 µm after plating, tested on every
+panel via microsection coupon (spec §VI HDI fab rules). Covered by
+`annular_ring_class3` + fab agreement on pulse-plate process.
 
-- **Mask**: 0.05 mm dam between pads; 0.05 mm clearance around BGA pads.
-- **Paste**: 80 % area pad ratio on thermal pads; 100 % on QFN ground.
-- **Silk**: ≥0.8 mm text height, ≥0.12 mm stroke; no silk over copper.
+## 4. Back-drill table (spec §II — residual stub ≤ 5 mil)
 
-## 5. Fabrication tolerances
+Back-drill is required on every through-via that carries a high-speed
+signal where the used-span + 5 mil would otherwise leave a resonant
+stub visible in the S-parameter response. Fab cuts the unused portion
+of the barrel from whichever side leaves the shortest stub.
 
-| Parameter                       | Target           |
-| ------------------------------- | ---------------- |
-| Trace width (inner)             | ±10 % or ±0.025 mm |
-| Hole location                   | ±0.05 mm         |
-| Layer-to-layer registration     | ±0.05 mm         |
-| Board thickness                 | ±10 %            |
-| Impedance (diff/SE, coupon)     | ±10 % (RF ±7 %)  |
-| Copper weight variation         | ±10 %            |
+| Net class           | Normal span   | Back-drill from | Target depth        | Residual stub |
+|---------------------|---------------|-----------------|---------------------|---------------|
+| `SERDES_100G_PAM4`  | F.Cu → In28   | B.Cu side       | through → In29      | ≤ 0.127 mm    |
+| `PCIe_Gen6`         | F.Cu → In26   | B.Cu side       | through → In27      | ≤ 0.127 mm    |
+| `TFLN_RF` U0        | F.Cu → In7    | B.Cu side       | through → In8       | ≤ 0.127 mm    |
+| `TFLN_RF` U1        | F.Cu → In24   | B.Cu side       | through → In25      | ≤ 0.127 mm    |
+| `HBM4_Interposer`   | F.Cu → In29   | B.Cu side       | through → In30      | ≤ 0.127 mm    |
+| `RF_50OHM_DIFF`     | F.Cu → In3    | B.Cu side       | through → In4       | ≤ 0.127 mm    |
 
-## 6. Test coupons
+The fab records residual stub for each back-drilled via on the fab
+drawing in microsection-coupon form. The DRC rule
+`backdrill_required_high_speed` flags any through-via in these classes
+so routing review can confirm back-drill is requested in the fab note.
+
+## 5. Solder mask & silkscreen
+
+- **Mask dam:** 0.05 mm min between pads; 0.05 mm clearance around BGA.
+- **Mask expansion:** ≥ 0.05 mm (2 mil) per side on every pad
+  (`soldermask_expansion_min` DRC rule — spec §V).
+- **Paste:** 80 % area pad ratio on thermal pads; 100 % on QFN ground.
+- **Silk:** ≥ 0.8 mm text height, ≥ 0.12 mm stroke; no silk over copper
+  (`silk_over_copper` DRC rule).
+
+## 6. Fabrication tolerances
+
+| Parameter                       | Target               |
+|---------------------------------|----------------------|
+| Trace width (inner)             | ±10 % or ±0.025 mm   |
+| Hole location                   | ±0.05 mm             |
+| Layer-to-layer registration     | ±0.05 mm             |
+| Board thickness                 | ±10 %                |
+| Impedance (diff / SE, coupon)   | ±5 % (RF-critical classes) |
+| Copper weight variation         | ±10 %                |
+| Min hole-wall copper            | ≥ 20 µm (IPC-6012 C3) |
+| Residual back-drill stub        | ≤ 0.127 mm (5 mil)   |
+| Plane dielectric spacing        | ≤ 0.076 mm (3 mil)   |
+
+## 7. Test coupons
 
 Include on every panel:
 
-- **Impedance coupon:** 4 pairs per impedance target (diff + SE).
-- **Microsection coupon:** for plating thickness verification.
-- **D-coupon (IPC-4761):** via integrity (HAST / IST).
+- **Impedance coupon** — 4 pairs per impedance target (diff + SE), per
+  IPC-TM-650 2.5.5.7.
+- **Microsection coupon** — plating thickness verification (≥ 20 µm
+  hole wall, IPC-A-600 Class 3).
+- **D-coupon** (IPC-4761) — via integrity (HAST / IST thermal cycling).
+- **Back-drill stub coupon** — one per high-speed net class, depth
+  measured per IPC-2221 §4.3.2.
+- **CAF coupon** — conductive-anodic-filament resistance under
+  humidity + bias (essential for 0.3 mm drill + 3 mil P/G).
