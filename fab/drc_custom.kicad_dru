@@ -108,7 +108,7 @@
 # C3. HBM4 REFCK must be routed on inner stripline layers only (never
 # microstrip on F.Cu/B.Cu where it would radiate).
 (rule "hbm4_refck_stripline_only"
-  (constraint assertion "A.Layer == 'In2.Cu' || A.Layer == 'In28.Cu'")
+  (constraint assertion "A.Layer == 'In2.Cu' || A.Layer == 'In29.Cu'")
   (condition "A.NetName =~ '.*_REFCK_[PN]$'")
   (severity error)
 )
