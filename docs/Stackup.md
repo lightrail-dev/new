@@ -100,8 +100,27 @@ combinations to hit these values within ±10 %.
 2 oz inner power plane, 1 oz Faradflex electrode A.
 **Finish:** ENIG per IPC-4552 Class 3 (Ni ≥ 3 µm, Au 0.05 µm min.).
 **Soldermask:** LPI (black for thermal emissivity).
-**Symmetric construction** (inner mirror around In15–In16 embedded
-capacitance sandwich) for low warpage on a 32-layer HDI panel.
+**Symmetric construction** around the In15–In16 embedded-capacitance
+sandwich for low warpage on a 32-layer HDI panel. The Faradflex BC24
+electrode pair is **intentionally asymmetric by copper weight**:
+
+- **In15** (electrode A, GND return) is 1 oz (0.035 mm) — kept thin so
+  the BC24 dielectric (εr = 14, 24 µm) dominates the plane-pair
+  capacitance density. A thick electrode here adds series inductance
+  on the return path and attenuates the mid-frequency (50–500 MHz)
+  decoupling role of the embedded capacitor without improving DC
+  performance.
+- **In16** (electrode B, V_AUX — HBM4 VDDC / VDDQL / VPP return path)
+  is 2 oz (0.070 mm) to carry the V_AUX domain current without IR
+  drop.
+
+Bow/twist budget is held to ≤ 0.75 % per IPC-6012 Class 3 by the
+outer symmetry about the In15↔In16 midplane (In1…In14 mirrors
+In17…In30 in both copper weight and dielectric choice — see rows above)
+and by the balanced Megtron-7 / High-Tg FR-4 material distribution;
+the 1 oz / 2 oz midplane electrode delta is a local CTE perturbation,
+not a stackup-wide imbalance. Fabricator is to confirm bow/twist
+≤ 0.75 % post-reflow on the qual coupon.
 
 ### 1.2 Key electrical properties
 
