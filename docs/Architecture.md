@@ -105,10 +105,19 @@ Floorplan rules captured from the reference image:
 6. **Four M3 mounting holes** at the board corners plus four inner M3
    bolster holes per NCE (50 mm square) for the direct-to-chip cold plate.
 
-The Rev 6.0 `.kicad_pcb` retains the 168 × 100 mm PCIe HHHL scaffold
-outline from Rev 4.x/5.0; a PCB engineer must expand the outline and
-migrate placements to match this floorplan in the KiCad GUI before
-tapeout (see `docs/Fab_Notes.md` §1.1 for the ordered migration steps).
+**Rev 6.1 status.** As of Rev 6.1 the `.kicad_pcb` carries the full
+420 × 350 mm server-class outline and every major footprint is placed at
+its production coordinate per the floorplan above — dual NCE (U101 /
+U201) centred about (210, 160) mm, TFLN PICs (U102 / U202) on the north
+side, photonic-bridge halves (U1 / U2) between the NCEs, 8 HBM4 stacks
+(U103–U106 / U203–U206) at the four corners of each interposer, the full
+24-phase DrMOS ring (U302–U313 north, U326–U337 south, B.Cu vertical
+power delivery), VRM controller (U3) south-centre, 36-cap decoupling
+ring around each NCE BGA, 6 M3 mounting holes (4 corner + 2 midspan),
+MPO-24 optical connector (J1) on the west edge, and the 164-finger PCIe
+Gen 6 CEM x16 connector across the south edge. What is still deferred
+to interactive layout is **routing** (high-speed pairs, PDN copper fill,
+BGA fanout) — the placement is static and ready for the router.
 
 ## 2. Functional specification
 

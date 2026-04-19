@@ -1,8 +1,8 @@
-# LightRail AI Compute Node — LR-P3A Rev 6.0
+# LightRail AI Compute Node — LR-P3A Rev 6.1
 
 **Project:** LightRail AI Compute Node (Dual-CPO, NCE + HBM4 co-packaged, 1.6 Tbps photonic I/O)
 **Model:** LR-P3A
-**Revision:** 6.0 (32-layer HDI, IPC-6012 Class 3, 1000 A PDN)
+**Revision:** 6.1 (full placement — 420 × 350 mm server-class outline, 32-layer HDI, IPC-6012 Class 3, 1000 A PDN)
 **Date:** 2026-04-19
 **Company:** LightRail AI
 

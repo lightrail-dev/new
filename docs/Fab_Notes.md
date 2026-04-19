@@ -8,10 +8,10 @@ with Gerbers, drills, IPC-D-356 netlist, pick-and-place, BOM, and 3D STEP.
 | Field                | Value                                               |
 | -------------------- | --------------------------------------------------- |
 | Board name           | LightRail AI Compute Node / LR-P3A                  |
-| Revision             | 6.0                                                 |
+| Revision             | 6.1 (full placement; derived from Rev 6.0 stackup)  |
 | Board class          | IPC-6012 Class 3                                    |
-| Size (scaffold)      | 168 × 100 mm (PCIe HHHL-derived; see §1.1 note)     |
-| Size (tapeout target)| 420 × 350 mm (recommended; server-board class)      |
+| Size                 | **420 × 350 mm (server-board class, Rev 6.1)**      |
+| Size (legacy)        | 168 × 100 mm (Rev 6.0 scaffold outline, deprecated) |
 | Layer count          | **32** (Rev 6.0 32-layer HDI)                       |
 | Dielectric (signal)  | Panasonic Megtron-7 (εr 3.3, tan δ 0.002 @ 1 GHz)   |
 | Dielectric (plane)   | High-Tg FR-4 (εr 4.2, Tg ≥ 170 °C)                  |
@@ -33,19 +33,17 @@ with Gerbers, drills, IPC-D-356 netlist, pick-and-place, BOM, and 3D STEP.
 | Panelization         | 2 × 2 with mouse-bite tabs + impedance / back-drill coupon strip (fab to propose) |
 | V-cut                | None                                                |
 
-### 1.1 Mechanical-scale note
+### 1.1 Mechanical-scale note — Rev 6.1 full placement
 
-This scaffold inherits the 168 × 100 mm PCIe HHHL outline from PR #1
-(a single-SoC LPO photonic accelerator card). A genuine Dual AI Compute Node
-with 2× co-packaged composite BGA-2500 (NCE + 4× HBM4 + silicon interposer
-each), 2× 24-phase VRM (48 total DrMOS phases), PCIe Gen 6 edge, NVMe, and
-TFLN optics cannot fit in 168 × 100 mm. The
-recommended tape-out outline is **420 × 350 mm** (server-board class),
-4 × M3 tool hole, matching the user's reference image.
+**Status.** As of **Rev 6.1** the board is at the production 420 × 350 mm
+server-class outline and every major footprint is placed at its
+canonical-floorplan coordinate (see
+[`docs/Architecture.md §1.5`](Architecture.md#15-rev-60-floorplan-canonical)).
+The 168 × 100 mm Rev 6.0 scaffold outline from PR #1 (a single-SoC LPO
+photonic accelerator card) is no longer in the `.kicad_pcb` — only in the
+stackup/DRC asset carry-over.
 
-Before tapeout, update `LightRail_LPO_1.6T.kicad_pcb` with (see
-[`docs/Architecture.md §1.5`](Architecture.md#15-rev-60-floorplan-canonical)
-for the canonical Rev 6.0 floorplan image and topology):
+**Items delivered in Rev 6.1:**
 
 1. Outline expanded to the target 420 × 350 mm (server-class).
 2. Mounting holes per the chassis spec: 4 × M3 at the board corners plus
