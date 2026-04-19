@@ -90,11 +90,13 @@ For a 2 oz (70 µm) copper plane carrying 1000 A at 0.8 V:
 
 - Sheet resistance (Cu): ~0.5 µΩ/sq → plane geometry must yield < 5 mΩ
   end-to-end to keep IR drop < 5 mV at peak.
-- A single 2 oz plane is marginal; Rev 6.0 uses **4× paralleled 2 oz
-  V_CORE_U0 planes** (In10, In11, In18, In19) and **4× paralleled 2 oz
-  V_CORE_U1 planes** (In12, In14, In19, In20) distributed symmetrically
-  about the embedded-capacitance core, for ~8 oz equivalent per V_core
-  domain — target DC resistance ≤ 0.5 mΩ per domain at 1000 A.
+- A single 2 oz plane is marginal; Rev 6.0 uses **3× paralleled 2 oz
+  V_CORE_U0 planes** (In10, In11, In18) and **3× paralleled 2 oz
+  V_CORE_U1 planes** (In12, In14, In19) distributed symmetrically about
+  the embedded-capacitance core (see `docs/Stackup.md §1.2`), for
+  ~6 oz equivalent per V_core domain — target DC resistance ≤ 0.5 mΩ
+  per domain at 1000 A. In20 is reserved for V_AUX islands (HBM4 VDDC /
+  VDDQL / VPP) and is **not** a V_CORE plane.
 - Plane voiding must be < 15 % by area in the V_core region.
 - All V_core connections to the BGA use ≥ 9 thermal vias per ball cluster,
   filled and planarized. Thermal via drill 0.3 mm (0.4 mm under DrMOS).

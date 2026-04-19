@@ -151,6 +151,7 @@
               (A.NetClass == 'SERDES_100G_PAM4' ||
                A.NetClass == 'PCIe_Gen6' ||
                A.NetClass == 'TFLN_RF' ||
+               A.NetClass == 'TFLN_ELEC_TRANSITION' ||
                A.NetClass == 'HBM4_Interposer' ||
                A.NetClass == 'RF_50OHM_DIFF')")
   (severity warning)
