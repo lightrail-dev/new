@@ -1,18 +1,21 @@
 # BOM summary
 
-**Total part instances:** 1828
+**Total part instances:** 4700
 
-**Unique line items:** 1828
+**Unique line items:** 2174
 
 ## Package distribution
 
 | Package | Count |
 |---------|-------|
-| 0201 | 1056 |
-| 0402 | 528 |
+| 01005 | 1120 |
+| 0402 | 496 |
+| 0805 | 224 |
 | 0402 thin-film | 64 |
+| 0201 | 64 |
 | PowerPAK 8x8 1EP | 48 |
 | 2525 | 48 |
+| D 7343-31 tantalum | 24 |
 | D6.3 radial SMD | 20 |
 | HBM4 12-Hi KGSD (interposer) | 8 |
 | WSON-8 2x2 | 6 |
@@ -43,6 +46,8 @@
 | 2x5 1.27mm | 1 |
 | 2x10 1.27mm | 1 |
 | 2x7 1.27mm | 1 |
+| 0.3 mm drill, 0.55 mm pad, filled + capped | 1 |
+| 0.4 mm drill, 0.70 mm pad, filled + capped | 1 |
 | QFN-40 6x6 | 1 |
 
 See `BOM.csv` for the complete list.

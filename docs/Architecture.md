@@ -49,6 +49,67 @@
                     └─ LDO/buck tree ─► 3.3 V, 1.8 V, 1.2 V, 1.05 V, 0.9 V
 ```
 
+## 1.5 Rev 6.0 floorplan (canonical)
+
+![Rev 6.0 floorplan reference — Allegro view of LR-P3A](images/Rev6_floorplan_reference.png)
+
+The image above is the **canonical top-side floorplan** for LR-P3A Rev 6.0.
+All Rev 6.0 placement decisions in the `.kicad_pcb` and the associated
+fabrication outputs must mirror this topology:
+
+```
+    ┌─────────── 420 × 350 mm server-class outline ────────────┐
+    │  [DrMOS col L, 24φ]     [TFLN A]           [NCE A]       │
+    │                         ▲                                │
+    │                         │ TFLN direct-to-die ribbon      │
+    │                         ▼                                │
+    │  [DrMOS col L, 24φ]     ┌─────────────────┐  [NCE A]     │
+    │                         │ Central TFLN     │              │
+    │                         │ Photonic Bridge  │              │
+    │                         │ (1.6 Tbps,       │              │
+    │                         │  zero-copper)    │              │
+    │  [DrMOS col R, 24φ]     └─────────────────┘  [NCE B]     │
+    │                         ▲                                │
+    │                         │ TFLN direct-to-die ribbon      │
+    │                         ▼                                │
+    │  [DrMOS col R, 24φ]     [TFLN B]           [NCE B]       │
+    │                                                          │
+    │  [DrMOS bottom row — B.Cu vertical delivery under NCE]   │
+    └──────────────────────────────────────────────────────────┘
+```
+
+Floorplan rules captured from the reference image:
+
+1. **NCE A and NCE B** (composite BGA-2500 modules with HBM4 on interposer)
+   are placed symmetrically left and right of board centre.
+2. **TFLN PIC A and TFLN PIC B** are placed inboard of each NCE, with a
+   zero-copper direct-to-die optical ribbon (spec §IV) running between
+   the TFLN and the NCE. The TFLN edge couplers face inward toward the
+   **central TFLN photonic bridge**, which carries the 1.6 Tbps aggregate
+   bandwidth between the two NCE chiplets and is a pure photonic
+   interconnect — no PCB copper in the datapath.
+3. **DrMOS 24-phase arrays** are placed in four clusters:
+   - Left column (12 φ): V_CORE_U0 bank A
+   - Right column (12 φ): V_CORE_U1 bank A
+   - Bottom row under each NCE footprint on **B.Cu** (vertical power
+     delivery per spec §III): V_CORE_U0 bank B and V_CORE_U1 bank B
+   Each bank contains 12 DrMOS phases (2 banks per SoC = 24 phases per
+   SoC, 48 DrMOS phases total on the board).
+4. **Tiered PDN decoupling** fans out radially from the NCE/HBM4 ball
+   field: Tier-4 01005 caps within 1 mm of every power ball, Tier-3
+   0402 caps under the BGA, Tier-2 0805 caps on B.Cu under the NCE,
+   Tier-1 bulk tantalum/polymer at each DrMOS output (spec §III).
+5. **Optical keep-outs** at the MPO-24 exit point on the board edge
+   (front panel) and a clear 100 mil copper-free zone around each TFLN
+   PIC edge coupler (spec §V).
+6. **Four M3 mounting holes** at the board corners plus four inner M3
+   bolster holes per NCE (50 mm square) for the direct-to-chip cold plate.
+
+The Rev 6.0 `.kicad_pcb` retains the 168 × 100 mm PCIe HHHL scaffold
+outline from Rev 4.x/5.0; a PCB engineer must expand the outline and
+migrate placements to match this floorplan in the KiCad GUI before
+tapeout (see `docs/Fab_Notes.md` §1.1 for the ordered migration steps).
+
 ## 2. Functional specification
 
 ### 2.1 Compute
@@ -56,12 +117,14 @@
 | Parameter                 | Value                                                          |
 | ------------------------- | -------------------------------------------------------------- |
 | AI SoC count              | 2                                                              |
+| SoC architecture          | 128-way SIMD load/store streaming NCE, bfloat16/24, 16 matrix + 16 vector registers |
 | SoC package               | BGA-2500 composite (NCE + interposer + 4× HBM4), 40 × 40 mm    |
 | SoC V_core                | 0.8 V typ., 1000 A+ peak per module (NCE + 4× HBM4 combined)   |
 | SoC I/O                   | VDD_IO 1.05 V / 1.2 V, HBM4 VDDQ 1.1 V                         |
 | PCIe root                 | Gen 6.0, x32 per SoC (split x16 + x16)                         |
 | Memory                    | 4× HBM4 12-Hi per module (interposer-coupled, see §2.3)        |
 | TFLN SerDes               | 16 lanes @ 200 G PAM4 per SoC (8 TX + 8 RX)                    |
+| CPO optical placement     | Direct-to-die TFLN ribbon (zero-copper datapath); edge coupler aligned with module courtyard (spec §IV). Interconnect energy 5–10 pJ/bit vs. 15–20 pJ/bit pluggable. |
 | Power target (peak)       | 800 W per SoC (V_core) + 100 W (I/O + mem) = 900 W per SoC     |
 
 ### 2.2 Photonics
@@ -147,9 +210,10 @@
 - **Optical TX path:** SoC SerDes → TFLN RF drive (differential, 100 Ω diff) →
   TFLN modulator → DFB laser bias tee → MPO-24.
 - **Optical RX path:** MPO-24 → PD array → TIA → SoC SerDes RX.
-- **HBM4 side-channel (PCB):** REFCK_P/N differential pair (100 Ω) ±2 mil; CATTRIP / PWR_GOOD routed as single-ended slow status signals; IEEE1500 JTAG routed as 50 Ω SE with series-term.
+- **HBM4 side-channel (PCB):** REFCK_P/N differential pair (100 Ω) matched to ±0.3 mm (≈ 2 ps on Megtron-7 stripline); CATTRIP / PWR_GOOD routed as single-ended slow status signals; IEEE1500 JTAG routed as 50 Ω SE with series-term.
 - **HBM4 data bus:** NOT on PCB — 1024 lanes × 4 stacks = 4096 lanes per module routed inside the vendor-supplied silicon interposer.
-- **V_core:** Plane-to-plane delivery; ≥4 mΩ target DC, <1 mΩ AC @ 1 MHz–100 MHz.
+- **V_core:** 24-phase DrMOS array on **B.Cu directly under each NCE** (vertical power delivery per spec §III). Plane-to-plane delivery via 4× paralleled 2 oz V_core planes per domain. Target DC resistance ≤ 0.5 mΩ, AC impedance < 5 mΩ DC–100 MHz (spec §III).
+- **Tiered PDN decoupling (spec §III):** 100 µF tantalum bulk at each DrMOS output → 10 µF 0805 mid-range → 1 µF 0402 plane-distributed → 100 nF 01005 within 1 mm of every NCE / HBM4 power ball. The Faradflex BC24 embedded-capacitance layer pair (In15↔In16) contributes ≈ 4.9 µF of distributed capacitance and suppresses the resonance hole between the 1 µF and 100 nF tiers.
 
 ## 5. Clock tree
 

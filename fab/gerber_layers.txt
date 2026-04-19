@@ -1,41 +1,108 @@
-# Gerber layer mapping — LightRail LPO 1.6T / LR-P3A Rev 4.0
+# Gerber layer mapping — LightRail AI Compute Node / LR-P3A Rev 6.0 (32-layer HDI)
 #
 # Fabricator-facing description of each Gerber file. Use this table to
 # cross-reference what comes out of `export_gerbers.sh`.
 #
-# All layers are RS-274X (with X2 attributes where KiCad emits them), units mm.
-# The scaffold is 10-layer; a tape-out 22–24 layer release adds In9..In22.
+# All layers are RS-274X with X2 attributes (KiCad 8 default). Units mm.
+# 32 copper layers: F.Cu (2 oz) + In1..In30 + B.Cu (2 oz).
+#
+# Stackup summary (see docs/Stackup.md §1 for full material spec):
+#   F.Cu / In1..In9   — Megtron-7 signal domain (SerDes / PCIe Gen6 / TFLN / HBM4
+#                       side-channel / TFLN RF)
+#   In10..In14        — high-Tg FR-4 power plane domain (V_CORE / V_AUX / GND)
+#   In15 / In16       — Faradflex BC24 embedded-capacitance electrodes (εr=14)
+#   In17..In20        — mirrored power plane domain (symmetric construction)
+#   In21..In30 / B.Cu — mirrored Megtron-7 signal domain
+#
+# Signal copper thickness: 17.5 µm (0.5 oz). Plane copper: 70 µm (2 oz).
+# Outer copper finished thickness 70 µm (2 oz) post-plate.
 
-| Filename suffix             | KiCad layer | Content                              |
-|-----------------------------|-------------|--------------------------------------|
-| -F_Cu.gbr                   | F.Cu        | Top copper (2 oz, signal + fanout)   |
-| -In1_Cu.gbr                 | In1.Cu      | GND reference plane (0.5 oz)         |
-| -In2_Cu.gbr                 | In2.Cu      | Signal: HBM4 side-channel (REFCK, JTAG) (0.5 oz) |
-| -In3_Cu.gbr                 | In3.Cu      | V_CORE_U0 plane (2 oz)               |
-| -In4_Cu.gbr                 | In4.Cu      | V_CORE_U0 plane (2 oz, split)        |
-| -In5_Cu.gbr                 | In5.Cu      | V_CORE_U1 plane (2 oz)               |
-| -In6_Cu.gbr                 | In6.Cu      | V_CORE_U1 plane (2 oz, paralleled)   |
-| -In7_Cu.gbr                 | In7.Cu      | GND reference plane (0.5 oz)         |
-| -In8_Cu.gbr                 | In8.Cu      | Signal: aux I/O, PMBus, SPI (0.5 oz) |
-| -B_Cu.gbr                   | B.Cu        | Bottom copper (2 oz, NVMe + decoupling) |
-| -F_Paste.gbr                | F.Paste     | Top solder paste                     |
-| -B_Paste.gbr                | B.Paste     | Bottom solder paste                  |
-| -F_Mask.gbr                 | F.Mask      | Top solder mask                      |
-| -B_Mask.gbr                 | B.Mask      | Bottom solder mask                   |
-| -F_Silkscreen.gbr           | F.SilkS     | Top silkscreen (white)               |
-| -B_Silkscreen.gbr           | B.SilkS     | Bottom silkscreen (white)            |
-| -Edge_Cuts.gbr              | Edge.Cuts   | Board outline, cutouts, fiducials    |
-| -PTH-drl_map.gbr            | —           | Plated-through hole drill map        |
-| -NPTH-drl_map.gbr           | —           | Non-plated hole drill map            |
+# Copper layers (signal)
+
+| Filename suffix        | KiCad layer | Role                                                   |
+|------------------------|-------------|--------------------------------------------------------|
+| -F_Cu.gbr              | F.Cu        | Top copper (2 oz) — NCE/TFLN fanout, PDN escape vias   |
+| -In1_Cu.gbr            | In1.Cu      | GND reference for F.Cu stripline                       |
+| -In2_Cu.gbr            | In2.Cu      | HBM4 side-channel stripline (REFCK diff, JTAG)         |
+| -In3_Cu.gbr            | In3.Cu      | SerDes 100G PAM4 stripline (upper group)               |
+| -In4_Cu.gbr            | In4.Cu      | GND reference                                          |
+| -In5_Cu.gbr            | In5.Cu      | PCIe Gen 6 diff stripline (upper group)                |
+| -In6_Cu.gbr            | In6.Cu      | GND reference                                          |
+| -In7_Cu.gbr            | In7.Cu      | TFLN RF stripline (direct-drive, >100 GHz periphery)   |
+| -In8_Cu.gbr            | In8.Cu      | GND reference                                          |
+| -In9_Cu.gbr            | In9.Cu      | I²C / SPI / management stripline                       |
+
+# Copper layers (plane)
+
+| Filename suffix        | KiCad layer | Role                                                   |
+|------------------------|-------------|--------------------------------------------------------|
+| -In10_Cu.gbr           | In10.Cu     | V_CORE_U0 plane (2 oz)                                 |
+| -In11_Cu.gbr           | In11.Cu     | V_CORE_U0 plane (2 oz, paralleled)                     |
+| -In12_Cu.gbr           | In12.Cu     | V_CORE_U1 plane (2 oz)                                 |
+| -In13_Cu.gbr           | In13.Cu     | GND heavy plane (2 oz)                                 |
+| -In14_Cu.gbr           | In14.Cu     | V_CORE_U1 plane (2 oz, paralleled)                     |
+| -In15_Cu.gbr           | In15.Cu     | Faradflex BC24 electrode A — GND (1 oz)                |
+| -In16_Cu.gbr           | In16.Cu     | Faradflex BC24 electrode B — V_AUX (2 oz)              |
+| -In17_Cu.gbr           | In17.Cu     | GND heavy plane (2 oz)                                 |
+| -In18_Cu.gbr           | In18.Cu     | V_CORE_U0 plane mirror (2 oz)                          |
+| -In19_Cu.gbr           | In19.Cu     | V_CORE_U1 plane mirror (2 oz)                          |
+| -In20_Cu.gbr           | In20.Cu     | V_AUX / HBM4 VDDC / VDDQL / VPP islands (2 oz)         |
+
+# Copper layers (signal, mirrored half)
+
+| Filename suffix        | KiCad layer | Role                                                   |
+|------------------------|-------------|--------------------------------------------------------|
+| -In21_Cu.gbr           | In21.Cu     | GND reference                                          |
+| -In22_Cu.gbr           | In22.Cu     | I²C / SPI / BMC / PMBus (mirror)                       |
+| -In23_Cu.gbr           | In23.Cu     | GND reference                                          |
+| -In24_Cu.gbr           | In24.Cu     | TFLN RF stripline (mirror for Unit 1)                  |
+| -In25_Cu.gbr           | In25.Cu     | GND reference                                          |
+| -In26_Cu.gbr           | In26.Cu     | PCIe Gen 6 diff stripline (lower group)                |
+| -In27_Cu.gbr           | In27.Cu     | GND reference                                          |
+| -In28_Cu.gbr           | In28.Cu     | SerDes 100G PAM4 stripline (lower group)               |
+| -In29_Cu.gbr           | In29.Cu     | HBM4 side-channel stripline (mirror)                   |
+| -In30_Cu.gbr           | In30.Cu     | GND reference for B.Cu stripline                       |
+| -B_Cu.gbr              | B.Cu        | Bottom copper (2 oz) — 24-phase VRM vertical delivery  |
+
+# Non-copper layers
+
+| Filename suffix        | KiCad layer | Role                                                   |
+|------------------------|-------------|--------------------------------------------------------|
+| -F_Paste.gbr           | F.Paste     | Top solder paste                                       |
+| -B_Paste.gbr           | B.Paste     | Bottom solder paste                                    |
+| -F_Mask.gbr            | F.Mask      | Top solder mask                                        |
+| -B_Mask.gbr            | B.Mask      | Bottom solder mask                                     |
+| -F_Silkscreen.gbr      | F.SilkS     | Top silkscreen (white)                                 |
+| -B_Silkscreen.gbr      | B.SilkS     | Bottom silkscreen (white)                              |
+| -Edge_Cuts.gbr         | Edge.Cuts   | Board outline, cutouts, fiducials                      |
+| -PTH-drl_map.gbr       | —           | Plated-through hole drill map                          |
+| -NPTH-drl_map.gbr      | —           | Non-plated hole drill map                              |
 
 # Drill files (Excellon 2)
 
-| Filename                              | Content                                  |
-|---------------------------------------|------------------------------------------|
-| LightRail_LPO_1.6T-PTH.drl            | Plated-through drills                    |
-| LightRail_LPO_1.6T-NPTH.drl           | Non-plated drills (mounting holes)       |
-| LightRail_LPO_1.6T-F_Cu-In1_Cu.drl    | Microvia drill F.Cu → In1.Cu             |
-| LightRail_LPO_1.6T-In1_Cu-In2_Cu.drl  | Buried drill In1 → In2                   |
+Drill files are generated in the `drill/` subdirectory. KiCad 8 emits one
+Excellon 2 file per drill-span (through, blind, buried, microvia):
+
+| Filename                              | Span                              |
+|---------------------------------------|-----------------------------------|
+| LightRail_LPO_1.6T-PTH.drl            | Plated-through (F.Cu ↔ B.Cu)      |
+| LightRail_LPO_1.6T-NPTH.drl           | Non-plated (mounting holes)       |
+| LightRail_LPO_1.6T-F_Cu-In1_Cu.drl    | Microvia F.Cu → In1.Cu (laser)    |
+| LightRail_LPO_1.6T-In1_Cu-In2_Cu.drl  | Buried In1 → In2                  |
+| LightRail_LPO_1.6T-In2_Cu-In3_Cu.drl  | Buried In2 → In3                  |
+| LightRail_LPO_1.6T-In9_Cu-In10_Cu.drl | Sig-to-plane transition           |
+| LightRail_LPO_1.6T-In14_Cu-In17_Cu.drl| Power-plane through (embed-cap)   |
+| LightRail_LPO_1.6T-In30_Cu-B_Cu.drl   | Microvia In30.Cu → B.Cu (laser)   |
+
+# Back-drill map (IPC-6012 Class 3)
+
+| Net class           | Backdrill target | Residual stub target |
+|---------------------|------------------|----------------------|
+| SERDES_100G_PAM4    | down to In28.Cu  | ≤ 0.127 mm (5 mil)   |
+| PCIe_Gen6           | down to In26.Cu  | ≤ 0.127 mm (5 mil)   |
+| TFLN_RF             | down to In24.Cu  | ≤ 0.127 mm (5 mil)   |
+| HBM4_Interposer     | down to In29.Cu  | ≤ 0.127 mm (5 mil)   |
+| RF_50OHM_DIFF       | down to In3.Cu   | ≤ 0.127 mm (5 mil)   |
 
 # Misc deliverables
 
@@ -43,6 +110,7 @@
 |---------------------------------------|--------------|-------------------------------|
 | LightRail_LPO_1.6T.ipc-d-356          | IPC-D-356A   | Bare-board net test           |
 | LightRail_LPO_1.6T.ipc2581            | IPC-2581C    | Combined design transfer      |
+| LightRail_LPO_1.6T.odb++.tgz          | ODB++        | Primary fab transfer (spec §V) |
 | LightRail_LPO_1.6T-top.pos            | CSV          | P&P top                       |
 | LightRail_LPO_1.6T-bottom.pos         | CSV          | P&P bottom                    |
 | LightRail_LPO_1.6T.bom.csv            | CSV          | BOM from schematic            |
@@ -56,9 +124,14 @@
 # Notes for the fab
 
 - All copper layers are RS-274X with extended attributes (KiCad X2).
+- Primary design-transfer format is ODB++ (spec §V); Gerbers and IPC-2581
+  are provided as redundant formats only.
 - Drills are Excellon 2, mm, absolute origin (drill-file origin matches
   PCB origin; aux-origin disabled in the project for traceability).
-- PTH and NPTH are in separate files; do not combine.
-- Ferrite/magnetic inclusion and stiffener regions are documented in the
-  fab drawing PDF, not the Gerbers.
-- Impedance coupons are part of the panel, not the design — fab to insert.
+- PTH, NPTH, microvia, and buried drills are in separate files; do not
+  merge. Back-drill depth table is in docs/Stackup.md §4.
+- 32-layer board thickness nominal 3.48 mm (~137 mil). Aspect ratio for
+  through-vias is ≤ 12:1 per IPC-6012 Class 3 — use 0.3 mm minimum drill.
+- Impedance coupons are part of the panel, not the design — fab to insert
+  IPC-TM-650 2.5.5.7 coupons per docs/Stackup.md §6.
+- Copper finish: ENIG (Ni 3-6 µm, Au 0.05 µm) per IPC-4552 Class 3 (spec §V).

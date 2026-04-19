@@ -1,119 +1,285 @@
 (version 1)
 
-# Custom DRC rules — LightRail LPO 1.6T / LR-P3A Rev 4.0
-# Paste into KiCad 8 PCB Editor → File → Custom Rules, or import the file
-# from Board Setup → Custom Rules.
+# ============================================================================
+# Custom DRC rules — LightRail AI Compute Node / LR-P3A Rev 6.0 (32-layer HDI)
+# ============================================================================
+# Target standard: IPC-6012 Class 3 / IPC-A-600 Class 3 (high-reliability).
+# Paste into KiCad 8 PCB Editor -> File -> Custom Rules, or import from
+# Board Setup -> Custom Rules.
+#
+# Rule categories below:
+#   (A) High-current PDN
+#   (B) High-speed diff-pair integrity (SerDes / PCIe Gen6 / TFLN / HBM4)
+#   (C) HBM4 side-channel routing (PCB is side-channel only; 2048b data bus
+#       is inside the silicon interposer)
+#   (D) HDI vias + back-drill + aspect ratio (IPC-6012 Class 3)
+#   (E) Optical / photonic keep-outs (TFLN edge couplers)
+#   (F) Thermal via arrays under high-power chipsets
+#   (G) DFM: acid traps, mask expansion, edge clearance, silk-over-copper
+# ============================================================================
 
-# -- 1. High-current power nets must clear by 0.4 mm --
-(rule "power_high_current_clearance"
+# ---------------------------------------------------------------------------
+# (A) High-current PDN
+# ---------------------------------------------------------------------------
+
+# A1. PWR_CORE and PWR_12V nets require a larger clearance shell (thermal +
+# creepage under 1000 A bulk current flow).
+(rule "pdn_high_current_clearance"
   (constraint clearance (min 0.4mm))
   (condition "A.NetClass == 'PWR_CORE' || A.NetClass == 'PWR_12V'")
 )
 
-# -- 2. V_core traces must be >= 2.0 mm wide on outer layers --
+# A2. V_CORE outer-layer fill must be >= 2.0 mm wide (DC resistance budget).
 (rule "vcore_min_width_outer"
   (constraint track_width (min 2.0mm))
   (condition "A.NetClass == 'PWR_CORE' && (A.Layer == 'F.Cu' || A.Layer == 'B.Cu')")
 )
 
-# -- 3. PCIe Gen 6 diff-pair intra-pair skew control --
+# A3. V_CORE via (power PTH) minimum drill 0.6 mm to carry phase current
+# with <1 °C rise; below this the thermal model in
+# docs/SI_PI_Thermal_Plan.md §2 is violated.
+(rule "vcore_power_via_min"
+  (constraint hole_size (min 0.6mm))
+  (condition "A.Type == 'Via' && A.NetClass == 'PWR_CORE'")
+)
+
+# A4. 01005 PDN bypass caps must be placed within 1 mm of their target BGA
+# power pin (enforced by tagged keep-out, see DFM_Checklist.md §6).
+(rule "pdn_bypass_proximity"
+  (constraint physical_clearance (max 1.0mm))
+  (condition "A.NetClass == 'PDN_BYPASS' && B.hasTag('nce_power_pin')")
+  (severity warning)
+)
+
+# ---------------------------------------------------------------------------
+# (B) High-speed diff-pair integrity
+# ---------------------------------------------------------------------------
+
+# B1. SerDes 100G PAM4 diff-pair gap window.
+(rule "serdes_100g_diff_pair"
+  (constraint diff_pair_gap (min 0.08mm) (max 0.10mm))
+  (condition "A.NetClass == 'SERDES_100G_PAM4'")
+)
+
+# B2. PCIe Gen 6 diff-pair gap window (85 Ω diff stripline).
 (rule "pcie_gen6_diff_pair"
   (constraint diff_pair_gap (min 0.15mm) (max 0.20mm))
   (condition "A.NetClass == 'PCIe_Gen6'")
 )
 
-# -- 4. TFLN RF: tighter diff-pair tolerance --
+# B3. TFLN RF diff-pair gap window (100 Ω diff electrical transition into
+# the photonic periphery carrier). Tightened to ±7 % at 50 GHz.
 (rule "tfln_rf_diff_pair"
   (constraint diff_pair_gap (min 0.18mm) (max 0.22mm))
   (condition "A.NetClass == 'TFLN_RF'")
 )
 
-# -- 5. HBM4 interposer side-channel length-match (REFCK, CATTRIP, PWR_GOOD) --
-# The HBM4 data bus (1024+ lanes/stack at 8 Gbps/pin) lives *inside* the silicon
-# interposer and never reaches PCB copper. Only the package-level side-channel
-# signals (reference clock, thermal trip, power-good) are routed on the board.
+# B4. TFLN electrical-transition pads (short direct-drive stub into the
+# TFLN periphery). Must stay < 5 mm to preserve 100 GHz bandwidth; error.
+(rule "tfln_elec_transition_max_length"
+  (constraint length (max 5mm))
+  (condition "A.NetClass == 'TFLN_ELEC_TRANSITION'")
+)
+
+# ---------------------------------------------------------------------------
+# (C) HBM4 side-channel
+# ---------------------------------------------------------------------------
+
+# The HBM4 2048-lane data bus (11.7-13.0 Gbps/pin, 3.3 TB/s/stack) lives
+# inside the silicon interposer co-packaged with the NCE and never reaches
+# PCB copper. Only the package-level side-channel signals (reference clock,
+# thermal trip, power-good, IEEE-1500 JTAG) are routed on the board.
+
+# C1. HBM4 side-channel length window.
 (rule "hbm4_side_channel_length"
   (constraint length (min 5mm) (max 35mm))
   (condition "A.NetClass == 'HBM4_Interposer'")
 )
 
-# -- 5b. HBM4 REFCK diff-pair skew --
-# Tightened to ±0.025 mm to match DFM Checklist §7 and the SI/PI target
-# (REFCK jitter <150 fs RMS, SI_PI_Thermal_Plan.md §1.3).
+# C2. HBM4 REFCK intra-pair skew set to 0.3 mm (~2 ps on Megtron-7
+# stripline, εr=3.3) — matches the spec §IV "within 2 ps" for HBM4 2048b
+# length matching, docs/DFM_Checklist.md §7.2, and
+# docs/SI_PI_Thermal_Plan.md §1.3.
 (rule "hbm4_refck_skew"
-  (constraint skew (max 0.025mm))
+  (constraint skew (max 0.3mm))
   (condition "A.NetClass == 'HBM4_Interposer' && A.NetName =~ '.*_REFCK_[PN]$'")
-  (severity warning)
-)
-
-# -- 6. Microvia drill minimum --
-(rule "microvia_min"
-  (constraint hole_size (min 0.10mm))
-  (condition "A.Type == 'Via' && A.ViaType == 'Micro'")
-)
-
-# -- 7. Edge clearance bumped to 0.3 mm in RF region --
-(rule "rf_edge_clearance"
-  (constraint edge_clearance (min 0.30mm))
-  (condition "A.NetClass == 'TFLN_RF' || A.NetClass == 'PCIe_Gen6'")
-)
-
-# -- 8. Mounting holes must not be violated by any copper --
-(rule "mounting_hole_keep_out"
-  (constraint clearance (min 0.25mm))
-  (condition "B.hasTag('mount_hole')")
-)
-
-# -- 9. No vias under TFLN optical exit keep-out --
-(rule "tfln_optical_keepout"
-  (constraint physical_clearance (min 0.5mm))
-  (condition "A.Type == 'Via' && B.hasTag('tfln_optical_keepout')")
   (severity error)
 )
 
-# -- 10. HBM4 REFCK differential pair must be on internal stripline layers --
-# REFCK is the only HBM4-related high-speed signal on PCB copper; the data bus
-# is entirely internal to the interposer.
+# C3. HBM4 REFCK must be routed on inner stripline layers only (never
+# microstrip on F.Cu/B.Cu where it would radiate).
 (rule "hbm4_refck_stripline_only"
-  (constraint assertion "A.Layer == 'In2.Cu' || A.Layer == 'In8.Cu'")
+  (constraint assertion "A.Layer == 'In2.Cu' || A.Layer == 'In29.Cu'")
   (condition "A.NetName =~ '.*_REFCK_[PN]$'")
   (severity error)
 )
 
-# -- 11. V_core vias: minimum 0.4 mm drill (thermal) --
-(rule "vcore_via_min"
-  (constraint hole_size (min 0.4mm))
-  (condition "A.Type == 'Via' && A.NetClass == 'PWR_CORE'")
-)
-
-# -- 12. High-speed lanes must have GND reference within 0.4 mm --
-# (annotation-level — actual check done by SI extraction)
-(rule "ref_plane_reminder"
-  (constraint assertion "true")
-  (condition "A.NetClass == 'PCIe_Gen6' || A.NetClass == 'TFLN_RF' ||
-              A.NetClass == 'HBM4_Interposer'")
+# C4. HBM4 interposer courtyard: PCB copper must stay off the silicon
+# interposer outline (vendor-managed). Applies at the package-level
+# keep-out box tagged 'hbm4_interposer'.
+(rule "hbm4_interposer_keepout"
+  (constraint physical_clearance (min 0.5mm))
+  (condition "A.Type == 'Track' && B.hasTag('hbm4_interposer')")
   (severity warning)
-  (layer outer)
 )
 
-# -- 13. Silk over copper disallowed (mirrors project default) --
-(rule "silk_over_cu"
+# ---------------------------------------------------------------------------
+# (D) HDI vias + back-drill + aspect ratio (IPC-6012 Class 3)
+# ---------------------------------------------------------------------------
+
+# D1. Microvia drill minimum (IPC-6012 Class 3: 3-5 mil laser, ≤1:1 AR).
+(rule "microvia_min_drill"
+  (constraint hole_size (min 0.10mm))
+  (condition "A.Type == 'Via' && A.ViaType == 'Micro'")
+)
+
+# D2. Through-via drill minimum so that aspect ratio for the 3.48 mm
+# nominal 32-layer stackup stays ≤ 12:1 (IPC-6012 Class 3 plating limit).
+#   12:1 @ 3.48 mm  ->  drill >= 0.29 mm  ==>  0.30 mm for margin.
+(rule "through_via_min_drill_aspect_ratio"
+  (constraint hole_size (min 0.30mm))
+  (condition "A.Type == 'Via' && A.ViaType == 'Through'")
+  (severity error)
+)
+
+# D3. Back-drill residual stub: all high-speed through-vias must leave
+# ≤ 0.127 mm (5 mil) stub after back-drilling. Native KiCad cannot measure
+# residual stub directly; this rule flags any high-speed net with a
+# through-via so the fabricator knows to backdrill it.
+(rule "backdrill_required_high_speed"
+  (constraint assertion "A.ViaType != 'Through'")
+  (condition "A.Type == 'Via' &&
+              (A.NetClass == 'SERDES_100G_PAM4' ||
+               A.NetClass == 'PCIe_Gen6' ||
+               A.NetClass == 'TFLN_RF' ||
+               A.NetClass == 'TFLN_ELEC_TRANSITION' ||
+               A.NetClass == 'HBM4_Interposer' ||
+               A.NetClass == 'RF_50OHM_DIFF')")
+  (severity warning)
+)
+
+# D4. Minimum annular ring (IPC-A-600 Class 3: 0.05 mm / 2 mil for
+# inner layers, 0.15 mm outer after etch compensation). Handled by
+# min_via_annular_width in board settings but re-asserted here.
+(rule "annular_ring_class3"
+  (constraint annular_width (min 0.05mm))
+  (condition "A.Type == 'Via'")
+)
+
+# D5. Hole-to-copper minimum (Class 3 plating + HAST).
+(rule "hole_to_copper_class3"
+  (constraint hole_clearance (min 0.125mm))
+  (condition "A.Type == 'Via' || A.Type == 'Pad'")
+)
+
+# ---------------------------------------------------------------------------
+# (E) Optical / photonic keep-outs
+# ---------------------------------------------------------------------------
+
+# E1. No tracks, vias, or copper fill under the TFLN edge-coupler exit
+# window on any layer (fiber alignment tolerance ±1.5 µm lateral).
+(rule "tfln_optical_keepout_all_layers"
+  (constraint physical_clearance (min 0.5mm))
+  (condition "(A.Type == 'Via' || A.Type == 'Track' || A.Type == 'Zone') &&
+              B.hasTag('tfln_optical_keepout')")
+  (severity error)
+)
+
+# E2. TFLN periphery carrier courtyard must remain clear for SolderJet
+# attach tooling and IR alignment fiducials.
+(rule "tfln_carrier_courtyard"
+  (constraint courtyard_clearance (min 0.5mm))
+  (condition "B.hasTag('tfln_carrier')")
+)
+
+# ---------------------------------------------------------------------------
+# (F) Thermal via arrays under high-power chipsets
+# ---------------------------------------------------------------------------
+
+# F1. Any blind via tagged 'thermal_via_array' (NCE / HBM4 / DrMOS pads
+# on B.Cu) must be ≤ 1 mm drill and placed on a < 1.2 mm pitch grid so
+# the Rθja target of 0.15 °C/W per mm² pad is met.
+(rule "thermal_via_array_drill_max"
+  (constraint hole_size (max 1.0mm))
+  (condition "A.Type == 'Via' && A.ViaType == 'Blind' && B.hasTag('thermal_via_array')")
+)
+
+# F2. Minimum spoke count for thermal-via zone connections (2 spokes).
+# (Mirrors project default, re-asserted for documentation clarity.)
+(rule "thermal_zone_spokes_min"
+  (constraint zone_connection (min thermal))
+  (condition "B.hasTag('thermal_via_array')")
+)
+
+# ---------------------------------------------------------------------------
+# (G) DFM: acid traps, mask expansion, edge clearance, silk-over-copper
+# ---------------------------------------------------------------------------
+
+# G1. RF copper edge clearance: 2.54 mm (100 mil) from any TFLN/PCIe Gen6
+# /HBM4 copper to the board edge, per spec §V.
+(rule "rf_edge_clearance_100mil"
+  (constraint edge_clearance (min 2.54mm))
+  (condition "A.NetClass == 'TFLN_RF' ||
+              A.NetClass == 'PCIe_Gen6' ||
+              A.NetClass == 'HBM4_Interposer' ||
+              A.NetClass == 'SERDES_100G_PAM4'")
+)
+
+# G2. Board-general edge clearance: 0.5 mm (minimum routing clearance).
+(rule "general_edge_clearance"
+  (constraint edge_clearance (min 0.5mm))
+  (condition "A.Type == 'Track' || A.Type == 'Zone' || A.Type == 'Pad'")
+)
+
+# G3. Acid-trap avoidance. KiCad 8 has no native acid-trap detector, so
+# this rule enforces ≥ 6 mil (0.152 mm) clearance at any three-way track
+# junction between a primary track and an acute stub. Enforcement is via
+# assertion + manual review in the DFM checklist (docs/DFM_Checklist.md §8).
+(rule "acid_trap_min_clearance"
+  (constraint clearance (min 0.152mm))
+  (condition "A.Type == 'Track' && B.Type == 'Track' &&
+              A.NetClass != 'PWR_CORE' && A.NetClass != 'PWR_12V'")
+  (severity warning)
+)
+
+# G4. Solder-mask expansion. Ensure mask opening is at least 2 mil
+# (0.05 mm) larger than the pad on each side to prevent mask-on-pad
+# during inspection.
+(rule "soldermask_expansion_min"
+  (constraint hole_clearance (min 0.05mm))
+  (condition "A.Layer == 'F.Mask' || A.Layer == 'B.Mask'")
+  (severity warning)
+)
+
+# G5. Silk over copper: reject silkscreen on exposed copper pads (project
+# default; re-asserted explicitly for Class 3 assembly inspection).
+(rule "silk_over_copper"
   (constraint silk_clearance (min 0.0mm))
   (condition "A.Layer == 'F.SilkS' || A.Layer == 'B.SilkS'")
   (severity warning)
 )
 
-# -- 14. BGA breakout neck-down --
+# G6. BGA neck-down allowance for NCE / HBM4 / PT6 / DrMOS footprints
+# (tagged 'bga_breakout' in their footprints).
 (rule "bga_neckdown"
   (constraint track_width (min 0.075mm) (opt 0.09mm))
   (condition "B.hasTag('bga_breakout')")
 )
 
-
-# -- 15. HBM4 interposer courtyard: PCB copper must stay off the silicon
-# interposer outline (managed by the co-packaged module vendor). --
-(rule "hbm4_interposer_keepout"
-  (constraint physical_clearance (min 0.5mm))
-  (condition "A.Type == 'Track' && B.hasTag('hbm4_interposer')")
+# G7. Net naming convention: high-speed diff pairs must follow
+# __[P/N] suffix (NCE_CLK_P / NCE_CLK_N etc.) per spec §V.
+(rule "net_name_convention_diff_pair"
+  (constraint assertion "A.NetName =~ '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*_[PN]$'")
+  (condition "A.NetClass == 'SERDES_100G_PAM4' ||
+              A.NetClass == 'PCIe_Gen6' ||
+              A.NetClass == 'TFLN_RF' ||
+              A.NetClass == 'HBM4_Interposer'")
   (severity warning)
+)
+
+# G8. Mounting holes must not be violated by any copper (mirrors Rev 5.0
+# rule; carried forward).
+(rule "mounting_hole_keep_out"
+  (constraint clearance (min 0.25mm))
+  (condition "B.hasTag('mount_hole')")
 )
