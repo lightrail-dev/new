@@ -69,7 +69,7 @@ combinations to hit these values within ±10 %.
 | 20 | In19.Cu | copper | 0.070 mm  | Cu (2 oz)     | V_CORE_U1 plane mirror                            |
 |    | C 11    | core   | 0.076 mm  | High-Tg FR-4   | —                                                 |
 | 21 | In20.Cu | copper | 0.070 mm  | Cu (2 oz)     | V_AUX / HBM4 VDDC / VDDQL / VPP islands           |
-|    | PP 10   | prepreg | 0.076 mm | Megtron-7      | —                                                 |
+|    | PP 10   | prepreg | 0.076 mm | High-Tg FR-4   | **P/G → signal domain transition**                |
 | 22 | In21.Cu | copper | 0.0175 mm | Cu (0.5 oz)   | GND ref                                           |
 |    | C 12    | core   | 0.076 mm  | Megtron-7      | —                                                 |
 | 23 | In22.Cu | copper | 0.0175 mm | Cu (0.5 oz)   | I²C / SPI / PMBus mirror                          |
