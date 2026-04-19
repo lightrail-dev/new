@@ -46,7 +46,7 @@
 | -In17_Cu.gbr           | In17.Cu     | GND heavy plane (2 oz)                                 |
 | -In18_Cu.gbr           | In18.Cu     | V_CORE_U0 plane mirror (2 oz)                          |
 | -In19_Cu.gbr           | In19.Cu     | V_CORE_U1 plane mirror (2 oz)                          |
-| -In20_Cu.gbr           | In20.Cu     | V_CORE split / HBM4 VDDC / VDDQL / VPP islands (2 oz)  |
+| -In20_Cu.gbr           | In20.Cu     | V_AUX / HBM4 VDDC / VDDQL / VPP islands (2 oz)         |
 
 # Copper layers (signal, mirrored half)
 

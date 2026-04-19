@@ -96,9 +96,10 @@
   (condition "A.NetClass == 'HBM4_Interposer'")
 )
 
-# C2. HBM4 REFCK intra-pair skew tightened to 0.3 mm (~2 ps on Megtron-7
+# C2. HBM4 REFCK intra-pair skew set to 0.3 mm (~2 ps on Megtron-7
 # stripline, εr=3.3) — matches the spec §IV "within 2 ps" for HBM4 2048b
-# length matching.
+# length matching, docs/DFM_Checklist.md §7.2, and
+# docs/SI_PI_Thermal_Plan.md §1.3.
 (rule "hbm4_refck_skew"
   (constraint skew (max 0.3mm))
   (condition "A.NetClass == 'HBM4_Interposer' && A.NetName =~ '.*_REFCK_[PN]$'")

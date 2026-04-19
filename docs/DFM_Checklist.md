@@ -109,7 +109,7 @@ Severity: `M` = must-pass before tapeout, `S` = should-pass, `N` = note.
 | # | Rule                                                                    | Value          | Sev | Status |
 |---|-------------------------------------------------------------------------|----------------|-----|--------|
 | 7.1 | Impedance coupons on every panel                                       | 4 per target Z | M   | pend.  |
-| 7.2 | Differential pair length-match HBM4 REFCK (P/N within pair)            | ±0.025 mm      | M   | pend.  |
+| 7.2 | Differential pair length-match HBM4 REFCK (P/N within pair)            | ±0.3 mm (≈ 2 ps on Megtron-7, εr=3.3) | M   | pend.  |
 | 7.3 | Differential pair length-match within diff (PCIe/TFLN)                 | ±0.025 mm      | M   | pend.  |
 | 7.4 | Keep-clear around HBM4 composite-module courtyard (no PCB signals      |
 |     | under interposer footprint)                                            | yes            | M   | pend.  |

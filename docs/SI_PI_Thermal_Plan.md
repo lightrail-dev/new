@@ -44,7 +44,7 @@ the tools, models, and artifacts a simulation team should produce.
 |                              | vendor delivers a pre-qualified composite module                   |
 | PCB-side SI                  | REFCK_P/N differential, IEEE-1500 JTAG, CATTRIP / PWR_GOOD         |
 | REFCK margin                 | Jitter < 150 fs RMS (10 kHz – 20 MHz)                              |
-| Length match (REFCK)         | ±0.025 mm P-to-N within pair                                      |
+| Length match (REFCK)         | ±0.3 mm P-to-N within pair (≈ 2 ps on Megtron-7 stripline, εr=3.3) |
 | Output artifact              | `sim/si/hbm4_side_channel_report.xlsx`                              |
 
 ### 1.4 REFCLK / SerDes reference

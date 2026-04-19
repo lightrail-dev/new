@@ -137,11 +137,11 @@ redundant back-ups (spec §V).
 - [ ] Every change since the previous tape-out is logged in `CHANGELOG.md`
 - [ ] ECO notices signed by original design owner
 - [ ] Schematic + layout + BOM all tagged with the same release tag
-      (e.g. `v4.0-tapeout`)
+      (e.g. `v6.0-tapeout`)
 
 ## 11. Archival
 
-- [ ] Git tag `v4.0-tapeout` pushed and protected
+- [ ] Git tag `v6.0-tapeout` pushed and protected
 - [ ] Tapeout package zipped, hash-signed, uploaded to release storage
 - [ ] Fab quote + PO linked to the release
 - [ ] First-article review date scheduled
