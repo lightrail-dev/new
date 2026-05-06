@@ -4,8 +4,8 @@
 
   (title_block
     (title "AI Compute Unit - Core")
-    (date "2026-04-11")
-    (rev "4.0")
+    (date "2026-04-19")
+    (rev "6.1")
     (company "LightRail AI")
     (comment 1 "AI SoC BGA + TFLN Photonic Engine Interface")
     (comment 2 "8-channel TFLN Modulator | 200G PAM4 per lane")
