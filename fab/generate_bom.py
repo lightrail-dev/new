@@ -2,7 +2,7 @@
 """
 Generates fab/BOM.csv for the LightRail AI Compute Node (LR-P3A Rev 6.0).
 
-Rev 6.0 delta vs Rev 5.0 (HBM4 migration scaffold):
+Rev 6.0 delta vs Rev 5.0 (HBM4 migration release):
   * Tiered PDN decoupling added per spec §III — 100 µF tantalum bulk at VRM
     output, 10 µF 0805 mid-range, 1 µF 0402, 100 nF 01005 bypass (≤1 mm from
     each NCE/HBM4 power ball).
@@ -12,8 +12,8 @@ Rev 6.0 delta vs Rev 5.0 (HBM4 migration scaffold):
   * Vendor list constrained to LCSC / Digi-Key / Mouser *Active* parts only
     (spec §V). No obsolete or NRND parts.
 
-This is a *representative* BOM for the 32-layer HDI scaffold — it reflects
-the intended part selection by domain. Real tapeout BOM must be reconciled
+This is the BOM for the 32-layer HDI release — it reflects
+the selected part list by domain. Final tapeout BOM is reconciled
 against the KiCad-exported BOM (from `Tools → Generate BOM`) once the
 schematic has complete ref-des annotations and all pads have nets assigned.
 

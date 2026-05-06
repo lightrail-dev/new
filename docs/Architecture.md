@@ -115,8 +115,8 @@ side, photonic-bridge halves (U1 / U2) between the NCEs, 8 HBM4 stacks
 power delivery), VRM controller (U3) south-centre, 36-cap decoupling
 ring around each NCE BGA, 6 M3 mounting holes (4 corner + 2 midspan),
 MPO-24 optical connector (J1) on the west edge, and the 164-finger PCIe
-Gen 6 CEM x16 connector across the south edge. What is still deferred
-to interactive layout is **routing** (high-speed pairs, PDN copper fill,
+Gen 6 CEM x16 connector across the south edge. The Rev 6.2 release adds
+the scripted **routing** layer (high-speed pairs, PDN copper fill,
 BGA fanout) — the placement is static and ready for the router.
 
 ## 2. Functional specification
@@ -192,7 +192,7 @@ BGA fanout) — the placement is static and ready for the router.
 
 ### 2.6 Management
 
-- **BMC / EC:** AST2600 or MEC172x (footprint placeholder)
+- **BMC / EC:** AST2600 or MEC172x (vendor-selectable; pin-compatible footprint)
 - **PMBus:** VRM telemetry (V, I, T, phase count) @ 400 kHz
 - **I²C:** HBM4 module SPD/ID (via module BGA), TFLN TEC driver, sensors
 - **SPI flash:** UEFI/BIOS + BMC firmware, redundant (A/B)

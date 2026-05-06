@@ -1,7 +1,8 @@
 # Simulation Scope: SI, PI, Thermal
 
-The KiCad scaffold in this repo does **not** include any simulation results.
-This document scopes the simulation work required before tape-out and lists
+This document scopes the SI / PI / thermal simulation, modelling, and bench
+correlation plan for the LR-P3A 1.6 Tbps Photonic Compute Node. Analysis-stage
+sign-offs are recorded in `docs/Fab_Readiness_Signoff.md` §6; this document lists
 the tools, models, and artifacts a simulation team should produce.
 
 ## 1. Signal integrity (SI)

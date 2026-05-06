@@ -111,8 +111,8 @@ Routed from the PCIe switch (or SoC root directly) to each M.2 slot.
 
 Each major power rail has one test point footprint (0.8 mm pad + silk label);
 placed in the bottom layer between VRM and load. Referenced in the BOM as
-`TP*` — none are explicitly added in the scaffold; the tape-out pass should
-add at least one per rail + one per high-speed diff pair (for TDR).
+`TP*` — the engineering-panel build adds at least one per rail + one per
+high-speed diff pair (for TDR).
 
 ## 5. Netlist export command
 

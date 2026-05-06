@@ -2,7 +2,7 @@
 
 ## 1. 32-layer HDI stackup
 
-Rev 6.0 migrates the board from the 10-layer Megtron-7 scaffold to a
+Rev 6.0 migrates the board from the 10-layer Megtron-7 baseline to a
 symmetric **32-layer HDI** stackup with three material systems:
 
 | Domain                | Material             | εr   | tan δ (1 GHz) | Where used                                  |
@@ -166,8 +166,7 @@ TFLN / PCIe Gen 6 density, not by HBM4 escape.
 Every high-speed class now has **GND-on-both-sides symmetric stripline**
 (no asymmetric V_CORE reference) since the 32-layer stack frees up
 enough GND reference planes for all signal groups — this is the primary
-signal-integrity reason for the layer-count bump from the Rev 5.0
-scaffold.
+signal-integrity reason for the layer-count bump from Rev 5.0.
 
 Request impedance coupons on every panel for Z-measurement sign-off
 (fabs that routinely run this stackup: Sierra Circuits, TTM, AT&S, NCAB).

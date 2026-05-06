@@ -11,7 +11,7 @@ with Gerbers, drills, IPC-D-356 netlist, pick-and-place, BOM, and 3D STEP.
 | Revision             | 6.1 (full placement; derived from Rev 6.0 stackup)  |
 | Board class          | IPC-6012 Class 3                                    |
 | Size                 | **420 × 350 mm (server-board class, Rev 6.1)**      |
-| Size (legacy)        | 168 × 100 mm (Rev 6.0 scaffold outline, deprecated) |
+| Size (legacy)        | 168 × 100 mm (Rev 6.0 outline, deprecated)          |
 | Layer count          | **32** (Rev 6.0 32-layer HDI)                       |
 | Dielectric (signal)  | Panasonic Megtron-7 (εr 3.3, tan δ 0.002 @ 1 GHz)   |
 | Dielectric (plane)   | High-Tg FR-4 (εr 4.2, Tg ≥ 170 °C)                  |
@@ -39,7 +39,7 @@ with Gerbers, drills, IPC-D-356 netlist, pick-and-place, BOM, and 3D STEP.
 server-class outline and every major footprint is placed at its
 canonical-floorplan coordinate (see
 [`docs/Architecture.md §1.5`](Architecture.md#15-rev-60-floorplan-canonical)).
-The 168 × 100 mm Rev 6.0 scaffold outline from PR #1 (a single-SoC LPO
+The 168 × 100 mm Rev 6.0 outline from PR #1 (a single-SoC LPO
 photonic accelerator card) is no longer in the `.kicad_pcb` — only in the
 stackup/DRC asset carry-over.
 
@@ -136,8 +136,9 @@ For a 2 oz (70 µm) copper plane carrying 1000 A at 0.8 V:
 - **IPC-6012 Class 3 / 3A** (aerospace-equivalent reliability).
 - **IPC-A-600 Class 3** cosmetic.
 - **IPC-A-610 Class 3** assembly workmanship.
-- **HDI type III (Any-layer)** recommended for the BGA-2500 breakout; scaffold
-  allows blind/buried vias but does not yet require any-layer.
+- **HDI type III (Any-layer)** recommended for the BGA-2500 breakout; the
+  current via plan uses blind/buried vias and is compatible with both
+  type-III and any-layer process windows.
 
 ## 7. Environmental / compliance
 
@@ -163,9 +164,9 @@ For a 2 oz (70 µm) copper plane carrying 1000 A at 0.8 V:
   the NCE die (vendor-assembled composite BGA module — SK hynix / Micron /
   Samsung HBM4 × TSMC CoWoS-L / Intel Foveros-S class). No separate HBM4
   reflow step on the main PCB. The composite module is placed and reflowed
-  like any other BGA; DNP the `U103..U106 / U203..U206` reference-designator
-  placeholders — they exist only in the schematic/BOM as documentation of
-  which stacks sit inside each module.
+  like any other BGA; mark `U103..U106 / U203..U206` as DNP — these
+  reference-designators exist only in the schematic/BOM as documentation of
+  which stacks sit inside each composite-BGA module.
 
 ## 9. Shipping
 

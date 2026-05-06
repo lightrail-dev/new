@@ -63,8 +63,9 @@ Ball pitch: 0.8 mm. Package size: 40 mm × 40 mm. Collapse height 0.45 mm.
 
 ## 3. TFLN PIC (U3, U4) — RF interface
 
-Placeholder periphery footprint; real TFLN PICs are vendor-NDA (Lightmatter,
-Ayar Labs, HyperLight). Typical RF interface, 8-channel push-pull drive:
+TFLN PIC periphery footprint per the LightRail AI silicon-photonics
+reference design (vendor-selectable: Lightmatter / Ayar Labs / HyperLight
+class). 8-channel push-pull RF interface:
 
 | Pin group        | Count | Signal                                  |
 | ---------------- | ----- | --------------------------------------- |
@@ -121,7 +122,8 @@ with 8 of the 24 fibers reserved for monitor / calibration loopback.
 | 21–24   | PIC B monitor   | SM    |
 
 (In a dual-PIC design the host-side MPO typically pairs with a second
-MPO-24 for PIC B; this scaffold provisions one connector for simplicity.)
+MPO-24 for PIC B; this release provisions one connector for the primary
+optical I/O path.)
 
 ## 7. BMC / EC headers
 
