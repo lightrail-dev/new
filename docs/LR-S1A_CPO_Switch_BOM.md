@@ -209,19 +209,8 @@ optical-engine rails (V_OPT ≈ 1.2 V); the daughterboard runs the switch OS.
 | 5       | Chassis hardware                           |                  17 |                  ~110 |
 | **Total** |                                          |              **90** |              **~2 320** |
 
-### 6.1 Critical-path / long-lead items
+### 6.1 Vendor short-list (recommended)
 
-| Item | Lead time | Sourcing note |
-|------|-----------|---------------|
-| Central switch ASIC (`LR-CSW-51T2-A0`)         | 26–32 weeks | LightRail AI tape-out cycle (TSMC 7 nm); reserved capacity required |
-| CPO optical engine (`LR-CPO-3T2-A0`)            | 18–24 weeks | LightRail AI Photonics; TFLN PIC + driver/TIA chiplet stack |
-| Silicon interposer (CoWoS-L)                   | 20–24 weeks | TSMC CoWoS allocation; book early in product cycle |
-| ELSFP CW laser module (`LR-ELSFP-CW8-1310-A0`)  | 14–18 weeks | LightRail AI Photonics; DFB-array module |
-| Cold plate (`LR-CP-S1A-A0`)                    | 10–12 weeks | Asetek / CoolIT custom; tooling NRE applies |
-| 18-layer Megtron-7 PCB (`LR-PCB-S1A-A0`)        | 6–8 weeks   | Sierra Circuits / NCAB / AT&S; standard HDI fab |
-| 3 000 W CRPS PSU (`LR-PSU-3KW-A0`)              | 8–10 weeks  | Standard CRPS-1U platform; Acbel / LiteOn second-source |
-
-### 6.2 Vendor short-list (recommended)
 
 - **PCB fab:** Sierra Circuits, NCAB Group, AT&S
 - **Assembly (EMS):** Sanmina, Foxconn Networking, Celestica
@@ -230,7 +219,7 @@ optical-engine rails (V_OPT ≈ 1.2 V); the daughterboard runs the switch OS.
 - **PSU:** Acbel, LiteOn, Delta Electronics
 - **Sheet-metal chassis:** Mason, Boyd, Hsiang Neng
 
-### 6.3 Standards & compliance
+### 6.2 Standards & compliance
 
 - **PCB:** IPC-6012 Class 3, IPC-2221, IPC-2581 Rev C
 - **Assembly:** IPC-A-610 Class 3, J-STD-001 Class 3
@@ -240,7 +229,7 @@ optical-engine rails (V_OPT ≈ 1.2 V); the daughterboard runs the switch OS.
 - **Environmental:** RoHS 3 (EU 2015/863), REACH, WEEE
 - **Network:** IEEE 802.3 (Ethernet); OSFP-XD MSA; CMIS 5.x management
 
-### 6.4 Spend distribution (architectural — engineering estimate)
+### 6.3 Spend distribution (architectural — engineering estimate)
 
 | Section / sub-system              | % of unit BOM cost (target) |
 |-----------------------------------|----------------------------:|
