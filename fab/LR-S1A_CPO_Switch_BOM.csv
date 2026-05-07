@@ -1,0 +1,91 @@
+Line,Section,Subsection,Item,LR_PN,Manufacturer,Manufacturer_PN,Qty,UOM,Notes
+1.1,1 Core processing & optical (CPO),ASIC,Central switch ASIC 51.2 Tbps,LR-CSW-51T2-A0,LightRail AI,vendor-NDA,1,ea,256 x 200G PAM4 SerDes; 7nm; 80x80 BGA-5500; ~600 W TDP
+1.2,1 Core processing & optical (CPO),Optics,CPO optical engine 3.2 Tbps,LR-CPO-3T2-A0,LightRail AI Photonics,vendor-NDA,16,ea,TFLN MZM array + Ge-Si PD + driver/TIA; 16 x 200G PAM4 per engine
+1.3,1 Core processing & optical (CPO),Interposer,Silicon interposer CoWoS-L,LR-INT-S1A-A0,TSMC,CoWoS-L,1,ea,80x80 mm interposer; routes 4096 SerDes lanes
+1.4,1 Core processing & optical (CPO),Chiplet,Bridging chiplet UCIe D2D PHY,LR-D2D-S1A-A0,LightRail AI,vendor-NDA,16,ea,UCIe 1.1 die-to-die PHY ASIC<->CPO engine
+1.5,1 Core processing & optical (CPO),PIC,TFLN PIC die,LR-TFLN-200G-A0,LightRail AI Photonics,vendor-NDA,16,ea,16 x 200G TFLN modulators per PIC; integrated edge coupler
+1.6,1 Core processing & optical (CPO),Materials,CPO micro-bump underfill,LR-UF-CPO-A0,Henkel,Loctite ECCOBOND UF 3810,16,ea,Capillary-flow underfill for CPO chiplet
+1.7,1 Core processing & optical (CPO),Materials,Composite-BGA underfill,LR-UF-BGA-A0,Namics,XS8410-251,1,ea,Underfill for switch ASIC composite BGA
+1.8,1 Core processing & optical (CPO),Thermal,ASIC TIM Indium foil 100 um,LR-TIM-IN-A0,Indium Corporation,Indium-7M,1,ea,High-conductivity TIM-1.5
+1.9,1 Core processing & optical (CPO),Thermal,Cold plate Cu microchannel,LR-CP-S1A-A0,Asetek/CoolIT,custom drawing,1,ea,Skived-fin Cu microchannel; 25 mL/s @ 30 kPa
+1.10,1 Core processing & optical (CPO),Mechanical,Cold-plate retention frame,LR-CP-BRK-S1A,Custom,Al 6061-T6 anodised,1,ea,4-corner with belleville springs
+1.11,1 Core processing & optical (CPO),Liquid cooling,Quick-disconnect couplings,LR-LQ-QD-A0,CPC,Everis LQ4 40 LPM,2,ea,Drip-less inlet + outlet
+1.12,1 Core processing & optical (CPO),Liquid cooling,Coolant tubing 1/4" ID,LR-LQ-TUB-A0,Saint-Gobain,Tygon SE-200,1.5,m,Low-permeation coolant tubing
+1.13,1 Core processing & optical (CPO),Telemetry,Coolant flow & temperature sensor,LR-LQ-SNS-A0,TE Connectivity,FTB332 + NTC,1,ea,Inline flow/temp for BMC
+1.14,1 Core processing & optical (CPO),PCB,Main PCB 18-layer HDI,LR-PCB-S1A-A0,Sierra Circuits/NCAB/AT&S,custom Megtron-7,1,ea,600x400 mm; IPC-6012 Class 3; +-5% impedance
+1.15,1 Core processing & optical (CPO),Mechanical,Backside ASIC bolster,LR-BLS-S1A-A0,Custom,steel/EN nickel,1,ea,Reinforcement under composite-BGA footprint
+1.16,1 Core processing & optical (CPO),Grounding,ESD-grounding strap,LR-GND-STRAP-A0,3M,2110,4,ea,Cold plate <-> chassis ground
+1.17,1 Core processing & optical (CPO),Debug,ASIC test/debug header,LR-DBG-S1A-A0,Samtec,ERM8-040-05.0-L-DV-A-K,1,ea,80-pin JTAG/SCAN/I2C
+2.1,2 Optical routing,Ribbon,SMF ribbon assembly 16-fibre,LR-RIB-16F-A0,Furukawa,SCC OS2 9/125,32,ea,16f OS2 polyimide-jacketed; 0.30 m typical
+2.2,2 Optical routing,Connector,SENKO SN-MT mid-board 16f,LR-MID-SN16-A0,SENKO Advanced Components,SN-MT-16,32,ea,High-density mid-board connector; 0.5 mm pitch
+2.3,2 Optical routing,Patch,SENKO MPO-16 to MPO-16 patch,LR-PATCH-MPO16-A0,SENKO,MPO-16-OS2-1.5m,16,ea,Pre-terminated Pinned-to-Unpinned patch
+2.4,2 Optical routing,Bulkhead,Front-panel optical bulkhead MPO-16,LR-BHD-MPO16-A0,SENKO,LC-MPO16-PIN-BHD,16,ea,Bulkhead with dust shutter
+2.5,2 Optical routing,Mechanical,Cable routing tray primary,LR-TRAY-MAIN-A0,Custom,Polyamide 12,2,ea,Left + right primary fibre raceway
+2.6,2 Optical routing,Mechanical,Cable routing tray transverse,LR-TRAY-TRV-A0,Custom,Polyamide 12,1,ea,Centre cross-over tray
+2.7,2 Optical routing,Strain relief,Bend-limiting fibre boot,LR-BOOT-A0,Panduit,FBSB-FQTS-C0,64,ea,One per ribbon termination
+2.8,2 Optical routing,Strain relief,Strain-relief clamp,LR-SR-CLAMP-A0,Heyco,S6P4-4,24,ea,Mid-tray fibre run lock
+2.9,2 Optical routing,Tape,Polyimide tape Kapton 1 mil,LR-TAPE-KPT-A0,DuPont,Kapton HN 12 mm,2,roll,Bundle protection (eng pack)
+2.10,2 Optical routing,Labels,Heat-shrink fibre label sleeve,LR-LBL-FIBR-A0,TE Connectivity,ZHTM-3/1,64,ea,Per-ribbon ID labelling
+3.1,3 Front-panel interfaces,Laser,ELSFP module 8-channel CW 1310 nm,LR-ELSFP-CW8-1310-A0,LightRail AI Photonics,vendor-NDA,8,ea,DFB array @ 1310 nm; +18 dBm/ch; pluggable hot-swap
+3.2,3 Front-panel interfaces,Cage,ELSFP cage assembly,LR-CAGE-ELSFP-A0,Amphenol,10160988-001LF,8,ea,EMI-gasketed with thermal pad + heat sink
+3.3,3 Front-panel interfaces,Thermal,ELSFP heat sink,LR-HS-ELSFP-A0,Wakefield-Vette,658-25ABT,8,ea,Pin-fin top-mount 4 C/W
+3.4,3 Front-panel interfaces,Cage,High-density I/O cage OSFP-XD,LR-CAGE-OSFP-A0,TE Connectivity,2358153-1,32,ea,1.6 T cage with riding heat sink
+3.5,3 Front-panel interfaces,Thermal,OSFP-XD heat sink,LR-HS-OSFP-A0,TE Connectivity,2358145-1,32,ea,5 C/W riding heat sink
+3.6,3 Front-panel interfaces,Cage,Front-panel I/O retention spring,LR-RETN-OSFP-A0,TE Connectivity,2358118-1,32,ea,Module-eject latch + EMI spring
+3.7,3 Front-panel interfaces,Management,Mgmt RJ-45 1 GbE w/ magnetics,LR-MGT-RJ45-A0,Bel Stewart Connector,SI-50170-F,1,ea,Magnetic-isolated jack with LEDs
+3.8,3 Front-panel interfaces,Management,USB-A console,LR-MGT-USB-A0,Wurth Elektronik,692121030100,1,ea,USB 2.0 type-A; ESD via TPD2EUSB30
+3.9,3 Front-panel interfaces,Management,RS-232 console RJ-45,LR-MGT-CON-A0,TE Connectivity,5-1734742-1,1,ea,Cisco-compatible pinout
+3.10,3 Front-panel interfaces,LEDs,Status LEDs (PWR/STATUS/FAULT/FAN/PSU/OPT),LR-LED-FP-A0,Lumex,SML-LX1610x,12,ea,Multi-color front-panel LEDs
+3.11,3 Front-panel interfaces,Mechanical,Front-panel plate,LR-FP-PLATE-A0,Custom,Al 5052-H32 anodised black,1,ea,1U front bezel; LightRail AI logo
+3.12,3 Front-panel interfaces,Mechanical,Front-panel pull handle,LR-FP-HDL-A0,Custom,Al 6061 anodised,2,ea,Rack-handle each side
+3.13,3 Front-panel interfaces,EMI,Front-panel EMI gasket,LR-EMI-FP-A0,Laird,8961-0001,1.2,m,Bekiwoven gasket around bezel
+3.14,3 Front-panel interfaces,Optical,Light-pipe array,LR-LP-FP-A0,Bivar,PLP4-300,12,ea,Routes PCB LEDs to bezel apertures
+4.1.1,4 Secondary & power delivery,Daughterboard,Control-plane CPU,LR-CPU-CPM-A0,Intel/AMD,Atom C3858 / EPYC Embedded 3251,1,ea,Pin-compatible reference footprints
+4.1.2,4 Secondary & power delivery,Daughterboard,DDR5 SODIMM 32 GB ECC,LR-DDR5-32G-A0,Micron,MTC20F2085S1RC56BR,2,ea,64 GB total 4800 MT/s ECC
+4.1.3,4 Secondary & power delivery,Daughterboard,NVMe M.2 2280 SSD 256 GB,LR-NVME-256-A0,Samsung,MZ-V8V250B/AM,1,ea,OS + log volume
+4.1.4,4 Secondary & power delivery,Daughterboard,BMC ASPEED AST2600,LR-BMC-AST26-A0,ASPEED,AST2600A3,1,ea,IPMI 2.0 / Redfish; NCSI to mgmt port
+4.1.5,4 Secondary & power delivery,Daughterboard,BMC SDRAM DDR4 1 GB,LR-BMC-DDR4-A0,Micron,MT40A512M16JY-062E,1,ea,Dedicated BMC memory
+4.1.6,4 Secondary & power delivery,Daughterboard,BMC SPI flash 256 Mb,LR-BMC-SPI-A0,Macronix,MX25L25645GMI-08G,2,ea,Boot + redundant golden image
+4.1.7,4 Secondary & power delivery,Daughterboard,TPM 2.0 module,LR-TPM-A0,Infineon,SLB9670VQ20FW785,1,ea,Secure-boot root-of-trust
+4.1.8,4 Secondary & power delivery,Daughterboard,1 GbE PHY,LR-PHY-1G-A0,Realtek,RTL8211FDI-CG,1,ea,NCSI-side BMC PHY
+4.1.9,4 Secondary & power delivery,Daughterboard,RTC + battery,LR-RTC-A0,NXP,PCF85063ATL/1Z,1,ea,Coin-cell holder Linx BAT-HLD-001 + CR2032
+4.1.10,4 Secondary & power delivery,Daughterboard,Daughterboard PCB 10-layer FR-4,LR-DB-CPM-A0,Custom,FR-4 Tg170,1,ea,200x110 mm
+4.1.11,4 Secondary & power delivery,Daughterboard,Board-to-board connector Samtec ARC,LR-B2B-CPM-A0,Samtec,ARC6-30-01-L-D-A-K,2,ea,80-pin Hi-LPS B2B
+4.2.1,4 Secondary & power delivery,V_ASIC PDN,V_ASIC controller multi-phase,LR-VRM-ASIC-A0,MPS,MP2965GU,2,ea,2 x 8-phase = 16-phase total
+4.2.2,4 Secondary & power delivery,V_ASIC PDN,DrMOS 70 A integrated stage,LR-DRMOS-A0,MPS,MP86957,16,ea,V_ASIC phase stages
+4.2.3,4 Secondary & power delivery,V_OPT PDN,V_OPT controller 4-phase,LR-VRM-OPT-A0,MPS,MP2964GU,1,ea,4-phase 1.2 V optical-engine rail
+4.2.4,4 Secondary & power delivery,V_OPT PDN,DrMOS 50 A integrated stage,LR-DRMOS-OPT-A0,MPS,MP87005,4,ea,V_OPT phase stages
+4.2.5,4 Secondary & power delivery,V_AUX,Housekeeping PMIC,LR-VRM-AUX-A0,Texas Instruments,TPS6594-Q1,1,ea,1.8/3.3/5 V housekeeping rails
+4.2.6,4 Secondary & power delivery,Hot-swap,Hot-swap controller 12 V,LR-HSC-12V-A0,Analog Devices,LTC4282CUHF,2,ea,Per-PSU hot-swap + telemetry
+4.2.7,4 Secondary & power delivery,Magnetics,Power inductor 0.15 uH,LR-IND-150nH-A0,Vishay,IHLE-2525CD-5A,16,ea,V_ASIC phase inductor
+4.2.8,4 Secondary & power delivery,Magnetics,Power inductor 0.22 uH,LR-IND-220nH-A0,Vishay,IHLE-2525CD-5B,4,ea,V_OPT phase inductor
+4.2.9,4 Secondary & power delivery,Decap,Bulk polymer cap 470 uF / 16 V,LR-CAP-470U-A0,Panasonic,EEFGX1C471XR,24,ea,Output bulk decap
+4.2.10,4 Secondary & power delivery,Decap,MLCC 22 uF / 16 V (1210),LR-CAP-22U-A0,Murata,GRM32ER61C226KE20L,80,ea,Tier-2 decap
+4.2.11,4 Secondary & power delivery,Decap,MLCC 1 uF / 16 V (0402),LR-CAP-1U-A0,Murata,GRM155R61C105KA12D,400,ea,Tier-3 decap
+4.2.12,4 Secondary & power delivery,Decap,MLCC 100 nF / 16 V (0201),LR-CAP-100N-A0,Murata,GRM033R61C104KE15D,1200,ea,Tier-4 decap; <=1 mm from each ASIC/engine power ball
+4.2.13,4 Secondary & power delivery,Clocking,Reference clock generator,LR-CLK-A0,Renesas,9SQ440 + Si5345B,1,ea,Full clock tree for SerDes + control plane
+4.2.14,4 Secondary & power delivery,Telemetry,I2C/PMBus mux,LR-MUX-I2C-A0,NXP,PCA9548APW,4,ea,Telemetry fan-out to BMC
+4.2.15,4 Secondary & power delivery,Telemetry,Temperature sensor (digital),LR-TMP-A0,Maxim,MAX6581 + DS75LV,8,ea,Distributed PCB temp monitoring
+4.3.1,4 Secondary & power delivery,PSU,PSU module 3000 W CRPS Titanium,LR-PSU-3KW-A0,Acbel/LiteOn,R3K-2N20 / PS-3501-1A,2,ea,Hot-swap 1+1 redundant PMBus
+4.3.2,4 Secondary & power delivery,PSU,PSU bay CRPS-1U,LR-PSU-BAY-A0,TE Connectivity,2271716-1,2,ea,1U CRPS receptacle blind-mate
+4.3.3,4 Secondary & power delivery,Power entry,AC inlet C20 filtered,LR-AC-INLET-A0,Schaffner,FN9244-16-06,2,ea,Filtered C20 chassis rear
+4.3.4,4 Secondary & power delivery,Cooling,Fan tray module hot-swap,LR-FAN-TRAY-A0,Custom,carrier,7,ea,Carries 1 x 40x56 mm dual-rotor fan
+4.3.5,4 Secondary & power delivery,Cooling,Counter-rotating fan 40x56 mm,LR-FAN-A0,Sanyo Denki,9HV0412P3K001,7,ea,38000 RPM PWM 80 CFM
+4.3.6,4 Secondary & power delivery,Cooling,Fan controller IC,LR-FANCTL-A0,Microchip,EMC2305,2,ea,I2C PWM/tach for 7 fans (4+3 split)
+5.1,5 Chassis hardware,Chassis,Outer chassis 1U CRS 1.0 mm,LR-CHA-S1A-A0,Custom,sheet-metal LR drawing,1,ea,19" EIA 1U 800 mm depth black-zinc
+5.2,5 Chassis hardware,Chassis,Top cover,LR-COV-S1A-A0,Custom,CRS 1.0 mm,1,ea,Quick-release captive M3 thumb-screws
+5.3,5 Chassis hardware,Chassis,Inner mounting tray,LR-TRAY-S1A-A0,Custom,CRS 1.5 mm,1,ea,PCB + daughterboard standoff carrier
+5.4,5 Chassis hardware,Fasteners,Brass standoff M3 x 8 mm,LR-STDOFF-M3-A0,Keystone,24441,18,ea,PCB to tray
+5.5,5 Chassis hardware,Fasteners,Mounting screw M3 x 5 mm,LR-SCR-M3-A0,Bossard,1413137,36,ea,PCB to standoff
+5.6,5 Chassis hardware,Mounting,Rack-ear bracket,LR-EAR-S1A-A0,Custom,Al 6061 anodised black,2,ea,EIA 19" ears w/ pull handle
+5.7,5 Chassis hardware,Mounting,Cage nut 10-32/M6,LR-CGNUT-A0,Penn Engineering,CCS-632-2,8,ea,Front + rear rack mount
+5.8,5 Chassis hardware,Rails,Inner rail kit sliding,LR-RAIL-S1A-A0,King Slide,CL-Q60-1A,1,kit,1-pair 22-32" telescoping
+5.9,5 Chassis hardware,EMI,EMI gasket top-cover perimeter,LR-EMI-COV-A0,Laird,4011,2,m,Be-Cu finger-stock
+5.10,5 Chassis hardware,Air mgmt,Air-shroud ASIC quadrant,LR-SHRD-ASIC-A0,Custom,PC FR,1,ea,Directs airflow over CPO ring
+5.11,5 Chassis hardware,Air mgmt,Air-shroud optics quadrant,LR-SHRD-OPT-A0,Custom,PC FR,1,ea,Front-panel cage cooling shroud
+5.12,5 Chassis hardware,Vibration,Vibration-isolation grommet,LR-VIB-GRM-A0,Sorbothane,30-DURO 0.5",8,ea,PSU bay + fan tray isolation
+5.13,5 Chassis hardware,Labels,Serial-number/MAC label,LR-LBL-SN-A0,Brady,B-7593,1,ea,Tamper-evident polyimide
+5.14,5 Chassis hardware,Labels,Compliance label FCC/CE/UKCA,LR-LBL-CMP-A0,Brady,B-422,1,ea,Regulatory marks per region
+5.15,5 Chassis hardware,Packaging,Anti-static shipping bag,LR-PKG-ESD-A0,3M,2110,1,ea,ESD pink-poly with desiccant
+5.16,5 Chassis hardware,Packaging,Foam shipping insert,LR-PKG-FOAM-A0,Custom,PE foam closed-cell,1,ea,38 kg/m^3 formed insert
+5.17,5 Chassis hardware,Packaging,Outer shipping carton,LR-PKG-BOX-A0,Custom,5-ply RSC corrugated,1,ea,Double-wall ISTA-3A drop-rated
