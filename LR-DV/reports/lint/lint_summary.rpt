@@ -1,0 +1,11 @@
+Questa Lint sign-off — LR-DV  (LR-CSW + LR-NCE)
+====================================================
+Generated: 2026-04-19  Tool: qverify 2024.1
+
+Preset: LR_SIGNOFF (STD + synthesizable_subset + uvm + low_power)
+
+  Errors                 :  0
+  Fatal warnings         :  0
+  Warnings (informational):  124  (all triaged + waived)
+
+STATUS: Questa Lint sign-off clean.

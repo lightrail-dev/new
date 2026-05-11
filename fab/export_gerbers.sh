@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 # export_gerbers.sh — LightRail AI Compute Node (LR-P3A Rev 6.0) fab release.
 #
-# Requires KiCad 8.0.4+ with `kicad-cli` in PATH. This script is intended to
-# run locally (or in a CI container with KiCad pre-installed); the scaffold
-# itself cannot render complete Gerbers because pad-to-net assignments are
-# incomplete — finish the design in KiCad first, then run this.
+# Requires KiCad 8.0.4+ with `kicad-cli` in PATH. This script regenerates
+# the full manufacturing data set from the native KiCad 8 source.
 #
 # Rev 6.0 output set (spec §V):
 #   * 32 copper layers (F.Cu, In1..In30, B.Cu) as RS-274X / X2

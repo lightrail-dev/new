@@ -1,0 +1,70 @@
+# =============================================================================
+# LR-CSW-51T2 — UPF 3.1 power-intent file
+# =============================================================================
+# 6 power domains:
+#   PD_TOP      always-on   (clocking + JTAG TAP + reset controller)
+#   PD_AUX      always-on   (APB CSR bank + BMC sideband)
+#   PD_CORE     switchable  (fabric + parser + sched)              VAVS @ 0.85 V
+#   PD_UCIE     switchable  (32 UCIe bridges)                       0.85 V
+#   PD_SERDES   switchable  (16 quadrants, 256 lanes)               0.85 V analog
+#   PD_MEM      switchable  (HBM4 logic + DDR PHY)                  1.2 V
+#
+# Retention: PD_CORE keeps CSR-shadow + scoreboard counters across power-down.
+# Isolation: all switchable ⇒ PD_AUX boundaries clamped to '0' when SD.
+# =============================================================================
+upf_version 3.1
+set_design_top lr_csw_top
+
+# ---------- Power domains
+create_power_domain PD_TOP    -include_scope
+create_power_domain PD_AUX    -elements {u_csr}
+create_power_domain PD_CORE   -elements {g_quad g_ucie u_fabric}
+create_power_domain PD_UCIE   -elements {g_ucie}
+create_power_domain PD_SERDES -elements {g_quad/g_lane}
+create_power_domain PD_MEM    -elements {g_hbm}
+
+# ---------- Supply nets
+create_supply_net  VDD                          -domain PD_TOP
+create_supply_net  VDD_AUX                      -domain PD_AUX
+create_supply_net  VDD_CORE                     -domain PD_CORE     -reuse
+create_supply_net  VDD_UCIE                     -domain PD_UCIE     -reuse
+create_supply_net  VDD_SERDES                   -domain PD_SERDES   -reuse
+create_supply_net  VDD_MEM                      -domain PD_MEM      -reuse
+create_supply_net  VSS                          -domain PD_TOP
+foreach pd {PD_AUX PD_CORE PD_UCIE PD_SERDES PD_MEM} {
+    create_supply_net VSS -domain $pd -reuse
+}
+
+# ---------- Ports / states
+create_supply_port  VDD       -domain PD_TOP
+create_supply_port  VDD_AUX   -domain PD_AUX
+create_supply_port  VDD_CORE  -domain PD_CORE
+create_supply_port  VDD_UCIE  -domain PD_UCIE
+create_supply_port  VDD_SERDES -domain PD_SERDES
+create_supply_port  VDD_MEM   -domain PD_MEM
+create_supply_port  VSS       -domain PD_TOP
+
+create_pst lr_csw_pst -supplies {VDD VDD_AUX VDD_CORE VDD_UCIE VDD_SERDES VDD_MEM VSS}
+add_pst_state ON   -pst lr_csw_pst -state {0.85 0.85 0.85 0.85 0.85 1.20 0.00}
+add_pst_state IDLE -pst lr_csw_pst -state {0.85 0.85 0.75 0.85 0.85 1.20 0.00}
+add_pst_state SD   -pst lr_csw_pst -state {0.85 0.85 0.00 0.00 0.00 0.00 0.00}
+
+# ---------- Isolation
+set_isolation iso_core -domain PD_CORE   -isolation_power_net VDD_AUX \
+    -clamp_value 0 -applies_to outputs
+set_isolation iso_ucie -domain PD_UCIE   -isolation_power_net VDD_AUX \
+    -clamp_value 0 -applies_to outputs
+set_isolation iso_mem  -domain PD_MEM    -isolation_power_net VDD_AUX \
+    -clamp_value 0 -applies_to outputs
+
+# ---------- Retention (CSR shadow + counters)
+set_retention ret_csr -domain PD_AUX \
+    -retention_power_net VDD_AUX -retention_ground_net VSS
+
+set_retention ret_core_state -domain PD_CORE \
+    -retention_power_net VDD_AUX -retention_ground_net VSS \
+    -elements {u_fabric/u_arb*/ptr_reg*}
+
+# ---------- Level shifters (cross-domain io)
+set_level_shifter LS_core_to_aux -domain PD_AUX -applies_to inputs \
+    -location parent -rule low_to_high

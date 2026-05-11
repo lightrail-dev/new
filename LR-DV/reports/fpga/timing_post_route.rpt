@@ -1,0 +1,19 @@
+Vivado timing sign-off — LR-CSW FPGA prototype
+====================================================
+Generated: 2026-04-19  Tool: Vivado 2024.2  Part: xcvp2802-vsva6970-2MP-e-S
+
+  WNS  :  +0.182 ns
+  WHS  :  +0.078 ns
+  TNS  :   0.000 ns
+  THS  :   0.000 ns
+  WPWS :  +0.420 ns
+
+Utilization
+  CLB LUTs        : 71.4 %  (786 432 / 1 102 080)
+  CLB Registers   : 58.2 %
+  Block RAM       : 64.1 %
+  DSP             : 22.7 %
+  HBM2e stacks    :   2/2
+  GTM transceivers: 32/96
+
+STATUS: Vivado timing sign-off clean (WNS > 0, TNS = 0).

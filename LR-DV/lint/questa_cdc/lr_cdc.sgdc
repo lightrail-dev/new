@@ -1,0 +1,32 @@
+# =============================================================================
+# LR-CSW — Questa CDC SGDC constraint file
+# =============================================================================
+current_design lr_csw_top
+
+# ---- clocks
+clock -name clk_core         -domain core      lr_csw_top.clk_core
+clock -name clk_mem          -domain mem       lr_csw_top.clk_mem
+clock -name clk_ucie_tx      -domain ucie_tx   lr_csw_top.clk_ucie_tx
+clock -name clk_ucie_rx      -domain ucie_rx   lr_csw_top.clk_ucie_rx
+clock -name clk_pcie_aux     -domain pcie_aux  lr_csw_top.clk_pcie_aux
+clock -name clk_jtag         -domain jtag      lr_csw_top.clk_jtag
+clock -name clk_refclk       -domain refclk    lr_csw_top.clk_refclk
+clock -name clk_aux          -domain aux       lr_csw_top.clk_aux
+
+# 16 SerDes TX/RX domains
+for {set q 0} {$q < 16} {incr q} {
+    clock -name clk_serdes_tx_$q -domain serdes_tx_$q lr_csw_top.clk_serdes_tx[$q]
+    clock -name clk_serdes_rx_$q -domain serdes_rx_$q lr_csw_top.clk_serdes_rx[$q]
+}
+
+# ---- resets
+reset -active low lr_csw_top.por_rst_n
+reset -active low lr_csw_top.warm_rst_n
+reset -active low lr_csw_top.soft_rst_n
+reset -active low lr_csw_top.jtag_rst_n
+
+# ---- async clock groups
+abstraction -clock {clk_core clk_mem} async
+abstraction -clock {clk_ucie_tx clk_ucie_rx} async
+abstraction -clock {clk_pcie_aux} async
+abstraction -clock {clk_jtag clk_refclk clk_aux} async
