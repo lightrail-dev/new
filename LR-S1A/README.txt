@@ -14,8 +14,10 @@ Directory layout
   drill/       Excellon 2.0 PTH + NPTH
   3d/          STEP AP242 board outline + components
   ipc2581/     IPC-2581 Rev C unified design exchange package
-  pdfs/        27 per-layer PDFs
-  drawings/    Fab + Assembly drawings (top + bottom)
+  pdfs/        27 per-layer PDFs (A2 landscape, with plane fill + antipads
+               + characteristics + compliance summary for each layer)
+  drawings/    Fab Drawing, Assembly Drawings (top + bottom), Layer Index
+               — all A2 landscape, full title block, IPC-grade content
   BOM.csv      2,320-part architectural BOM (5 categories)
   *_pnp.csv    Pick-and-place CSV (both sides, mm)
   DRC_report.rpt   IPC-6012 Class 3 DRC sign-off: 0 errors
