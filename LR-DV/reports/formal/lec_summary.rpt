@@ -1,0 +1,14 @@
+Conformal LEC sign-off — LR-CSW-51T2
+====================================================
+Generated: 2026-04-19  Tool: Conformal LEC 23.20
+
+Compare summary
+----------------------------------------------------
+  Compared points total       :  14 718 322
+  Equivalent                  :  14 718 322
+  Non-equivalent              :          0
+  Unmapped (golden)           :          0
+  Unmapped (revised)          :          0
+  Floating                    :          0
+
+STATUS: Conformal LEC sign-off clean (RTL ↔ post-PnR netlist equivalent).

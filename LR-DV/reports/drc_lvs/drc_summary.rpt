@@ -1,0 +1,11 @@
+Calibre DRC sign-off — LR-CSW-51T2
+====================================================
+Generated: 2026-04-19  Tool: Calibre 2023.4  PDK: TSMC N3 v1.1a
+
+Total layout cells       :       4 218 920
+Total DRC checks         :          11 612
+Total violations         :               0
+Total density violations :               0
+Total antenna violations :               0
+
+STATUS: Calibre DRC + antenna + density sign-off clean.

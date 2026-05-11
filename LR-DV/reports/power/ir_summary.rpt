@@ -1,0 +1,28 @@
+Voltus EM/IR sign-off — LR-CSW-51T2
+====================================================
+Generated: 2026-04-19  Tool: Voltus 23.18
+
+Static IR drop
+----------------------------------------------------
+  Worst VDD_CORE  :   41.6 mV  (limit 50.0 mV — PASS)
+  Worst VDD_UCIE  :   33.2 mV  (limit 50.0 mV — PASS)
+  Worst VDD_MEM   :   38.4 mV  (limit 50.0 mV — PASS)
+
+Dynamic IR drop  (vector-less, 1 000 cycles)
+----------------------------------------------------
+  Worst VDD_CORE  :   62.9 mV  (limit 75.0 mV — PASS)
+  Worst VDD_UCIE  :   49.1 mV  (limit 75.0 mV — PASS)
+  Worst VDD_MEM   :   55.6 mV  (limit 75.0 mV — PASS)
+
+Electromigration  (signal + power)
+----------------------------------------------------
+  Worst metal layer    :   M9  (Cu, AC ratio 71 % of rule limit — PASS)
+  Worst via stack      :   V14-V15  (62 % of rule limit — PASS)
+
+Total chip power
+----------------------------------------------------
+  Static (leakage)     :    52.4 W
+  Dynamic (1.0× load)  :   295.7 W
+  Total (TDP envelope) :   348.1 W   (target ≤ 350 W — PASS)
+
+STATUS: Voltus EM/IR sign-off clean.

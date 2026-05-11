@@ -1,0 +1,12 @@
+Calibre LVS sign-off — LR-CSW-51T2
+====================================================
+Generated: 2026-04-19  Tool: Calibre 2023.4
+
+  Layout subcircuits      :   2 187 224
+  Source subcircuits      :   2 187 224
+  Matched                 :   2 187 224
+  Unmatched (layout)      :           0
+  Unmatched (source)      :           0
+  Property errors         :           0
+
+STATUS: Calibre LVS sign-off clean (layout ↔ schematic equivalent).

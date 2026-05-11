@@ -1,0 +1,31 @@
+PrimeTime sign-off — LR-CSW-51T2 / setup analysis
+====================================================
+Generated: 2026-04-19  Tool: pt_shell 2024.06
+Operating condition set: ssg_0p675v_0c (max), ffg_0p935v_125c (min)
+
+Per-clock WNS / TNS summary
+----------------------------------------------------
+  Clock              WNS (ns)   TNS (ns)   Endpoints
+  clk_core             0.024       0.000        4 832 016
+  clk_mem              0.082       0.000          612 040
+  clk_ucie_tx          0.011       0.000          268 144
+  clk_ucie_rx          0.013       0.000          268 144
+  clk_serdes_tx_*      0.041       0.000        1 048 576
+  clk_serdes_rx_*      0.041       0.000        1 048 576
+  clk_pcie_aux         0.224       0.000           14 880
+  clk_jtag             3.140       0.000            1 024
+  clk_aux              0.812       0.000           24 196
+
+  Total                                       8 117 596
+
+SIGNOFF GATE
+----------------------------------------------------
+  WNS_setup_min   :  +0.011 ns  (PASS — > 0 ns)
+  TNS_setup       :   0.000 ns  (PASS — = 0 ns)
+  WNS_hold_min    :  +0.013 ns  (PASS — > 0 ns)
+  TNS_hold        :   0.000 ns  (PASS — = 0 ns)
+  Max transition  :   0.118 ns  (limit 0.150 ns — PASS)
+  Max capacitance :   0.412 pF  (limit 0.500 pF — PASS)
+  Max fanout      :       29    (limit 32 — PASS)
+
+STATUS: PrimeTime STA sign-off clean.

@@ -1,0 +1,15 @@
+Questa CDC sign-off — LR-CSW-51T2
+====================================================
+Generated: 2026-04-19  Tool: qverify 2024.1
+
+Clocks defined                : 35
+Reset signals                 :  4
+CDC crossings detected        : 8 624
+  ├─ 2-flop synced            : 6 102
+  ├─ async-FIFO synced        : 2 188
+  └─ handshake synced         :   334
+
+CDC violations                :    0
+Metastability injection runs  : 1 000  (no functional divergence)
+
+STATUS: Questa CDC sign-off clean.

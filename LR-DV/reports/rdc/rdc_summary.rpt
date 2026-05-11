@@ -1,0 +1,9 @@
+Questa RDC sign-off — LR-CSW-51T2
+====================================================
+Generated: 2026-04-19  Tool: qverify 2024.1
+
+Reset domains          : 4 (POR, WARM, SOFT, JTAG)
+RDC crossings detected : 612
+RDC violations         :   0
+
+STATUS: Questa RDC sign-off clean.
