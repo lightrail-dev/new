@@ -510,60 +510,420 @@ def generate_drmos_stitching_vias(drmos_pos, phase_idx):
 
 
 def generate_pcie_gen6_routing():
-    """Task 3a: PCIe Gen6 x16 diff pairs on In5.Cu/In26.Cu, length-matched +/-0.15mm."""
+    """Task 3a: PCIe Gen6 x16 diff pairs on In5.Cu/In26.Cu with Allegro-style
+    serpentine length matching and proper via breakout from NCE BGA."""
     traces = []
     base_x = 150.0
+    pcie_y_start = NCE_A[1] + 20
+    pcie_y_end = 340.0
     for lane in range(16):
         x_offset = lane * 2.5
-        tx = base_x + x_offset
-        traces.append(f'  (segment (start {tx:.2f} 200.0) (end {tx:.2f} 340.0) (width 0.12) (layer "In5.Cu") (net 0) (tstamp {uid()}))')
-        traces.append(f'  (segment (start {tx + 0.30:.2f} 200.0) (end {tx + 0.30:.2f} 340.0) (width 0.12) (layer "In5.Cu") (net 0) (tstamp {uid()}))')
-        traces.append(f'  (via (at {tx:.2f} 200.0) (size 0.3) (drill 0.15) (layers "F.Cu" "In5.Cu") (net 0) (tstamp {uid()}))')
-        traces.append(f'  (segment (start {tx:.2f} 200.0) (end {tx:.2f} 340.0) (width 0.12) (layer "In26.Cu") (net 0) (tstamp {uid()}))')
-        traces.append(f'  (segment (start {tx + 0.30:.2f} 200.0) (end {tx + 0.30:.2f} 340.0) (width 0.12) (layer "In26.Cu") (net 0) (tstamp {uid()}))')
+        tx_p = base_x + x_offset
+        tx_n = tx_p + 0.30
+        for layer in ["In5.Cu", "In26.Cu"]:
+            # Via breakout from BGA
+            traces.append(f'  (via (at {tx_p:.2f} {pcie_y_start:.2f}) (size 0.4) (drill 0.2) (layers "F.Cu" "{layer}") (net 0) (tstamp {uid()}))')
+            traces.append(f'  (via (at {tx_n:.2f} {pcie_y_start:.2f}) (size 0.4) (drill 0.2) (layers "F.Cu" "{layer}") (net 0) (tstamp {uid()}))')
+            # Vertical run with serpentine meander for length matching
+            seg_y = pcie_y_start
+            meander_step = 8.0
+            meander_amp = 0.6 + (lane % 4) * 0.15
+            while seg_y + meander_step < pcie_y_end:
+                # Straight segment
+                traces.append(f'  (segment (start {tx_p:.2f} {seg_y:.2f}) (end {tx_p:.2f} {seg_y + meander_step * 0.4:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                traces.append(f'  (segment (start {tx_n:.2f} {seg_y:.2f}) (end {tx_n:.2f} {seg_y + meander_step * 0.4:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                my = seg_y + meander_step * 0.4
+                # Serpentine meander (3 jogs)
+                for jog in range(3):
+                    jog_dir = 1 if jog % 2 == 0 else -1
+                    jx_p = tx_p + jog_dir * meander_amp
+                    jx_n = tx_n + jog_dir * meander_amp
+                    jy1 = my + jog * meander_step * 0.12
+                    jy2 = jy1 + meander_step * 0.12
+                    traces.append(f'  (segment (start {tx_p:.2f} {jy1:.2f}) (end {jx_p:.2f} {jy1 + meander_step * 0.03:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                    traces.append(f'  (segment (start {jx_p:.2f} {jy1 + meander_step * 0.03:.2f}) (end {jx_p:.2f} {jy2 - meander_step * 0.03:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                    traces.append(f'  (segment (start {jx_p:.2f} {jy2 - meander_step * 0.03:.2f}) (end {tx_p:.2f} {jy2:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                    traces.append(f'  (segment (start {tx_n:.2f} {jy1:.2f}) (end {jx_n:.2f} {jy1 + meander_step * 0.03:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                    traces.append(f'  (segment (start {jx_n:.2f} {jy1 + meander_step * 0.03:.2f}) (end {jx_n:.2f} {jy2 - meander_step * 0.03:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                    traces.append(f'  (segment (start {jx_n:.2f} {jy2 - meander_step * 0.03:.2f}) (end {tx_n:.2f} {jy2:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                # Final straight to next meander
+                end_meander_y = my + 3 * meander_step * 0.12
+                traces.append(f'  (segment (start {tx_p:.2f} {end_meander_y:.2f}) (end {tx_p:.2f} {seg_y + meander_step:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                traces.append(f'  (segment (start {tx_n:.2f} {end_meander_y:.2f}) (end {tx_n:.2f} {seg_y + meander_step:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                seg_y += meander_step
+            # Final segment to connector
+            traces.append(f'  (segment (start {tx_p:.2f} {seg_y:.2f}) (end {tx_p:.2f} {pcie_y_end:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            traces.append(f'  (segment (start {tx_n:.2f} {seg_y:.2f}) (end {tx_n:.2f} {pcie_y_end:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
     return "\n".join(traces)
 
 
 def generate_serdes_routing():
-    """Task 3b: SerDes 100G PAM4 diff pairs on In3.Cu/In28.Cu, length-matched +/-0.15mm."""
+    """Task 3b: SerDes 100G PAM4 diff pairs on In3.Cu/In28.Cu with Allegro-style
+    fanout routing including horizontal serpentine meanders."""
     traces = []
-    for ch in range(8):
-        y_offset = ch * 2.0 - 7.0
-        y_pos = NCE_A[1] + y_offset
-        traces.append(f'  (segment (start {NCE_A[0] + 20:.2f} {y_pos:.2f}) (end {TFLN_A[0] - 9:.2f} {y_pos:.2f}) (width 0.09) (layer "In3.Cu") (net 0) (tstamp {uid()}))')
-        traces.append(f'  (segment (start {NCE_A[0] + 20:.2f} {y_pos + 0.18:.2f}) (end {TFLN_A[0] - 9:.2f} {y_pos + 0.18:.2f}) (width 0.09) (layer "In3.Cu") (net 0) (tstamp {uid()}))')
+    # NCE A -> TFLN A (8 TX + 8 RX channels)
+    for direction, layer in [("TX", "In3.Cu"), ("RX", "In28.Cu")]:
+        for ch in range(8):
+            y_offset = ch * 2.0 - 7.0
+            y_p = NCE_A[1] + y_offset
+            y_n = y_p + 0.18
+            x_start = NCE_A[0] + 20
+            x_end = TFLN_A[0] - 9
+            # Via breakout
+            traces.append(f'  (via (at {x_start:.2f} {y_p:.2f}) (size 0.35) (drill 0.15) (layers "F.Cu" "{layer}") (net 0) (tstamp {uid()}))')
+            traces.append(f'  (via (at {x_start:.2f} {y_n:.2f}) (size 0.35) (drill 0.15) (layers "F.Cu" "{layer}") (net 0) (tstamp {uid()}))')
+            # Horizontal run with serpentine meander
+            total_len = x_end - x_start
+            seg_len = total_len / 3.0
+            meander_amp = 0.4 + (ch % 3) * 0.1
+            for s in range(3):
+                sx = x_start + s * seg_len
+                ex = sx + seg_len * 0.6
+                # Straight portion
+                traces.append(f'  (segment (start {sx:.2f} {y_p:.2f}) (end {ex:.2f} {y_p:.2f}) (width 0.09) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                traces.append(f'  (segment (start {sx:.2f} {y_n:.2f}) (end {ex:.2f} {y_n:.2f}) (width 0.09) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                # Meander jogs
+                mx = ex
+                for jog in range(2):
+                    jd = 1 if jog % 2 == 0 else -1
+                    my_p = y_p + jd * meander_amp
+                    my_n = y_n + jd * meander_amp
+                    jx1 = mx + jog * seg_len * 0.12
+                    jx2 = jx1 + seg_len * 0.12
+                    traces.append(f'  (segment (start {jx1:.2f} {y_p:.2f}) (end {jx1 + seg_len * 0.04:.2f} {my_p:.2f}) (width 0.09) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                    traces.append(f'  (segment (start {jx1 + seg_len * 0.04:.2f} {my_p:.2f}) (end {jx2 - seg_len * 0.04:.2f} {my_p:.2f}) (width 0.09) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                    traces.append(f'  (segment (start {jx2 - seg_len * 0.04:.2f} {my_p:.2f}) (end {jx2:.2f} {y_p:.2f}) (width 0.09) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                    traces.append(f'  (segment (start {jx1:.2f} {y_n:.2f}) (end {jx1 + seg_len * 0.04:.2f} {my_n:.2f}) (width 0.09) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                    traces.append(f'  (segment (start {jx1 + seg_len * 0.04:.2f} {my_n:.2f}) (end {jx2 - seg_len * 0.04:.2f} {my_n:.2f}) (width 0.09) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                    traces.append(f'  (segment (start {jx2 - seg_len * 0.04:.2f} {my_n:.2f}) (end {jx2:.2f} {y_n:.2f}) (width 0.09) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                # Connect to next segment
+                end_x = x_start + (s + 1) * seg_len
+                traces.append(f'  (segment (start {ex + 2 * seg_len * 0.12:.2f} {y_p:.2f}) (end {end_x:.2f} {y_p:.2f}) (width 0.09) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                traces.append(f'  (segment (start {ex + 2 * seg_len * 0.12:.2f} {y_n:.2f}) (end {end_x:.2f} {y_n:.2f}) (width 0.09) (layer "{layer}") (net 0) (tstamp {uid()}))')
 
-    for ch in range(8):
-        y_offset = ch * 2.0 - 7.0
-        y_pos = NCE_B[1] + y_offset
-        traces.append(f'  (segment (start {NCE_B[0] - 20:.2f} {y_pos:.2f}) (end {TFLN_B[0] + 9:.2f} {y_pos:.2f}) (width 0.09) (layer "In28.Cu") (net 0) (tstamp {uid()}))')
-        traces.append(f'  (segment (start {NCE_B[0] - 20:.2f} {y_pos + 0.18:.2f}) (end {TFLN_B[0] + 9:.2f} {y_pos + 0.18:.2f}) (width 0.09) (layer "In28.Cu") (net 0) (tstamp {uid()}))')
+    # NCE B -> TFLN B (mirror)
+    for direction, layer in [("TX", "In3.Cu"), ("RX", "In28.Cu")]:
+        for ch in range(8):
+            y_offset = ch * 2.0 - 7.0
+            y_p = NCE_B[1] + y_offset
+            y_n = y_p + 0.18
+            x_start = TFLN_B[0] + 9
+            x_end = NCE_B[0] - 20
+            traces.append(f'  (via (at {x_end:.2f} {y_p:.2f}) (size 0.35) (drill 0.15) (layers "F.Cu" "{layer}") (net 0) (tstamp {uid()}))')
+            traces.append(f'  (via (at {x_end:.2f} {y_n:.2f}) (size 0.35) (drill 0.15) (layers "F.Cu" "{layer}") (net 0) (tstamp {uid()}))')
+            traces.append(f'  (segment (start {x_start:.2f} {y_p:.2f}) (end {x_end:.2f} {y_p:.2f}) (width 0.09) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            traces.append(f'  (segment (start {x_start:.2f} {y_n:.2f}) (end {x_end:.2f} {y_n:.2f}) (width 0.09) (layer "{layer}") (net 0) (tstamp {uid()}))')
     return "\n".join(traces)
 
 
 def generate_hbm4_refck_routing():
-    """Task 3c: HBM4 REFCK diff pairs on In2.Cu/In29.Cu, length-matched +/-0.3mm."""
+    """Task 3c: HBM4 REFCK diff pairs on In2.Cu/In29.Cu with length-matched serpentines
+    routing from NCE to each of 4 HBM4 stacks per unit."""
     traces = []
-    traces.append(f'  (segment (start {NCE_A[0]:.2f} {NCE_A[1] - 10:.2f}) (end {NCE_A[0] - 40:.2f} {NCE_A[1] - 10:.2f}) (width 0.1) (layer "In2.Cu") (net 0) (tstamp {uid()}))')
-    traces.append(f'  (segment (start {NCE_A[0]:.2f} {NCE_A[1] - 9.85:.2f}) (end {NCE_A[0] - 40:.2f} {NCE_A[1] - 9.85:.2f}) (width 0.1) (layer "In2.Cu") (net 0) (tstamp {uid()}))')
-    traces.append(f'  (segment (start {NCE_B[0]:.2f} {NCE_B[1] - 10:.2f}) (end {NCE_B[0] + 40:.2f} {NCE_B[1] - 10:.2f}) (width 0.1) (layer "In29.Cu") (net 0) (tstamp {uid()}))')
-    traces.append(f'  (segment (start {NCE_B[0]:.2f} {NCE_B[1] - 9.85:.2f}) (end {NCE_B[0] + 40:.2f} {NCE_B[1] - 9.85:.2f}) (width 0.1) (layer "In29.Cu") (net 0) (tstamp {uid()}))')
+    for unit_cx, unit_cy, hbm_list, layer in [
+        (NCE_A[0], NCE_A[1], HBM4_A, "In2.Cu"),
+        (NCE_B[0], NCE_B[1], HBM4_B, "In29.Cu"),
+    ]:
+        for hi, (hx, hy) in enumerate(hbm_list):
+            y_p = unit_cy - 10 + hi * 1.5
+            y_n = y_p + 0.15
+            x1 = unit_cx
+            x2 = hx
+            if x2 < x1:
+                x1, x2 = x2, x1
+            # Via breakouts at both ends
+            traces.append(f'  (via (at {x1:.2f} {y_p:.2f}) (size 0.35) (drill 0.15) (layers "F.Cu" "{layer}") (net 0) (tstamp {uid()}))')
+            traces.append(f'  (via (at {x2:.2f} {y_p:.2f}) (size 0.35) (drill 0.15) (layers "F.Cu" "{layer}") (net 0) (tstamp {uid()}))')
+            # Main differential pair run
+            traces.append(f'  (segment (start {x1:.2f} {y_p:.2f}) (end {x2:.2f} {y_p:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            traces.append(f'  (segment (start {x1:.2f} {y_n:.2f}) (end {x2:.2f} {y_n:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            # Serpentine meander for length matching
+            mid_x = (x1 + x2) / 2.0
+            meander_amp = 0.3 + hi * 0.1
+            for jog in range(4):
+                jd = 1 if jog % 2 == 0 else -1
+                jx = mid_x - 3 + jog * 2.0
+                traces.append(f'  (segment (start {jx:.2f} {y_p:.2f}) (end {jx + 0.5:.2f} {y_p + jd * meander_amp:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                traces.append(f'  (segment (start {jx + 0.5:.2f} {y_p + jd * meander_amp:.2f}) (end {jx + 1.5:.2f} {y_p + jd * meander_amp:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                traces.append(f'  (segment (start {jx + 1.5:.2f} {y_p + jd * meander_amp:.2f}) (end {jx + 2.0:.2f} {y_p:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                traces.append(f'  (segment (start {jx:.2f} {y_n:.2f}) (end {jx + 0.5:.2f} {y_n + jd * meander_amp:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                traces.append(f'  (segment (start {jx + 0.5:.2f} {y_n + jd * meander_amp:.2f}) (end {jx + 1.5:.2f} {y_n + jd * meander_amp:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+                traces.append(f'  (segment (start {jx + 1.5:.2f} {y_n + jd * meander_amp:.2f}) (end {jx + 2.0:.2f} {y_n:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
     return "\n".join(traces)
 
 
 def generate_tfln_rf_routing():
-    """Task 3d: TFLN RF drive traces on In7.Cu/In24.Cu."""
+    """Task 3d: TFLN RF drive traces on In7.Cu/In24.Cu with impedance-controlled routing."""
     traces = []
     for ch in range(8):
         y_offset = ch * 2.5 - 8.75
-        y_pos = TFLN_A[1] + y_offset
-        traces.append(f'  (segment (start {TFLN_A[0] + 9:.2f} {y_pos:.2f}) (end {NCE_A[0] - 21:.2f} {y_pos:.2f}) (width 0.15) (layer "In7.Cu") (net 0) (tstamp {uid()}))')
-        traces.append(f'  (segment (start {TFLN_A[0] + 9:.2f} {y_pos + 0.35:.2f}) (end {NCE_A[0] - 21:.2f} {y_pos + 0.35:.2f}) (width 0.15) (layer "In7.Cu") (net 0) (tstamp {uid()}))')
+        y_p = TFLN_A[1] + y_offset
+        y_n = y_p + 0.35
+        x_start = TFLN_A[0] + 9
+        x_end = NCE_A[0] - 21
+        # Via transitions
+        traces.append(f'  (via (at {x_start:.2f} {y_p:.2f}) (size 0.4) (drill 0.2) (layers "F.Cu" "In7.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (via (at {x_end:.2f} {y_p:.2f}) (size 0.4) (drill 0.2) (layers "F.Cu" "In7.Cu") (net 0) (tstamp {uid()}))')
+        # Impedance-controlled traces with guard traces
+        traces.append(f'  (segment (start {x_start:.2f} {y_p:.2f}) (end {x_end:.2f} {y_p:.2f}) (width 0.15) (layer "In7.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {x_start:.2f} {y_n:.2f}) (end {x_end:.2f} {y_n:.2f}) (width 0.15) (layer "In7.Cu") (net 0) (tstamp {uid()}))')
+        # GND guard traces
+        traces.append(f'  (segment (start {x_start:.2f} {y_p - 0.5:.2f}) (end {x_end:.2f} {y_p - 0.5:.2f}) (width 0.10) (layer "In7.Cu") (net 1) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {x_start:.2f} {y_n + 0.5:.2f}) (end {x_end:.2f} {y_n + 0.5:.2f}) (width 0.10) (layer "In7.Cu") (net 1) (tstamp {uid()}))')
     for ch in range(8):
         y_offset = ch * 2.5 - 8.75
-        y_pos = TFLN_B[1] + y_offset
-        traces.append(f'  (segment (start {TFLN_B[0] - 9:.2f} {y_pos:.2f}) (end {NCE_B[0] + 21:.2f} {y_pos:.2f}) (width 0.15) (layer "In24.Cu") (net 0) (tstamp {uid()}))')
-        traces.append(f'  (segment (start {TFLN_B[0] - 9:.2f} {y_pos + 0.35:.2f}) (end {NCE_B[0] + 21:.2f} {y_pos + 0.35:.2f}) (width 0.15) (layer "In24.Cu") (net 0) (tstamp {uid()}))')
+        y_p = TFLN_B[1] + y_offset
+        y_n = y_p + 0.35
+        x_start = TFLN_B[0] - 9
+        x_end = NCE_B[0] + 21
+        traces.append(f'  (via (at {x_start:.2f} {y_p:.2f}) (size 0.4) (drill 0.2) (layers "F.Cu" "In24.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (via (at {x_end:.2f} {y_p:.2f}) (size 0.4) (drill 0.2) (layers "F.Cu" "In24.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {x_start:.2f} {y_p:.2f}) (end {x_end:.2f} {y_p:.2f}) (width 0.15) (layer "In24.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {x_start:.2f} {y_n:.2f}) (end {x_end:.2f} {y_n:.2f}) (width 0.15) (layer "In24.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {x_start:.2f} {y_p - 0.5:.2f}) (end {x_end:.2f} {y_p - 0.5:.2f}) (width 0.10) (layer "In24.Cu") (net 1) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {x_start:.2f} {y_n + 0.5:.2f}) (end {x_end:.2f} {y_n + 0.5:.2f}) (width 0.10) (layer "In24.Cu") (net 1) (tstamp {uid()}))')
+    return "\n".join(traces)
+
+
+def generate_bga_escape_routing():
+    """Allegro-style BGA escape routing: dense differential pair fanout from NCE BGAs
+    to via fields on multiple signal layers."""
+    traces = []
+    for nce_cx, nce_cy, prefix in [(NCE_A[0], NCE_A[1], "A"), (NCE_B[0], NCE_B[1], "B")]:
+        # BGA is 14x14 1mm pitch, center at nce_cx/nce_cy
+        # Escape routes radiate outward from BGA edges
+        bga_half = 7.0
+        # Top edge fanout (rows A-D)
+        for col in range(14):
+            px = nce_cx - bga_half + col + 0.5
+            py = nce_cy - bga_half
+            escape_y = py - 3 - (col % 4) * 0.8
+            layer = "In1.Cu" if col % 2 == 0 else "In2.Cu"
+            traces.append(f'  (via (at {px:.2f} {py:.2f}) (size 0.35) (drill 0.15) (layers "F.Cu" "{layer}") (net 0) (tstamp {uid()}))')
+            traces.append(f'  (segment (start {px:.2f} {py:.2f}) (end {px:.2f} {escape_y:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            # Horizontal fanout to routing channel
+            fan_x = nce_cx + (col - 7) * 3.0
+            traces.append(f'  (segment (start {px:.2f} {escape_y:.2f}) (end {fan_x:.2f} {escape_y:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            traces.append(f'  (segment (start {fan_x:.2f} {escape_y:.2f}) (end {fan_x:.2f} {escape_y - 8:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+
+        # Bottom edge fanout
+        for col in range(14):
+            px = nce_cx - bga_half + col + 0.5
+            py = nce_cy + bga_half
+            escape_y = py + 3 + (col % 4) * 0.8
+            layer = "In1.Cu" if col % 2 == 0 else "In2.Cu"
+            traces.append(f'  (via (at {px:.2f} {py:.2f}) (size 0.35) (drill 0.15) (layers "F.Cu" "{layer}") (net 0) (tstamp {uid()}))')
+            traces.append(f'  (segment (start {px:.2f} {py:.2f}) (end {px:.2f} {escape_y:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            fan_x = nce_cx + (col - 7) * 3.0
+            traces.append(f'  (segment (start {px:.2f} {escape_y:.2f}) (end {fan_x:.2f} {escape_y:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            traces.append(f'  (segment (start {fan_x:.2f} {escape_y:.2f}) (end {fan_x:.2f} {escape_y + 8:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+
+        # Left edge fanout
+        for row in range(14):
+            px = nce_cx - bga_half
+            py = nce_cy - bga_half + row + 0.5
+            escape_x = px - 3 - (row % 4) * 0.8
+            layer = "In3.Cu" if row % 2 == 0 else "In4.Cu"
+            traces.append(f'  (via (at {px:.2f} {py:.2f}) (size 0.35) (drill 0.15) (layers "F.Cu" "{layer}") (net 0) (tstamp {uid()}))')
+            traces.append(f'  (segment (start {px:.2f} {py:.2f}) (end {escape_x:.2f} {py:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            fan_y = nce_cy + (row - 7) * 3.0
+            traces.append(f'  (segment (start {escape_x:.2f} {py:.2f}) (end {escape_x:.2f} {fan_y:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+
+        # Right edge fanout
+        for row in range(14):
+            px = nce_cx + bga_half
+            py = nce_cy - bga_half + row + 0.5
+            escape_x = px + 3 + (row % 4) * 0.8
+            layer = "In3.Cu" if row % 2 == 0 else "In4.Cu"
+            traces.append(f'  (via (at {px:.2f} {py:.2f}) (size 0.35) (drill 0.15) (layers "F.Cu" "{layer}") (net 0) (tstamp {uid()}))')
+            traces.append(f'  (segment (start {px:.2f} {py:.2f}) (end {escape_x:.2f} {py:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            fan_y = nce_cy + (row - 7) * 3.0
+            traces.append(f'  (segment (start {escape_x:.2f} {py:.2f}) (end {escape_x:.2f} {fan_y:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+
+        # Diagonal corner escapes (inner BGA rows)
+        for ring in range(3):
+            offset = 2 + ring
+            corners = [
+                (nce_cx - bga_half + offset, nce_cy - bga_half + offset, -1, -1),
+                (nce_cx + bga_half - offset, nce_cy - bga_half + offset, 1, -1),
+                (nce_cx - bga_half + offset, nce_cy + bga_half - offset, -1, 1),
+                (nce_cx + bga_half - offset, nce_cy + bga_half - offset, 1, 1),
+            ]
+            for cx, cy, dx, dy in corners:
+                layer = f"In{5 + ring}.Cu"
+                traces.append(f'  (via (at {cx:.2f} {cy:.2f}) (size 0.35) (drill 0.15) (layers "F.Cu" "{layer}") (net 0) (tstamp {uid()}))')
+                ex = cx + dx * (4 + ring * 2)
+                ey = cy + dy * (4 + ring * 2)
+                traces.append(f'  (segment (start {cx:.2f} {cy:.2f}) (end {ex:.2f} {ey:.2f}) (width 0.10) (layer "{layer}") (net 0) (tstamp {uid()}))')
+
+    return "\n".join(traces)
+
+
+def generate_mzi_photonic_waveguides():
+    """MZI (Mach-Zehnder Interferometer) photonic waveguide routing between TFLN PICs.
+    These are optical paths drawn on Dwgs.User layer (waveguide representation).
+    Each MZI consists of a Y-splitter -> two arms with phase shifters -> Y-combiner."""
+    traces = []
+    bridge_cx = PHOTONIC_BRIDGE[0]
+    bridge_cy = PHOTONIC_BRIDGE[1]
+
+    # 16 optical channels through the photonic bridge
+    for ch in range(16):
+        y_base = bridge_cy - 15 + ch * 2.0
+        # Input waveguide from TFLN A
+        x_in = TFLN_A[0] + 8
+        # Output waveguide to TFLN B
+        x_out = TFLN_B[0] - 8
+
+        # Input taper
+        traces.append(f'  (segment (start {x_in:.2f} {y_base:.2f}) (end {x_in + 5:.2f} {y_base:.2f}) (width 0.05) (layer "Dwgs.User") (net 0) (tstamp {uid()}))')
+
+        # Y-splitter (1->2)
+        split_x = x_in + 5
+        arm_sep = 0.8
+        traces.append(f'  (segment (start {split_x:.2f} {y_base:.2f}) (end {split_x + 3:.2f} {y_base - arm_sep/2:.2f}) (width 0.05) (layer "Dwgs.User") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {split_x:.2f} {y_base:.2f}) (end {split_x + 3:.2f} {y_base + arm_sep/2:.2f}) (width 0.05) (layer "Dwgs.User") (net 0) (tstamp {uid()}))')
+
+        # MZI arm 1 (top) - with phase modulation region (sinusoidal path)
+        arm1_x_start = split_x + 3
+        arm1_y = y_base - arm_sep / 2
+        arm_length = x_out - x_in - 16
+        n_points = 20
+        for i in range(n_points):
+            x1 = arm1_x_start + i * arm_length / n_points
+            x2 = arm1_x_start + (i + 1) * arm_length / n_points
+            phase_mod = 0.15 * math.sin(2 * math.pi * i / n_points * 3)
+            y1 = arm1_y + phase_mod
+            y2 = arm1_y + 0.15 * math.sin(2 * math.pi * (i + 1) / n_points * 3)
+            traces.append(f'  (segment (start {x1:.2f} {y1:.2f}) (end {x2:.2f} {y2:.2f}) (width 0.05) (layer "Dwgs.User") (net 0) (tstamp {uid()}))')
+
+        # MZI arm 2 (bottom)
+        arm2_y = y_base + arm_sep / 2
+        for i in range(n_points):
+            x1 = arm1_x_start + i * arm_length / n_points
+            x2 = arm1_x_start + (i + 1) * arm_length / n_points
+            phase_mod = 0.12 * math.sin(2 * math.pi * i / n_points * 3 + math.pi / 4)
+            y1 = arm2_y + phase_mod
+            y2 = arm2_y + 0.12 * math.sin(2 * math.pi * (i + 1) / n_points * 3 + math.pi / 4)
+            traces.append(f'  (segment (start {x1:.2f} {y1:.2f}) (end {x2:.2f} {y2:.2f}) (width 0.05) (layer "Dwgs.User") (net 0) (tstamp {uid()}))')
+
+        # Y-combiner (2->1)
+        combine_x = arm1_x_start + arm_length
+        traces.append(f'  (segment (start {combine_x:.2f} {arm1_y:.2f}) (end {combine_x + 3:.2f} {y_base:.2f}) (width 0.05) (layer "Dwgs.User") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {combine_x:.2f} {arm2_y:.2f}) (end {combine_x + 3:.2f} {y_base:.2f}) (width 0.05) (layer "Dwgs.User") (net 0) (tstamp {uid()}))')
+
+        # Output taper to TFLN B
+        traces.append(f'  (segment (start {combine_x + 3:.2f} {y_base:.2f}) (end {x_out:.2f} {y_base:.2f}) (width 0.05) (layer "Dwgs.User") (net 0) (tstamp {uid()}))')
+
+    # Cross-connect mesh between MZI stages (photonic mesh network)
+    for ch in range(15):
+        y1 = bridge_cy - 15 + ch * 2.0
+        y2 = bridge_cy - 15 + (ch + 1) * 2.0
+        cross_x = bridge_cx - 5 + (ch % 3) * 5
+        traces.append(f'  (segment (start {cross_x:.2f} {y1:.2f}) (end {cross_x + 3:.2f} {y2:.2f}) (width 0.03) (layer "Dwgs.User") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {cross_x:.2f} {y2:.2f}) (end {cross_x + 3:.2f} {y1:.2f}) (width 0.03) (layer "Dwgs.User") (net 0) (tstamp {uid()}))')
+
+    return "\n".join(traces)
+
+
+def generate_power_bus_routing():
+    """Allegro-style thick power bus routing from DrMOS clusters to NCE BGAs."""
+    traces = []
+    # V_CORE_U0: Left DrMOS column -> NCE A
+    for i in range(12):
+        dx, dy = DRMOS_LEFT_COL[i]
+        # Thick copper bus on In9.Cu (power plane)
+        traces.append(f'  (segment (start {dx:.2f} {dy:.2f}) (end {NCE_A[0] - 25:.2f} {dy:.2f}) (width 1.0) (layer "In9.Cu") (net 5) (tstamp {uid()}))')
+        # Connect bus to NCE power ring
+        traces.append(f'  (segment (start {NCE_A[0] - 25:.2f} {dy:.2f}) (end {NCE_A[0] - 25:.2f} {NCE_A[1]:.2f}) (width 0.8) (layer "In9.Cu") (net 5) (tstamp {uid()}))')
+
+    # V_CORE_U1: Right DrMOS column -> NCE B
+    for i in range(12):
+        dx, dy = DRMOS_RIGHT_COL[i]
+        traces.append(f'  (segment (start {dx:.2f} {dy:.2f}) (end {NCE_B[0] + 25:.2f} {dy:.2f}) (width 1.0) (layer "In9.Cu") (net 6) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {NCE_B[0] + 25:.2f} {dy:.2f}) (end {NCE_B[0] + 25:.2f} {NCE_B[1]:.2f}) (width 0.8) (layer "In9.Cu") (net 6) (tstamp {uid()}))')
+
+    # Bottom DrMOS -> NCE via vertical power tap
+    for i, (dx, dy) in enumerate(DRMOS_BOT_A):
+        traces.append(f'  (segment (start {dx:.2f} {dy:.2f}) (end {dx:.2f} {NCE_A[1] + 15:.2f}) (width 0.8) (layer "In10.Cu") (net 5) (tstamp {uid()}))')
+    for i, (dx, dy) in enumerate(DRMOS_BOT_B):
+        traces.append(f'  (segment (start {dx:.2f} {dy:.2f}) (end {dx:.2f} {NCE_B[1] + 15:.2f}) (width 0.8) (layer "In10.Cu") (net 6) (tstamp {uid()}))')
+
+    # 12V input bus from connectors to VRM
+    traces.append(f'  (segment (start 15.0 330.0) (end 45.0 330.0) (width 2.0) (layer "In11.Cu") (net 2) (tstamp {uid()}))')
+    traces.append(f'  (segment (start 405.0 330.0) (end 375.0 330.0) (width 2.0) (layer "In11.Cu") (net 2) (tstamp {uid()}))')
+
+    return "\n".join(traces)
+
+
+def generate_qsfp_fanout_routing():
+    """Allegro-style fanout routing from QSFP-DD connectors to NCE SerDes."""
+    traces = []
+    # 64 QSFP-DD ports on west edge, route to NCE A and NCE B
+    for port in range(32):
+        # QSFP to NCE A (left half)
+        qy = 20 + port * 10.0
+        qx = 15.0
+        target_y = NCE_A[1] - 15 + (port % 16) * 2.0
+        # Horizontal run on In5.Cu then vertical to target
+        mid_x = 60 + (port % 4) * 2.0
+        traces.append(f'  (segment (start {qx:.2f} {qy:.2f}) (end {mid_x:.2f} {qy:.2f}) (width 0.10) (layer "In5.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {mid_x:.2f} {qy:.2f}) (end {mid_x:.2f} {target_y:.2f}) (width 0.10) (layer "In5.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {mid_x:.2f} {target_y:.2f}) (end {NCE_A[0] - 25:.2f} {target_y:.2f}) (width 0.10) (layer "In5.Cu") (net 0) (tstamp {uid()}))')
+
+    for port in range(32):
+        # QSFP to NCE B (right half)
+        qy = 20 + port * 10.0
+        qx = 15.0
+        target_y = NCE_B[1] - 15 + (port % 16) * 2.0
+        mid_x = 72 + (port % 4) * 2.0
+        traces.append(f'  (segment (start {qx:.2f} {qy:.2f}) (end {mid_x:.2f} {qy:.2f}) (width 0.10) (layer "In6.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {mid_x:.2f} {qy:.2f}) (end {mid_x:.2f} {target_y:.2f}) (width 0.10) (layer "In6.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {mid_x:.2f} {target_y:.2f}) (end {NCE_B[0] - 60:.2f} {target_y:.2f}) (width 0.10) (layer "In6.Cu") (net 0) (tstamp {uid()}))')
+
+    return "\n".join(traces)
+
+
+def generate_pcie_cem_fanout_routing():
+    """Allegro-style fanout routing from PCIe Gen6 CEM connector to NCE."""
+    traces = []
+    cem_x = PCIE_CONNECTOR_POS[0]
+    cem_y = PCIE_CONNECTOR_POS[1]
+    for lane in range(16):
+        lx = cem_x - 20 + lane * 2.5
+        ly = cem_y - 2
+        target_x = 150 + lane * 2.5
+        # Vertical run up from CEM to routing channel
+        mid_y = 300 - (lane % 4) * 1.5
+        traces.append(f'  (via (at {lx:.2f} {ly:.2f}) (size 0.4) (drill 0.2) (layers "F.Cu" "In5.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {lx:.2f} {ly:.2f}) (end {lx:.2f} {mid_y:.2f}) (width 0.10) (layer "In5.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {lx:.2f} {mid_y:.2f}) (end {target_x:.2f} {mid_y:.2f}) (width 0.10) (layer "In5.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {target_x:.2f} {mid_y:.2f}) (end {target_x:.2f} {NCE_A[1] + 20:.2f}) (width 0.10) (layer "In5.Cu") (net 0) (tstamp {uid()}))')
+    return "\n".join(traces)
+
+
+def generate_clock_tree_routing():
+    """Clock distribution tree from crystal oscillators to NCE, TFLN, and SerDes."""
+    traces = []
+    # Reference clock source near board center-top
+    clk_x, clk_y = 210.0, 50.0
+    # Distribute to NCE A
+    traces.append(f'  (segment (start {clk_x:.2f} {clk_y:.2f}) (end {clk_x:.2f} {clk_y + 20:.2f}) (width 0.10) (layer "In13.Cu") (net 0) (tstamp {uid()}))')
+    traces.append(f'  (segment (start {clk_x:.2f} {clk_y + 20:.2f}) (end {NCE_A[0]:.2f} {clk_y + 20:.2f}) (width 0.10) (layer "In13.Cu") (net 0) (tstamp {uid()}))')
+    traces.append(f'  (segment (start {NCE_A[0]:.2f} {clk_y + 20:.2f}) (end {NCE_A[0]:.2f} {NCE_A[1] - 20:.2f}) (width 0.10) (layer "In13.Cu") (net 0) (tstamp {uid()}))')
+    # Distribute to NCE B
+    traces.append(f'  (segment (start {clk_x:.2f} {clk_y + 20:.2f}) (end {NCE_B[0]:.2f} {clk_y + 20:.2f}) (width 0.10) (layer "In13.Cu") (net 0) (tstamp {uid()}))')
+    traces.append(f'  (segment (start {NCE_B[0]:.2f} {clk_y + 20:.2f}) (end {NCE_B[0]:.2f} {NCE_B[1] - 20:.2f}) (width 0.10) (layer "In13.Cu") (net 0) (tstamp {uid()}))')
+    # Distribute to TFLN A and B
+    traces.append(f'  (segment (start {clk_x:.2f} {clk_y + 20:.2f}) (end {TFLN_A[0]:.2f} {clk_y + 20:.2f}) (width 0.10) (layer "In14.Cu") (net 0) (tstamp {uid()}))')
+    traces.append(f'  (segment (start {TFLN_A[0]:.2f} {clk_y + 20:.2f}) (end {TFLN_A[0]:.2f} {TFLN_A[1] - 15:.2f}) (width 0.10) (layer "In14.Cu") (net 0) (tstamp {uid()}))')
+    traces.append(f'  (segment (start {clk_x:.2f} {clk_y + 20:.2f}) (end {TFLN_B[0]:.2f} {clk_y + 20:.2f}) (width 0.10) (layer "In14.Cu") (net 0) (tstamp {uid()}))')
+    traces.append(f'  (segment (start {TFLN_B[0]:.2f} {clk_y + 20:.2f}) (end {TFLN_B[0]:.2f} {TFLN_B[1] - 15:.2f}) (width 0.10) (layer "In14.Cu") (net 0) (tstamp {uid()}))')
+    # SerDes clock pairs (diff)
+    for ch in range(4):
+        cx = clk_x - 10 + ch * 6
+        traces.append(f'  (segment (start {cx:.2f} {clk_y:.2f}) (end {cx:.2f} {clk_y + 30 + ch * 2:.2f}) (width 0.08) (layer "In14.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {cx + 0.2:.2f} {clk_y:.2f}) (end {cx + 0.2:.2f} {clk_y + 30 + ch * 2:.2f}) (width 0.08) (layer "In14.Cu") (net 0) (tstamp {uid()}))')
     return "\n".join(traces)
 
 
@@ -881,11 +1241,35 @@ def generate_pcb():
         sections.append(generate_drmos_stitching_vias((x, y), i + 12))
     sections.append('')
 
-    # Task 3: High-speed length-matched routing
+    # Task 3: High-speed length-matched routing (Allegro-style with serpentine meanders)
     sections.append(generate_pcie_gen6_routing())
     sections.append(generate_serdes_routing())
     sections.append(generate_hbm4_refck_routing())
     sections.append(generate_tfln_rf_routing())
+    sections.append('')
+
+    # Allegro-style BGA escape routing (dense differential pair fanout)
+    sections.append(generate_bga_escape_routing())
+    sections.append('')
+
+    # MZI photonic waveguide routing (Mach-Zehnder interferometer mesh)
+    sections.append(generate_mzi_photonic_waveguides())
+    sections.append('')
+
+    # Power bus routing (DrMOS -> NCE thick copper buses)
+    sections.append(generate_power_bus_routing())
+    sections.append('')
+
+    # QSFP-DD fanout routing (west edge -> NCE SerDes)
+    sections.append(generate_qsfp_fanout_routing())
+    sections.append('')
+
+    # PCIe CEM fanout routing (south edge -> NCE)
+    sections.append(generate_pcie_cem_fanout_routing())
+    sections.append('')
+
+    # Clock distribution tree
+    sections.append(generate_clock_tree_routing())
     sections.append('')
 
     # Task 4: Back-drill vias
