@@ -928,161 +928,176 @@ def generate_clock_tree_routing():
 
 
 def generate_swept_arc_routing():
-    """Swept arc routing from NCE BGAs to board edges — organic curves matching
-    Cadence Allegro aesthetic. Uses multi-segment polylines to approximate arcs.
-    Denser traces with varying widths for visual match to reference."""
+    """Swept arc routing from NCE BGAs to board edges — thick organic curves
+    matching Cadence Allegro aesthetic. Traces are 0.25-0.50mm wide for high
+    visibility against the red copper fill background."""
     traces = []
-    n_arc_segs = 14
+    n_segs = 16
+
+    def bezier_seg(sx, sy, cx, cy, ex, ey, w, layer="F.Cu", net=0):
+        segs = []
+        for s in range(n_segs):
+            t0 = s / n_segs
+            t1 = (s + 1) / n_segs
+            x0 = (1-t0)**2 * sx + 2*(1-t0)*t0 * cx + t0**2 * ex
+            y0 = (1-t0)**2 * sy + 2*(1-t0)*t0 * cy + t0**2 * ey
+            x1 = (1-t1)**2 * sx + 2*(1-t1)*t1 * cx + t1**2 * ex
+            y1 = (1-t1)**2 * sy + 2*(1-t1)*t1 * cy + t1**2 * ey
+            segs.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width {w:.2f}) (layer "{layer}") (net {net}) (tstamp {uid()}))')
+        return segs
 
     for nce_cx, nce_cy, side in [(NCE_A[0], NCE_A[1], "L"), (NCE_B[0], NCE_B[1], "R")]:
-        bga_half = 7.0
-        # Top swept arcs — traces fan upward from BGA top edge (denser, 30 traces)
-        for i in range(30):
-            start_x = nce_cx - bga_half + i * (2 * bga_half / 29)
-            start_y = nce_cy - bga_half - 2
-            spread = (i - 15) * 3.5
-            end_x = nce_cx + spread
-            end_y = 25 + abs(i - 15) * 1.2
-            w = 0.10 + (i % 3) * 0.02
-            for s in range(n_arc_segs):
-                t0 = s / n_arc_segs
-                t1 = (s + 1) / n_arc_segs
-                ctrl_x = nce_cx + spread * 0.3
-                ctrl_y = nce_cy - bga_half - 35
-                x0 = (1-t0)**2 * start_x + 2*(1-t0)*t0 * ctrl_x + t0**2 * end_x
-                y0 = (1-t0)**2 * start_y + 2*(1-t0)*t0 * ctrl_y + t0**2 * end_y
-                x1 = (1-t1)**2 * start_x + 2*(1-t1)*t1 * ctrl_x + t1**2 * end_x
-                y1 = (1-t1)**2 * start_y + 2*(1-t1)*t1 * ctrl_y + t1**2 * end_y
-                traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width {w:.2f}) (layer "F.Cu") (net 0) (tstamp {uid()}))')
+        bga_half = 20.0
 
-        # Bottom swept arcs — fan downward (denser, 30 traces)
-        for i in range(30):
-            start_x = nce_cx - bga_half + i * (2 * bga_half / 29)
-            start_y = nce_cy + bga_half + 2
-            spread = (i - 15) * 3.0
-            end_x = nce_cx + spread
-            end_y = 310 - abs(i - 15) * 0.8
-            w = 0.10 + (i % 3) * 0.02
-            for s in range(n_arc_segs):
-                t0 = s / n_arc_segs
-                t1 = (s + 1) / n_arc_segs
-                ctrl_x = nce_cx + spread * 0.4
-                ctrl_y = nce_cy + bga_half + 45
-                x0 = (1-t0)**2 * start_x + 2*(1-t0)*t0 * ctrl_x + t0**2 * end_x
-                y0 = (1-t0)**2 * start_y + 2*(1-t0)*t0 * ctrl_y + t0**2 * end_y
-                x1 = (1-t1)**2 * start_x + 2*(1-t1)*t1 * ctrl_x + t1**2 * end_x
-                y1 = (1-t1)**2 * start_y + 2*(1-t1)*t1 * ctrl_y + t1**2 * end_y
-                traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width {w:.2f}) (layer "F.Cu") (net 0) (tstamp {uid()}))')
+        # Top swept arcs — 40 traces fanning upward with thick widths
+        for i in range(40):
+            sx = nce_cx - bga_half + i * (2 * bga_half / 39)
+            sy = nce_cy - bga_half - 3
+            spread = (i - 20) * 4.0
+            ex = nce_cx + spread * 1.2
+            ey = 12 + abs(i - 20) * 0.8
+            cx_pt = nce_cx + spread * 0.4
+            cy_pt = nce_cy - bga_half - 50
+            w = 0.25 + (i % 4) * 0.08
+            traces.extend(bezier_seg(sx, sy, cx_pt, cy_pt, ex, ey, w))
 
-        # Side swept arcs — fan outward to left/right edges (denser, 24 traces)
+        # Bottom swept arcs — 40 traces fanning downward
+        for i in range(40):
+            sx = nce_cx - bga_half + i * (2 * bga_half / 39)
+            sy = nce_cy + bga_half + 3
+            spread = (i - 20) * 3.5
+            ex = nce_cx + spread * 1.1
+            ey = 320 - abs(i - 20) * 0.6
+            cx_pt = nce_cx + spread * 0.5
+            cy_pt = nce_cy + bga_half + 55
+            w = 0.25 + (i % 4) * 0.08
+            traces.extend(bezier_seg(sx, sy, cx_pt, cy_pt, ex, ey, w))
+
+        # Side swept arcs — 32 traces fanning outward to left/right
         outward_dir = -1 if side == "L" else 1
-        for i in range(24):
-            start_x = nce_cx + outward_dir * (bga_half + 2)
-            start_y = nce_cy - bga_half + i * (2 * bga_half / 23)
-            spread_y = (i - 12) * 5.5
-            end_x = nce_cx + outward_dir * 85
-            end_y = nce_cy + spread_y
-            w = 0.12 + (i % 4) * 0.02
-            for s in range(n_arc_segs):
-                t0 = s / n_arc_segs
-                t1 = (s + 1) / n_arc_segs
-                ctrl_x = nce_cx + outward_dir * 45
-                ctrl_y = nce_cy + spread_y * 0.5
-                x0 = (1-t0)**2 * start_x + 2*(1-t0)*t0 * ctrl_x + t0**2 * end_x
-                y0 = (1-t0)**2 * start_y + 2*(1-t0)*t0 * ctrl_y + t0**2 * end_y
-                x1 = (1-t1)**2 * start_x + 2*(1-t1)*t1 * ctrl_x + t1**2 * end_x
-                y1 = (1-t1)**2 * start_y + 2*(1-t1)*t1 * ctrl_y + t1**2 * end_y
-                traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width {w:.2f}) (layer "F.Cu") (net 0) (tstamp {uid()}))')
+        for i in range(32):
+            sx = nce_cx + outward_dir * (bga_half + 3)
+            sy = nce_cy - bga_half + i * (2 * bga_half / 31)
+            spread_y = (i - 16) * 6.0
+            ex = nce_cx + outward_dir * 110
+            ey = nce_cy + spread_y
+            cx_pt = nce_cx + outward_dir * 55
+            cy_pt = nce_cy + spread_y * 0.5
+            w = 0.30 + (i % 3) * 0.08
+            traces.extend(bezier_seg(sx, sy, cx_pt, cy_pt, ex, ey, w))
 
-        # Inward arcs — toward TFLN/photonic bridge (denser)
-        inward_dir = 1 if side == "L" else -1
+        # Diagonal corner arcs — 16 traces to top-left/right corners
         for i in range(16):
-            start_x = nce_cx + inward_dir * (bga_half + 2)
-            start_y = nce_cy - 8 + i * 1.0
-            end_x = nce_cx + inward_dir * 40
-            end_y = nce_cy - 7 + i * 0.9
-            for s in range(10):
-                t0 = s / 10
-                t1 = (s + 1) / 10
-                ctrl_x = nce_cx + inward_dir * 22
-                ctrl_y = start_y + (i - 8) * 1.5
-                x0 = (1-t0)**2 * start_x + 2*(1-t0)*t0 * ctrl_x + t0**2 * end_x
-                y0 = (1-t0)**2 * start_y + 2*(1-t0)*t0 * ctrl_y + t0**2 * end_y
-                x1 = (1-t1)**2 * start_x + 2*(1-t1)*t1 * ctrl_x + t1**2 * end_x
-                y1 = (1-t1)**2 * start_y + 2*(1-t1)*t1 * ctrl_y + t1**2 * end_y
-                traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width 0.10) (layer "F.Cu") (net 0) (tstamp {uid()}))')
+            sx = nce_cx + outward_dir * (bga_half + 2)
+            sy = nce_cy - bga_half + i * 1.5
+            ex = nce_cx + outward_dir * 100
+            ey = 15 + i * 3
+            cx_pt = nce_cx + outward_dir * 60
+            cy_pt = nce_cy - 60
+            w = 0.30 + (i % 3) * 0.06
+            traces.extend(bezier_seg(sx, sy, cx_pt, cy_pt, ex, ey, w))
 
-    # Connector-to-NCE swept arcs on F.Cu (QSFP west edge to NCE areas)
-    for port in range(32):
-        start_x = 18.0
-        start_y = 30 + port * 9.5
-        end_x = NCE_A[0] - 25
-        end_y = NCE_A[1] - 12 + (port % 16) * 1.5
-        ctrl_x = 55 + (port % 8) * 2.0
-        ctrl_y = (start_y + end_y) / 2 - 12
-        for s in range(n_arc_segs):
-            t0 = s / n_arc_segs
-            t1 = (s + 1) / n_arc_segs
-            x0 = (1-t0)**2 * start_x + 2*(1-t0)*t0 * ctrl_x + t0**2 * end_x
-            y0 = (1-t0)**2 * start_y + 2*(1-t0)*t0 * ctrl_y + t0**2 * end_y
-            x1 = (1-t1)**2 * start_x + 2*(1-t1)*t1 * ctrl_x + t1**2 * end_x
-            y1 = (1-t1)**2 * start_y + 2*(1-t1)*t1 * ctrl_y + t1**2 * end_y
-            traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width 0.15) (layer "F.Cu") (net 0) (tstamp {uid()}))')
+        # Diagonal corner arcs — 16 traces to bottom-left/right corners
+        for i in range(16):
+            sx = nce_cx + outward_dir * (bga_half + 2)
+            sy = nce_cy + bga_half - i * 1.5
+            ex = nce_cx + outward_dir * 100
+            ey = 320 - i * 3
+            cx_pt = nce_cx + outward_dir * 60
+            cy_pt = nce_cy + 60
+            w = 0.30 + (i % 3) * 0.06
+            traces.extend(bezier_seg(sx, sy, cx_pt, cy_pt, ex, ey, w))
 
-    # Right-side connector arcs (mirrored for east-edge routing)
+        # Inward arcs — toward TFLN/photonic bridge (thicker)
+        inward_dir = 1 if side == "L" else -1
+        for i in range(20):
+            sx = nce_cx + inward_dir * (bga_half + 3)
+            sy = nce_cy - 10 + i * 1.0
+            ex = nce_cx + inward_dir * 42
+            ey = nce_cy - 9 + i * 0.9
+            cx_pt = nce_cx + inward_dir * 28
+            cy_pt = sy + (i - 10) * 1.8
+            w = 0.20 + (i % 3) * 0.05
+            traces.extend(bezier_seg(sx, sy, cx_pt, cy_pt, ex, ey, w))
+
+    # QSFP-to-NCE swept arcs (west edge, thicker)
     for port in range(32):
-        start_x = 402.0
-        start_y = 30 + port * 9.5
-        end_x = NCE_B[0] + 25
-        end_y = NCE_B[1] - 12 + (port % 16) * 1.5
-        ctrl_x = 365 - (port % 8) * 2.0
-        ctrl_y = (start_y + end_y) / 2 - 12
-        for s in range(n_arc_segs):
-            t0 = s / n_arc_segs
-            t1 = (s + 1) / n_arc_segs
-            x0 = (1-t0)**2 * start_x + 2*(1-t0)*t0 * ctrl_x + t0**2 * end_x
-            y0 = (1-t0)**2 * start_y + 2*(1-t0)*t0 * ctrl_y + t0**2 * end_y
-            x1 = (1-t1)**2 * start_x + 2*(1-t1)*t1 * ctrl_x + t1**2 * end_x
-            y1 = (1-t1)**2 * start_y + 2*(1-t1)*t1 * ctrl_y + t1**2 * end_y
-            traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width 0.15) (layer "F.Cu") (net 0) (tstamp {uid()}))')
+        sx = 20.0
+        sy = 30 + port * 9.5
+        ex = NCE_A[0] - 30
+        ey = NCE_A[1] - 14 + (port % 16) * 1.8
+        cx_pt = 60 + (port % 8) * 2.5
+        cy_pt = (sy + ey) / 2 - 15
+        w = 0.25 + (port % 3) * 0.05
+        traces.extend(bezier_seg(sx, sy, cx_pt, cy_pt, ex, ey, w))
+
+    # East edge connector arcs (mirrored)
+    for port in range(32):
+        sx = 400.0
+        sy = 30 + port * 9.5
+        ex = NCE_B[0] + 30
+        ey = NCE_B[1] - 14 + (port % 16) * 1.8
+        cx_pt = 360 - (port % 8) * 2.5
+        cy_pt = (sy + ey) / 2 - 15
+        w = 0.25 + (port % 3) * 0.05
+        traces.extend(bezier_seg(sx, sy, cx_pt, cy_pt, ex, ey, w))
+
+    # Additional thick power arc traces from VRM corners to NCEs
+    for nce_cx, nce_cy, side in [(NCE_A[0], NCE_A[1], "L"), (NCE_B[0], NCE_B[1], "R")]:
+        vrm_x = 45 if side == "L" else 375
+        for i in range(8):
+            sx = vrm_x
+            sy = 80 + i * 25
+            ex = nce_cx + (-25 if side == "L" else 25)
+            ey = nce_cy - 15 + i * 4
+            cx_pt = (sx + ex) / 2
+            cy_pt = sy - 20 + i * 3
+            w = 0.40 + (i % 2) * 0.10
+            traces.extend(bezier_seg(sx, sy, cx_pt, cy_pt, ex, ey, w))
 
     return "\n".join(traces)
 
 
 def generate_bcu_edge_routing():
-    """B.Cu traces along board edges — matching the blue perimeter routing
-    visible in the reference image. Includes PCIe bus routing along bottom,
-    power distribution along left/right edges, and signal routing."""
+    """B.Cu traces along board edges — thicker blue perimeter routing
+    matching the reference image. Wider traces for visibility."""
     traces = []
-    # Bottom edge — PCIe bus routing (horizontal, multiple parallel traces)
-    for i in range(24):
-        y = 330 + i * 0.5
-        traces.append(f'  (segment (start 40 {y:.2f}) (end 380 {y:.2f}) (width 0.15) (layer "B.Cu") (net 0) (tstamp {uid()}))')
-    # Left edge — vertical power distribution traces
-    for i in range(16):
-        x = 8 + i * 0.8
-        traces.append(f'  (segment (start {x:.2f} 15) (end {x:.2f} 340) (width 0.20) (layer "B.Cu") (net 0) (tstamp {uid()}))')
-    # Right edge — vertical power distribution traces
-    for i in range(16):
-        x = 405 + i * 0.8
-        traces.append(f'  (segment (start {x:.2f} 15) (end {x:.2f} 340) (width 0.20) (layer "B.Cu") (net 0) (tstamp {uid()}))')
-    # B.Cu swept arcs from NCE B.Cu pads (bottom DrMOS area)
+    # Bottom edge — PCIe bus routing (thick horizontal traces)
+    for i in range(30):
+        y = 328 + i * 0.55
+        w = 0.25 + (i % 3) * 0.05
+        traces.append(f'  (segment (start 30 {y:.2f}) (end 390 {y:.2f}) (width {w:.2f}) (layer "B.Cu") (net 0) (tstamp {uid()}))')
+    # Left edge — vertical power distribution (thicker)
+    for i in range(20):
+        x = 6 + i * 0.7
+        w = 0.25 + (i % 3) * 0.05
+        traces.append(f'  (segment (start {x:.2f} 10) (end {x:.2f} 342) (width {w:.2f}) (layer "B.Cu") (net 0) (tstamp {uid()}))')
+    # Right edge — vertical power distribution (thicker)
+    for i in range(20):
+        x = 404 + i * 0.7
+        w = 0.25 + (i % 3) * 0.05
+        traces.append(f'  (segment (start {x:.2f} 10) (end {x:.2f} 342) (width {w:.2f}) (layer "B.Cu") (net 0) (tstamp {uid()}))')
+    # Top edge — horizontal routing
+    for i in range(12):
+        y = 6 + i * 0.6
+        traces.append(f'  (segment (start 25 {y:.2f}) (end 395 {y:.2f}) (width 0.25) (layer "B.Cu") (net 0) (tstamp {uid()}))')
+    # B.Cu swept arcs from NCE to bottom (thicker)
     for nce_cx, nce_cy in [(NCE_A[0], NCE_A[1]), (NCE_B[0], NCE_B[1])]:
-        for i in range(12):
-            start_x = nce_cx - 10 + i * 1.8
-            start_y = nce_cy + 20
-            end_x = start_x + (i - 6) * 8
-            end_y = 335
-            for s in range(10):
-                t0 = s / 10
-                t1 = (s + 1) / 10
-                ctrl_x = (start_x + end_x) / 2
-                ctrl_y = nce_cy + 80
-                x0 = (1-t0)**2 * start_x + 2*(1-t0)*t0 * ctrl_x + t0**2 * end_x
-                y0 = (1-t0)**2 * start_y + 2*(1-t0)*t0 * ctrl_y + t0**2 * end_y
-                x1 = (1-t1)**2 * start_x + 2*(1-t1)*t1 * ctrl_x + t1**2 * end_x
-                y1 = (1-t1)**2 * start_y + 2*(1-t1)*t1 * ctrl_y + t1**2 * end_y
-                traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width 0.12) (layer "B.Cu") (net 0) (tstamp {uid()}))')
+        for i in range(16):
+            sx = nce_cx - 12 + i * 1.5
+            sy = nce_cy + 22
+            ex = sx + (i - 8) * 10
+            ey = 338
+            for s in range(12):
+                t0 = s / 12
+                t1 = (s + 1) / 12
+                cx_pt = (sx + ex) / 2
+                cy_pt = nce_cy + 85
+                x0 = (1-t0)**2 * sx + 2*(1-t0)*t0 * cx_pt + t0**2 * ex
+                y0 = (1-t0)**2 * sy + 2*(1-t0)*t0 * cy_pt + t0**2 * ey
+                x1 = (1-t1)**2 * sx + 2*(1-t1)*t1 * cx_pt + t1**2 * ex
+                y1 = (1-t1)**2 * sy + 2*(1-t1)*t1 * cy_pt + t1**2 * ey
+                traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width 0.20) (layer "B.Cu") (net 0) (tstamp {uid()}))')
     return "\n".join(traces)
 
 
@@ -1272,60 +1287,55 @@ def generate_dense_passive_fill():
     return "\n".join(fps)
 
 
-def generate_fcu_copper_fills():
-    """F.Cu copper fill zones around major component areas — matching the large
-    red filled regions visible in the reference image."""
-    zones = []
-    # GND copper fill around NCE A
+def generate_substrate_fills():
+    """Green substrate/courtyard filled rectangles around NCE and TFLN assemblies
+    matching the bright green areas in the reference image. Uses Eco1.User layer
+    which renders in green in KiCad's default color scheme."""
+    items = []
+    # NCE A green substrate area (large green rectangle)
     nce_ax, nce_ay = NCE_A
-    zones.append(f"""  (zone (net 1) (net_name "GND") (layer "F.Cu") (tstamp {uid()}) (hatch edge 0.508)
-    (connect_pads (clearance 0.2))
-    (fill yes (thermal_gap 0.3) (thermal_bridge_width 0.4))
-    (polygon (pts
-      (xy {nce_ax - 45} {nce_ay - 45}) (xy {nce_ax + 45} {nce_ay - 45})
-      (xy {nce_ax + 45} {nce_ay + 45}) (xy {nce_ax - 45} {nce_ay + 45})
-    ))
-  )""")
-    # GND copper fill around NCE B
+    items.append(f'  (gr_rect (start {nce_ax - 55} {nce_ay - 35}) (end {nce_ax + 55} {nce_ay + 35}) (layer "Eco1.User") (width 0.5) (fill solid) (tstamp {uid()}))')
+    # NCE B green substrate area
     nce_bx, nce_by = NCE_B
+    items.append(f'  (gr_rect (start {nce_bx - 55} {nce_by - 35}) (end {nce_bx + 55} {nce_by + 35}) (layer "Eco1.User") (width 0.5) (fill solid) (tstamp {uid()}))')
+    # TFLN A substrate
+    tx, ty = TFLN_A
+    items.append(f'  (gr_rect (start {tx - 12} {ty - 12}) (end {tx + 12} {ty + 12}) (layer "Eco1.User") (width 0.3) (fill solid) (tstamp {uid()}))')
+    # TFLN B substrate
+    tx, ty = TFLN_B
+    items.append(f'  (gr_rect (start {tx - 12} {ty - 12}) (end {tx + 12} {ty + 12}) (layer "Eco1.User") (width 0.3) (fill solid) (tstamp {uid()}))')
+    # Photonic bridge (magenta/pink — use Eco2.User)
+    bx, by = PHOTONIC_BRIDGE
+    items.append(f'  (gr_rect (start {bx - 15} {by - 25}) (end {bx + 15} {by + 25}) (layer "Eco2.User") (width 0.3) (fill solid) (tstamp {uid()}))')
+    # NCE die pads (small gold squares at center of each NCE)
+    items.append(f'  (gr_rect (start {nce_ax - 8} {nce_ay - 8}) (end {nce_ax + 8} {nce_ay + 8}) (layer "F.Fab") (width 0.3) (fill solid) (tstamp {uid()}))')
+    items.append(f'  (gr_rect (start {nce_bx - 8} {nce_by - 8}) (end {nce_bx + 8} {nce_by + 8}) (layer "F.Fab") (width 0.3) (fill solid) (tstamp {uid()}))')
+    return "\n".join(items)
+
+
+def generate_fcu_copper_fills():
+    """F.Cu GND copper fill covering the ENTIRE board — creating the dominant
+    red copper background visible in the reference image. One massive zone
+    with thermal relief on pads. The photonic bridge keepout prevents copper
+    in the optical datapath."""
+    zones = []
+    m = 2.0
+    # Single board-wide F.Cu GND fill (the dominant red in reference)
     zones.append(f"""  (zone (net 1) (net_name "GND") (layer "F.Cu") (tstamp {uid()}) (hatch edge 0.508)
     (connect_pads (clearance 0.2))
+    (min_thickness 0.15)
     (fill yes (thermal_gap 0.3) (thermal_bridge_width 0.4))
     (polygon (pts
-      (xy {nce_bx - 45} {nce_by - 45}) (xy {nce_bx + 45} {nce_by - 45})
-      (xy {nce_bx + 45} {nce_by + 45}) (xy {nce_bx - 45} {nce_by + 45})
+      (xy {m} {m}) (xy {BW - m} {m}) (xy {BW - m} {BH - m}) (xy {m} {BH - m})
     ))
   )""")
-    # VRM area copper fills (left)
-    zones.append(f"""  (zone (net 1) (net_name "GND") (layer "F.Cu") (tstamp {uid()}) (hatch edge 0.508)
+    # B.Cu board-wide GND fill (blue background)
+    zones.append(f"""  (zone (net 1) (net_name "GND") (layer "B.Cu") (tstamp {uid()}) (hatch edge 0.508)
     (connect_pads (clearance 0.2))
+    (min_thickness 0.15)
     (fill yes (thermal_gap 0.3) (thermal_bridge_width 0.4))
     (polygon (pts
-      (xy 5 60) (xy 85 60) (xy 85 310) (xy 5 310)
-    ))
-  )""")
-    # VRM area copper fills (right)
-    zones.append(f"""  (zone (net 1) (net_name "GND") (layer "F.Cu") (tstamp {uid()}) (hatch edge 0.508)
-    (connect_pads (clearance 0.2))
-    (fill yes (thermal_gap 0.3) (thermal_bridge_width 0.4))
-    (polygon (pts
-      (xy 335 60) (xy 415 60) (xy 415 310) (xy 335 310)
-    ))
-  )""")
-    # Top edge GND fill
-    zones.append(f"""  (zone (net 1) (net_name "GND") (layer "F.Cu") (tstamp {uid()}) (hatch edge 0.508)
-    (connect_pads (clearance 0.2))
-    (fill yes (thermal_gap 0.3) (thermal_bridge_width 0.4))
-    (polygon (pts
-      (xy 85 5) (xy 335 5) (xy 335 55) (xy 85 55)
-    ))
-  )""")
-    # Bottom edge GND fill
-    zones.append(f"""  (zone (net 1) (net_name "GND") (layer "F.Cu") (tstamp {uid()}) (hatch edge 0.508)
-    (connect_pads (clearance 0.2))
-    (fill yes (thermal_gap 0.3) (thermal_bridge_width 0.4))
-    (polygon (pts
-      (xy 85 295) (xy 335 295) (xy 335 345) (xy 85 345)
+      (xy {m} {m}) (xy {BW - m} {m}) (xy {BW - m} {BH - m}) (xy {m} {BH - m})
     ))
   )""")
     return "\n".join(zones)
@@ -1712,8 +1722,12 @@ def generate_pcb():
     sections.append(generate_power_zones())
     sections.append('')
 
-    # F.Cu copper fills (GND zones around major component areas)
+    # F.Cu/B.Cu board-wide copper fills (dominant red/blue in reference)
     sections.append(generate_fcu_copper_fills())
+    sections.append('')
+
+    # Green substrate fills around NCE/TFLN assemblies
+    sections.append(generate_substrate_fills())
     sections.append('')
 
     # Silk text
