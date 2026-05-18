@@ -929,79 +929,83 @@ def generate_clock_tree_routing():
 
 def generate_swept_arc_routing():
     """Swept arc routing from NCE BGAs to board edges — organic curves matching
-    Cadence Allegro aesthetic. Uses multi-segment polylines to approximate arcs."""
+    Cadence Allegro aesthetic. Uses multi-segment polylines to approximate arcs.
+    Denser traces with varying widths for visual match to reference."""
     traces = []
-    n_arc_segs = 12  # segments per arc for smooth curves
+    n_arc_segs = 14
 
     for nce_cx, nce_cy, side in [(NCE_A[0], NCE_A[1], "L"), (NCE_B[0], NCE_B[1], "R")]:
         bga_half = 7.0
-        # Top swept arcs — traces fan upward from BGA top edge in sweeping curves
-        for i in range(20):
-            start_x = nce_cx - bga_half + i * (2 * bga_half / 19)
+        # Top swept arcs — traces fan upward from BGA top edge (denser, 30 traces)
+        for i in range(30):
+            start_x = nce_cx - bga_half + i * (2 * bga_half / 29)
             start_y = nce_cy - bga_half - 2
-            spread = (i - 10) * 4.0
+            spread = (i - 15) * 3.5
             end_x = nce_cx + spread
-            end_y = 30 + abs(i - 10) * 1.5
+            end_y = 25 + abs(i - 15) * 1.2
+            w = 0.10 + (i % 3) * 0.02
             for s in range(n_arc_segs):
                 t0 = s / n_arc_segs
                 t1 = (s + 1) / n_arc_segs
                 ctrl_x = nce_cx + spread * 0.3
-                ctrl_y = nce_cy - bga_half - 30
+                ctrl_y = nce_cy - bga_half - 35
                 x0 = (1-t0)**2 * start_x + 2*(1-t0)*t0 * ctrl_x + t0**2 * end_x
                 y0 = (1-t0)**2 * start_y + 2*(1-t0)*t0 * ctrl_y + t0**2 * end_y
                 x1 = (1-t1)**2 * start_x + 2*(1-t1)*t1 * ctrl_x + t1**2 * end_x
                 y1 = (1-t1)**2 * start_y + 2*(1-t1)*t1 * ctrl_y + t1**2 * end_y
-                traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width 0.12) (layer "F.Cu") (net 0) (tstamp {uid()}))')
+                traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width {w:.2f}) (layer "F.Cu") (net 0) (tstamp {uid()}))')
 
-        # Bottom swept arcs — fan downward
-        for i in range(20):
-            start_x = nce_cx - bga_half + i * (2 * bga_half / 19)
+        # Bottom swept arcs — fan downward (denser, 30 traces)
+        for i in range(30):
+            start_x = nce_cx - bga_half + i * (2 * bga_half / 29)
             start_y = nce_cy + bga_half + 2
-            spread = (i - 10) * 3.5
+            spread = (i - 15) * 3.0
             end_x = nce_cx + spread
-            end_y = 310 - abs(i - 10) * 1.0
+            end_y = 310 - abs(i - 15) * 0.8
+            w = 0.10 + (i % 3) * 0.02
             for s in range(n_arc_segs):
                 t0 = s / n_arc_segs
                 t1 = (s + 1) / n_arc_segs
                 ctrl_x = nce_cx + spread * 0.4
-                ctrl_y = nce_cy + bga_half + 40
+                ctrl_y = nce_cy + bga_half + 45
                 x0 = (1-t0)**2 * start_x + 2*(1-t0)*t0 * ctrl_x + t0**2 * end_x
                 y0 = (1-t0)**2 * start_y + 2*(1-t0)*t0 * ctrl_y + t0**2 * end_y
                 x1 = (1-t1)**2 * start_x + 2*(1-t1)*t1 * ctrl_x + t1**2 * end_x
                 y1 = (1-t1)**2 * start_y + 2*(1-t1)*t1 * ctrl_y + t1**2 * end_y
-                traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width 0.12) (layer "F.Cu") (net 0) (tstamp {uid()}))')
+                traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width {w:.2f}) (layer "F.Cu") (net 0) (tstamp {uid()}))')
 
-        # Side swept arcs — fan outward to left/right edges
+        # Side swept arcs — fan outward to left/right edges (denser, 24 traces)
         outward_dir = -1 if side == "L" else 1
-        for i in range(16):
+        for i in range(24):
             start_x = nce_cx + outward_dir * (bga_half + 2)
-            start_y = nce_cy - bga_half + i * (2 * bga_half / 15)
-            spread_y = (i - 8) * 5.0
-            end_x = nce_cx + outward_dir * 80
+            start_y = nce_cy - bga_half + i * (2 * bga_half / 23)
+            spread_y = (i - 12) * 5.5
+            end_x = nce_cx + outward_dir * 85
             end_y = nce_cy + spread_y
+            w = 0.12 + (i % 4) * 0.02
             for s in range(n_arc_segs):
                 t0 = s / n_arc_segs
                 t1 = (s + 1) / n_arc_segs
-                ctrl_x = nce_cx + outward_dir * 40
+                ctrl_x = nce_cx + outward_dir * 45
                 ctrl_y = nce_cy + spread_y * 0.5
                 x0 = (1-t0)**2 * start_x + 2*(1-t0)*t0 * ctrl_x + t0**2 * end_x
                 y0 = (1-t0)**2 * start_y + 2*(1-t0)*t0 * ctrl_y + t0**2 * end_y
                 x1 = (1-t1)**2 * start_x + 2*(1-t1)*t1 * ctrl_x + t1**2 * end_x
                 y1 = (1-t1)**2 * start_y + 2*(1-t1)*t1 * ctrl_y + t1**2 * end_y
-                traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width 0.12) (layer "F.Cu") (net 0) (tstamp {uid()}))')
+                traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width {w:.2f}) (layer "F.Cu") (net 0) (tstamp {uid()}))')
 
-        # Inward arcs — toward TFLN/photonic bridge
+        # Inward arcs — toward TFLN/photonic bridge (denser)
         inward_dir = 1 if side == "L" else -1
-        for i in range(12):
+        for i in range(16):
             start_x = nce_cx + inward_dir * (bga_half + 2)
-            start_y = nce_cy - 6 + i * 1.0
-            end_x = nce_cx + inward_dir * 35
-            end_y = nce_cy - 5 + i * 0.8
-            for s in range(8):
-                t0 = s / 8
-                t1 = (s + 1) / 8
-                ctrl_x = nce_cx + inward_dir * 20
-                ctrl_y = start_y + (i - 6) * 1.5
+            start_y = nce_cy - 8 + i * 1.0
+            end_x = nce_cx + inward_dir * 40
+            end_y = nce_cy - 7 + i * 0.9
+            for s in range(10):
+                t0 = s / 10
+                t1 = (s + 1) / 10
+                ctrl_x = nce_cx + inward_dir * 22
+                ctrl_y = start_y + (i - 8) * 1.5
                 x0 = (1-t0)**2 * start_x + 2*(1-t0)*t0 * ctrl_x + t0**2 * end_x
                 y0 = (1-t0)**2 * start_y + 2*(1-t0)*t0 * ctrl_y + t0**2 * end_y
                 x1 = (1-t1)**2 * start_x + 2*(1-t1)*t1 * ctrl_x + t1**2 * end_x
@@ -1009,13 +1013,30 @@ def generate_swept_arc_routing():
                 traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width 0.10) (layer "F.Cu") (net 0) (tstamp {uid()}))')
 
     # Connector-to-NCE swept arcs on F.Cu (QSFP west edge to NCE areas)
-    for port in range(16):
+    for port in range(32):
         start_x = 18.0
-        start_y = 40 + port * 18
+        start_y = 30 + port * 9.5
         end_x = NCE_A[0] - 25
-        end_y = NCE_A[1] - 10 + (port % 8) * 2.5
-        ctrl_x = 60 + port * 1.5
-        ctrl_y = (start_y + end_y) / 2 - 15
+        end_y = NCE_A[1] - 12 + (port % 16) * 1.5
+        ctrl_x = 55 + (port % 8) * 2.0
+        ctrl_y = (start_y + end_y) / 2 - 12
+        for s in range(n_arc_segs):
+            t0 = s / n_arc_segs
+            t1 = (s + 1) / n_arc_segs
+            x0 = (1-t0)**2 * start_x + 2*(1-t0)*t0 * ctrl_x + t0**2 * end_x
+            y0 = (1-t0)**2 * start_y + 2*(1-t0)*t0 * ctrl_y + t0**2 * end_y
+            x1 = (1-t1)**2 * start_x + 2*(1-t1)*t1 * ctrl_x + t1**2 * end_x
+            y1 = (1-t1)**2 * start_y + 2*(1-t1)*t1 * ctrl_y + t1**2 * end_y
+            traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width 0.15) (layer "F.Cu") (net 0) (tstamp {uid()}))')
+
+    # Right-side connector arcs (mirrored for east-edge routing)
+    for port in range(32):
+        start_x = 402.0
+        start_y = 30 + port * 9.5
+        end_x = NCE_B[0] + 25
+        end_y = NCE_B[1] - 12 + (port % 16) * 1.5
+        ctrl_x = 365 - (port % 8) * 2.0
+        ctrl_y = (start_y + end_y) / 2 - 12
         for s in range(n_arc_segs):
             t0 = s / n_arc_segs
             t1 = (s + 1) / n_arc_segs
@@ -1028,11 +1049,95 @@ def generate_swept_arc_routing():
     return "\n".join(traces)
 
 
+def generate_bcu_edge_routing():
+    """B.Cu traces along board edges — matching the blue perimeter routing
+    visible in the reference image. Includes PCIe bus routing along bottom,
+    power distribution along left/right edges, and signal routing."""
+    traces = []
+    # Bottom edge — PCIe bus routing (horizontal, multiple parallel traces)
+    for i in range(24):
+        y = 330 + i * 0.5
+        traces.append(f'  (segment (start 40 {y:.2f}) (end 380 {y:.2f}) (width 0.15) (layer "B.Cu") (net 0) (tstamp {uid()}))')
+    # Left edge — vertical power distribution traces
+    for i in range(16):
+        x = 8 + i * 0.8
+        traces.append(f'  (segment (start {x:.2f} 15) (end {x:.2f} 340) (width 0.20) (layer "B.Cu") (net 0) (tstamp {uid()}))')
+    # Right edge — vertical power distribution traces
+    for i in range(16):
+        x = 405 + i * 0.8
+        traces.append(f'  (segment (start {x:.2f} 15) (end {x:.2f} 340) (width 0.20) (layer "B.Cu") (net 0) (tstamp {uid()}))')
+    # B.Cu swept arcs from NCE B.Cu pads (bottom DrMOS area)
+    for nce_cx, nce_cy in [(NCE_A[0], NCE_A[1]), (NCE_B[0], NCE_B[1])]:
+        for i in range(12):
+            start_x = nce_cx - 10 + i * 1.8
+            start_y = nce_cy + 20
+            end_x = start_x + (i - 6) * 8
+            end_y = 335
+            for s in range(10):
+                t0 = s / 10
+                t1 = (s + 1) / 10
+                ctrl_x = (start_x + end_x) / 2
+                ctrl_y = nce_cy + 80
+                x0 = (1-t0)**2 * start_x + 2*(1-t0)*t0 * ctrl_x + t0**2 * end_x
+                y0 = (1-t0)**2 * start_y + 2*(1-t0)*t0 * ctrl_y + t0**2 * end_y
+                x1 = (1-t1)**2 * start_x + 2*(1-t1)*t1 * ctrl_x + t1**2 * end_x
+                y1 = (1-t1)**2 * start_y + 2*(1-t1)*t1 * ctrl_y + t1**2 * end_y
+                traces.append(f'  (segment (start {x0:.3f} {y0:.3f}) (end {x1:.3f} {y1:.3f}) (width 0.12) (layer "B.Cu") (net 0) (tstamp {uid()}))')
+    return "\n".join(traces)
+
+
+def generate_vrm_controller_ics():
+    """VRM controller IC footprints (ISL69260 QFN) at top-left and top-right corners
+    plus additional power management ICs matching reference image."""
+    fps = []
+    ic_positions = [
+        ("U401", 55, 40, "F.Cu"),   # VRM controller top-left
+        ("U402", 365, 40, "F.Cu"),  # VRM controller top-right
+        ("U403", 55, 290, "F.Cu"),  # VRM controller bottom-left
+        ("U404", 365, 290, "F.Cu"), # VRM controller bottom-right
+        ("U405", 85, 305, "F.Cu"),  # Power sequencer left
+        ("U406", 335, 305, "F.Cu"), # Power sequencer right
+    ]
+    for ref, x, y, layer in ic_positions:
+        silk = "F.SilkS" if layer == "F.Cu" else "B.SilkS"
+        mask = "F.Mask" if layer == "F.Cu" else "B.Mask"
+        paste = "F.Paste" if layer == "F.Cu" else "B.Paste"
+        pads = []
+        # QFN-48 pad ring (7x7mm body)
+        for side in range(4):
+            for pin in range(12):
+                px = py = 0
+                pn = side * 12 + pin + 1
+                if side == 0:
+                    px = -3.5
+                    py = -2.75 + pin * 0.5
+                elif side == 1:
+                    px = -2.75 + pin * 0.5
+                    py = 3.5
+                elif side == 2:
+                    px = 3.5
+                    py = 2.75 - pin * 0.5
+                else:
+                    px = 2.75 - pin * 0.5
+                    py = -3.5
+                pads.append(f'    (pad "{pn}" smd rect (at {px:.2f} {py:.2f}) (size 0.3 0.8) (layers "{layer}" "{paste}" "{mask}"))')
+        # Exposed pad
+        pads.append(f'    (pad "EP" smd rect (at 0 0) (size 5.0 5.0) (layers "{layer}" "{paste}" "{mask}"))')
+        fps.append(f"""  (footprint "QFN-48" (layer "{layer}") (tstamp {uid()})
+    (at {x:.2f} {y:.2f})
+    (attr smd)
+    (fp_text reference "{ref}" (at 0 -5) (layer "{silk}") (effects (font (size 0.6 0.6) (thickness 0.1))))
+    (fp_text value "ISL69260" (at 0 5) (layer "F.Fab") (effects (font (size 0.5 0.5) (thickness 0.08))))
+{chr(10).join(pads)}
+  )""")
+    return "\n".join(fps)
+
+
 def generate_dense_passive_fill():
     """Fill empty board space with dense passive components — resistors, capacitors,
-    ferrite beads — matching the reference image's high component density."""
+    ferrite beads — matching the reference image's high component density.
+    Passives along edges are assigned to GND (net 1) on pad 1 for schematic-ECO."""
     fps = []
-    # Define exclusion zones (NCE, TFLN, photonic bridge, connectors, DrMOS)
     def in_exclusion(x, y):
         for cx, cy, hw, hh in [
             (NCE_A[0], NCE_A[1], 30, 30),
@@ -1042,6 +1147,10 @@ def generate_dense_passive_fill():
             (PHOTONIC_BRIDGE[0], PHOTONIC_BRIDGE[1], 18, 28),
             (PCIE_CONNECTOR_POS[0], PCIE_CONNECTOR_POS[1], 45, 10),
             (15, 175, 15, 170),  # QSFP column
+            (55, 40, 8, 8),     # VRM ctrl top-left
+            (365, 40, 8, 8),    # VRM ctrl top-right
+            (55, 290, 8, 8),    # VRM ctrl bottom-left
+            (365, 290, 8, 8),   # VRM ctrl bottom-right
         ]:
             if abs(x - cx) < hw and abs(y - cy) < hh:
                 return True
@@ -1051,7 +1160,7 @@ def generate_dense_passive_fill():
         return False
 
     ref_idx = [0]
-    def passive_fp(ref_prefix, x, y, size_mm, layer="F.Cu"):
+    def passive_fp(ref_prefix, x, y, size_mm, layer="F.Cu", rotation=0):
         ref_idx[0] += 1
         ref = f"{ref_prefix}{ref_idx[0]}"
         hw = size_mm[0] / 2
@@ -1061,8 +1170,9 @@ def generate_dense_passive_fill():
         paste = "F.Paste" if layer == "F.Cu" else "B.Paste"
         pad_w = max(hw * 0.5, 0.15)
         pad_h = max(size_mm[1] * 0.7, 0.15)
+        at_str = f"{x:.2f} {y:.2f}" if rotation == 0 else f"{x:.2f} {y:.2f} {rotation}"
         return f"""  (footprint "{ref_prefix}_passive" (layer "{layer}") (tstamp {uid()})
-    (at {x:.2f} {y:.2f})
+    (at {at_str})
     (attr smd)
     (fp_text reference "{ref}" (at 0 {-hh - 0.3:.2f}) (layer "{silk}") (effects (font (size 0.4 0.4) (thickness 0.06))))
     (fp_text value "{size_mm[0]}x{size_mm[1]}" (at 0 {hh + 0.3:.2f}) (layer "F.Fab") (effects (font (size 0.3 0.3) (thickness 0.05))))
@@ -1070,66 +1180,94 @@ def generate_dense_passive_fill():
     (pad "2" smd rect (at {hw * 0.6:.3f} 0) (size {pad_w:.3f} {pad_h:.3f}) (layers "{layer}" "{paste}" "{mask}"))
   )"""
 
-    # 0402 caps in grid patterns around NCE areas (top/bottom of each NCE)
+    # 0402 caps in dense grid bands around NCE areas (top/bottom/left/right of each)
     for nce_cx, nce_cy in [(NCE_A[0], NCE_A[1]), (NCE_B[0], NCE_B[1])]:
-        # Top band
-        for row in range(4):
-            for col in range(16):
-                x = nce_cx - 20 + col * 2.5
-                y = nce_cy - 35 - row * 3.0
+        # Top band (6 rows)
+        for row in range(6):
+            for col in range(20):
+                x = nce_cx - 25 + col * 2.5
+                y = nce_cy - 35 - row * 2.5
                 if not in_exclusion(x, y) and 5 < x < 415 and 5 < y < 345:
                     fps.append(passive_fp("C", x, y, (1.0, 0.5)))
-        # Bottom band
-        for row in range(4):
-            for col in range(16):
-                x = nce_cx - 20 + col * 2.5
-                y = nce_cy + 35 + row * 3.0
+        # Bottom band (6 rows)
+        for row in range(6):
+            for col in range(20):
+                x = nce_cx - 25 + col * 2.5
+                y = nce_cy + 35 + row * 2.5
                 if not in_exclusion(x, y) and 5 < x < 415 and 5 < y < 345:
                     fps.append(passive_fp("C", x, y, (1.0, 0.5)))
+        # Left/right side bands (rotated 90 deg)
+        for row in range(12):
+            for col in range(3):
+                x = nce_cx - 35 - col * 3.0
+                y = nce_cy - 15 + row * 2.5
+                if not in_exclusion(x, y) and 5 < x < 415 and 5 < y < 345:
+                    fps.append(passive_fp("C", x, y, (1.0, 0.5), rotation=90))
+        for row in range(12):
+            for col in range(3):
+                x = nce_cx + 35 + col * 3.0
+                y = nce_cy - 15 + row * 2.5
+                if not in_exclusion(x, y) and 5 < x < 415 and 5 < y < 345:
+                    fps.append(passive_fp("C", x, y, (1.0, 0.5), rotation=90))
 
-    # 0805 caps along VRM clusters (both sides)
-    for i in range(20):
-        x = 30
-        y = 50 + i * 14
-        if not in_exclusion(x, y) and 5 < y < 345:
-            fps.append(passive_fp("C", x, y, (2.0, 1.25)))
-    for i in range(20):
-        x = 390
-        y = 50 + i * 14
-        if not in_exclusion(x, y) and 5 < y < 345:
-            fps.append(passive_fp("C", x, y, (2.0, 1.25)))
+    # Dense 0805 cap rows along VRM clusters (matching reference tight rows)
+    for col_x_base in [28, 36, 44]:
+        for i in range(24):
+            y = 55 + i * 11.5
+            if not in_exclusion(col_x_base, y) and 5 < y < 340:
+                fps.append(passive_fp("C", col_x_base, y, (2.0, 1.25)))
+    for col_x_base in [376, 384, 392]:
+        for i in range(24):
+            y = 55 + i * 11.5
+            if not in_exclusion(col_x_base, y) and 5 < y < 340:
+                fps.append(passive_fp("C", col_x_base, y, (2.0, 1.25)))
 
-    # Resistor networks near connectors (west edge)
-    for row in range(12):
-        for col in range(3):
-            x = 25 + col * 4
-            y = 25 + row * 25
-            if not in_exclusion(x, y) and 5 < y < 345:
+    # Resistor networks near connectors (west + east edges, denser)
+    for row in range(16):
+        for col in range(4):
+            x = 22 + col * 3.5
+            y = 20 + row * 20
+            if not in_exclusion(x, y) and 5 < y < 340:
+                fps.append(passive_fp("R", x, y, (1.0, 0.5)))
+    for row in range(16):
+        for col in range(4):
+            x = 398 - col * 3.5
+            y = 20 + row * 20
+            if not in_exclusion(x, y) and 5 < y < 340:
                 fps.append(passive_fp("R", x, y, (1.0, 0.5)))
 
-    # Ferrite beads near power entry
-    for i in range(8):
-        x = 60 + i * 8
-        y = 330
-        if not in_exclusion(x, y):
-            fps.append(passive_fp("FB", x, y, (1.6, 0.8)))
-    for i in range(8):
-        x = 300 + i * 8
-        y = 330
-        if not in_exclusion(x, y):
-            fps.append(passive_fp("FB", x, y, (1.6, 0.8)))
+    # Ferrite beads near power entry (both edges, more of them)
+    for i in range(12):
+        x = 55 + i * 7
+        for y in [320, 328]:
+            if not in_exclusion(x, y):
+                fps.append(passive_fp("FB", x, y, (1.6, 0.8)))
+    for i in range(12):
+        x = 280 + i * 7
+        for y in [320, 328]:
+            if not in_exclusion(x, y):
+                fps.append(passive_fp("FB", x, y, (1.6, 0.8)))
 
-    # Bulk caps around board periphery
-    for x_pos in [70, 100, 130, 290, 320, 350]:
-        for y_pos in [25, 325]:
+    # Bulk tantalum caps around board periphery (bigger footprint)
+    for x_pos in [70, 95, 120, 145, 275, 300, 325, 350]:
+        for y_pos in [20, 25, 325, 330]:
             if not in_exclusion(x_pos, y_pos):
                 fps.append(passive_fp("C", x_pos, y_pos, (3.2, 1.6)))
 
-    # Fill remaining empty areas with 0201 bypass caps
-    for gx in range(15, 405, 12):
-        for gy in range(15, 340, 12):
+    # B.Cu passives (bottom-side placement matching reference)
+    for nce_cx, nce_cy in [(NCE_A[0], NCE_A[1]), (NCE_B[0], NCE_B[1])]:
+        for row in range(4):
+            for col in range(12):
+                x = nce_cx - 15 + col * 2.5
+                y = nce_cy + 38 + row * 3.0
+                if not in_exclusion(x, y) and 5 < x < 415 and 5 < y < 345:
+                    fps.append(passive_fp("C", x, y, (1.0, 0.5), layer="B.Cu"))
+
+    # Fill remaining empty areas with 0201 bypass caps (tighter 8mm grid)
+    for gx in range(12, 408, 8):
+        for gy in range(12, 340, 8):
             if not in_exclusion(gx, gy) and 8 < gx < 412 and 8 < gy < 342:
-                fps.append(passive_fp("C", gx + 2, gy, (0.6, 0.3)))
+                fps.append(passive_fp("C", gx, gy, (0.6, 0.3)))
 
     return "\n".join(fps)
 
@@ -1540,6 +1678,14 @@ def generate_pcb():
 
     # Swept arc routing (organic Bezier curves from BGAs to board edges)
     sections.append(generate_swept_arc_routing())
+    sections.append('')
+
+    # B.Cu edge routing (blue perimeter traces matching reference)
+    sections.append(generate_bcu_edge_routing())
+    sections.append('')
+
+    # VRM controller IC footprints (QFN-48 at corners)
+    sections.append(generate_vrm_controller_ics())
     sections.append('')
 
     # Dense passive component fill (caps, resistors, ferrite beads)
