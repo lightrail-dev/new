@@ -1,0 +1,563 @@
+* GSD Netlist — Dual_NCE_Accelerator
+* LightRail AI Compute Node LR-P3A Rev 6.3
+* Generated: 2026-05-18 23:13 UTC
+* Format: Generic Schematic Data (GSD)
+* Net count: 498
+*
+.HEADER
+  DESIGN "Dual_NCE_Accelerator"
+  DATE "2026-05-18"
+  SOURCE "LightRail_LPO_1.6T.kicad_pcb"
+  TOOL "KiCad 8.0.9 + generate_rev63.py"
+.END_HEADER
+
+.NETS
+  NET "GND" ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4
+    + ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8
+    + ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12
+    + ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16
+    + ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4
+    + ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8
+    + ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12
+    + ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16
+    + ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4
+    + ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8
+    + ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12
+    + ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16
+    + ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4
+    + ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8
+    + ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12
+    + ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16
+    + ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4
+    + ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8
+    + ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12
+    + ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16
+    + ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4
+    + ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8
+    + ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12
+    + ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16
+    + ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4
+    + ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8
+    + ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12
+    + ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16
+    + ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4
+    + ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8
+    + ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12
+    + ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16
+    + ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4
+    + ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8
+    + ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12
+    + ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16
+    + ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4
+    + ?.5 ?.6 ?.7 ?.8 ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.1 ?.2 ?.3 ?.4 ?.5 ?.6 ?.7 ?.8
+    + ?.9 ?.10 ?.11 ?.12 ?.13 ?.14 ?.15 ?.16 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2
+    + ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2
+    + ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2
+    + ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2
+    + ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2
+    + ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2
+    + ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2 ?.2
+    + ?.2 ?.2 ?.2 ?.2 ?.2 ?.2
+  NET "+12V" 
+  NET "+3V3" 
+  NET "+1V8" 
+  NET "V_CORE_U0" 
+  NET "V_CORE_U1" 
+  NET "V_AUX" 
+  NET "VDDC_HBM4" 
+  NET "VDDQL_HBM4" 
+  NET "VDDQ_HBM4" 
+  NET "VPP_HBM4" 
+  NET "+0V9_TFLN" 
+  NET "+1V2_AUX" 
+  NET "+1V05_IO" 
+  NET "SERDES_A_TX0_P" 
+  NET "SERDES_A_TX0_N" 
+  NET "SERDES_A_TX1_P" 
+  NET "SERDES_A_TX1_N" 
+  NET "SERDES_A_TX2_P" 
+  NET "SERDES_A_TX2_N" 
+  NET "SERDES_A_TX3_P" 
+  NET "SERDES_A_TX3_N" 
+  NET "SERDES_A_TX4_P" 
+  NET "SERDES_A_TX4_N" 
+  NET "SERDES_A_TX5_P" 
+  NET "SERDES_A_TX5_N" 
+  NET "SERDES_A_TX6_P" 
+  NET "SERDES_A_TX6_N" 
+  NET "SERDES_A_TX7_P" 
+  NET "SERDES_A_TX7_N" 
+  NET "SERDES_A_RX0_P" 
+  NET "SERDES_A_RX0_N" 
+  NET "SERDES_A_RX1_P" 
+  NET "SERDES_A_RX1_N" 
+  NET "SERDES_A_RX2_P" 
+  NET "SERDES_A_RX2_N" 
+  NET "SERDES_A_RX3_P" 
+  NET "SERDES_A_RX3_N" 
+  NET "SERDES_A_RX4_P" 
+  NET "SERDES_A_RX4_N" 
+  NET "SERDES_A_RX5_P" 
+  NET "SERDES_A_RX5_N" 
+  NET "SERDES_A_RX6_P" 
+  NET "SERDES_A_RX6_N" 
+  NET "SERDES_A_RX7_P" 
+  NET "SERDES_A_RX7_N" 
+  NET "SERDES_B_TX0_P" 
+  NET "SERDES_B_TX0_N" 
+  NET "SERDES_B_TX1_P" 
+  NET "SERDES_B_TX1_N" 
+  NET "SERDES_B_TX2_P" 
+  NET "SERDES_B_TX2_N" 
+  NET "SERDES_B_TX3_P" 
+  NET "SERDES_B_TX3_N" 
+  NET "SERDES_B_TX4_P" 
+  NET "SERDES_B_TX4_N" 
+  NET "SERDES_B_TX5_P" 
+  NET "SERDES_B_TX5_N" 
+  NET "SERDES_B_TX6_P" 
+  NET "SERDES_B_TX6_N" 
+  NET "SERDES_B_TX7_P" 
+  NET "SERDES_B_TX7_N" 
+  NET "SERDES_B_RX0_P" 
+  NET "SERDES_B_RX0_N" 
+  NET "SERDES_B_RX1_P" 
+  NET "SERDES_B_RX1_N" 
+  NET "SERDES_B_RX2_P" 
+  NET "SERDES_B_RX2_N" 
+  NET "SERDES_B_RX3_P" 
+  NET "SERDES_B_RX3_N" 
+  NET "SERDES_B_RX4_P" 
+  NET "SERDES_B_RX4_N" 
+  NET "SERDES_B_RX5_P" 
+  NET "SERDES_B_RX5_N" 
+  NET "SERDES_B_RX6_P" 
+  NET "SERDES_B_RX6_N" 
+  NET "SERDES_B_RX7_P" 
+  NET "SERDES_B_RX7_N" 
+  NET "PCIE6_TX0_P" 
+  NET "PCIE6_TX0_N" 
+  NET "PCIE6_RX0_P" 
+  NET "PCIE6_RX0_N" 
+  NET "PCIE6_TX1_P" 
+  NET "PCIE6_TX1_N" 
+  NET "PCIE6_RX1_P" 
+  NET "PCIE6_RX1_N" 
+  NET "PCIE6_TX2_P" 
+  NET "PCIE6_TX2_N" 
+  NET "PCIE6_RX2_P" 
+  NET "PCIE6_RX2_N" 
+  NET "PCIE6_TX3_P" 
+  NET "PCIE6_TX3_N" 
+  NET "PCIE6_RX3_P" 
+  NET "PCIE6_RX3_N" 
+  NET "PCIE6_TX4_P" 
+  NET "PCIE6_TX4_N" 
+  NET "PCIE6_RX4_P" 
+  NET "PCIE6_RX4_N" 
+  NET "PCIE6_TX5_P" 
+  NET "PCIE6_TX5_N" 
+  NET "PCIE6_RX5_P" 
+  NET "PCIE6_RX5_N" 
+  NET "PCIE6_TX6_P" 
+  NET "PCIE6_TX6_N" 
+  NET "PCIE6_RX6_P" 
+  NET "PCIE6_RX6_N" 
+  NET "PCIE6_TX7_P" 
+  NET "PCIE6_TX7_N" 
+  NET "PCIE6_RX7_P" 
+  NET "PCIE6_RX7_N" 
+  NET "PCIE6_TX8_P" 
+  NET "PCIE6_TX8_N" 
+  NET "PCIE6_RX8_P" 
+  NET "PCIE6_RX8_N" 
+  NET "PCIE6_TX9_P" 
+  NET "PCIE6_TX9_N" 
+  NET "PCIE6_RX9_P" 
+  NET "PCIE6_RX9_N" 
+  NET "PCIE6_TX10_P" 
+  NET "PCIE6_TX10_N" 
+  NET "PCIE6_RX10_P" 
+  NET "PCIE6_RX10_N" 
+  NET "PCIE6_TX11_P" 
+  NET "PCIE6_TX11_N" 
+  NET "PCIE6_RX11_P" 
+  NET "PCIE6_RX11_N" 
+  NET "PCIE6_TX12_P" 
+  NET "PCIE6_TX12_N" 
+  NET "PCIE6_RX12_P" 
+  NET "PCIE6_RX12_N" 
+  NET "PCIE6_TX13_P" 
+  NET "PCIE6_TX13_N" 
+  NET "PCIE6_RX13_P" 
+  NET "PCIE6_RX13_N" 
+  NET "PCIE6_TX14_P" 
+  NET "PCIE6_TX14_N" 
+  NET "PCIE6_RX14_P" 
+  NET "PCIE6_RX14_N" 
+  NET "PCIE6_TX15_P" 
+  NET "PCIE6_TX15_N" 
+  NET "PCIE6_RX15_P" 
+  NET "PCIE6_RX15_N" 
+  NET "TFLN_RF_A_CH0_P" 
+  NET "TFLN_RF_A_CH0_N" 
+  NET "TFLN_RF_A_CH1_P" 
+  NET "TFLN_RF_A_CH1_N" 
+  NET "TFLN_RF_A_CH2_P" 
+  NET "TFLN_RF_A_CH2_N" 
+  NET "TFLN_RF_A_CH3_P" 
+  NET "TFLN_RF_A_CH3_N" 
+  NET "TFLN_RF_A_CH4_P" 
+  NET "TFLN_RF_A_CH4_N" 
+  NET "TFLN_RF_A_CH5_P" 
+  NET "TFLN_RF_A_CH5_N" 
+  NET "TFLN_RF_A_CH6_P" 
+  NET "TFLN_RF_A_CH6_N" 
+  NET "TFLN_RF_A_CH7_P" 
+  NET "TFLN_RF_A_CH7_N" 
+  NET "TFLN_RF_B_CH0_P" 
+  NET "TFLN_RF_B_CH0_N" 
+  NET "TFLN_RF_B_CH1_P" 
+  NET "TFLN_RF_B_CH1_N" 
+  NET "TFLN_RF_B_CH2_P" 
+  NET "TFLN_RF_B_CH2_N" 
+  NET "TFLN_RF_B_CH3_P" 
+  NET "TFLN_RF_B_CH3_N" 
+  NET "TFLN_RF_B_CH4_P" 
+  NET "TFLN_RF_B_CH4_N" 
+  NET "TFLN_RF_B_CH5_P" 
+  NET "TFLN_RF_B_CH5_N" 
+  NET "TFLN_RF_B_CH6_P" 
+  NET "TFLN_RF_B_CH6_N" 
+  NET "TFLN_RF_B_CH7_P" 
+  NET "TFLN_RF_B_CH7_N" 
+  NET "TFLN_ELEC_A_CH0_P" 
+  NET "TFLN_ELEC_A_CH0_N" 
+  NET "TFLN_ELEC_A_CH1_P" 
+  NET "TFLN_ELEC_A_CH1_N" 
+  NET "TFLN_ELEC_A_CH2_P" 
+  NET "TFLN_ELEC_A_CH2_N" 
+  NET "TFLN_ELEC_A_CH3_P" 
+  NET "TFLN_ELEC_A_CH3_N" 
+  NET "TFLN_ELEC_A_CH4_P" 
+  NET "TFLN_ELEC_A_CH4_N" 
+  NET "TFLN_ELEC_A_CH5_P" 
+  NET "TFLN_ELEC_A_CH5_N" 
+  NET "TFLN_ELEC_A_CH6_P" 
+  NET "TFLN_ELEC_A_CH6_N" 
+  NET "TFLN_ELEC_A_CH7_P" 
+  NET "TFLN_ELEC_A_CH7_N" 
+  NET "TFLN_ELEC_B_CH0_P" 
+  NET "TFLN_ELEC_B_CH0_N" 
+  NET "TFLN_ELEC_B_CH1_P" 
+  NET "TFLN_ELEC_B_CH1_N" 
+  NET "TFLN_ELEC_B_CH2_P" 
+  NET "TFLN_ELEC_B_CH2_N" 
+  NET "TFLN_ELEC_B_CH3_P" 
+  NET "TFLN_ELEC_B_CH3_N" 
+  NET "TFLN_ELEC_B_CH4_P" 
+  NET "TFLN_ELEC_B_CH4_N" 
+  NET "TFLN_ELEC_B_CH5_P" 
+  NET "TFLN_ELEC_B_CH5_N" 
+  NET "TFLN_ELEC_B_CH6_P" 
+  NET "TFLN_ELEC_B_CH6_N" 
+  NET "TFLN_ELEC_B_CH7_P" 
+  NET "TFLN_ELEC_B_CH7_N" 
+  NET "HBM4_A_REFCK_P" 
+  NET "HBM4_A_REFCK_N" 
+  NET "HBM4_A_CATTRIP" 
+  NET "HBM4_A_PWR_GOOD" 
+  NET "HBM4_A_TCK" 
+  NET "HBM4_A_TMS" 
+  NET "HBM4_A_TDI" 
+  NET "HBM4_A_TDO" 
+  NET "HBM4_B_REFCK_P" 
+  NET "HBM4_B_REFCK_N" 
+  NET "HBM4_B_CATTRIP" 
+  NET "HBM4_B_PWR_GOOD" 
+  NET "HBM4_B_TCK" 
+  NET "HBM4_B_TMS" 
+  NET "HBM4_B_TDI" 
+  NET "HBM4_B_TDO" 
+  NET "OPT_CH0" 
+  NET "OPT_CH1" 
+  NET "OPT_CH2" 
+  NET "OPT_CH3" 
+  NET "OPT_CH4" 
+  NET "OPT_CH5" 
+  NET "OPT_CH6" 
+  NET "OPT_CH7" 
+  NET "OPT_CH8" 
+  NET "OPT_CH9" 
+  NET "OPT_CH10" 
+  NET "OPT_CH11" 
+  NET "OPT_CH12" 
+  NET "OPT_CH13" 
+  NET "OPT_CH14" 
+  NET "OPT_CH15" 
+  NET "IMOD_CH0" 
+  NET "IMOD_CH1" 
+  NET "IMOD_CH2" 
+  NET "IMOD_CH3" 
+  NET "IMOD_CH4" 
+  NET "IMOD_CH5" 
+  NET "IMOD_CH6" 
+  NET "IMOD_CH7" 
+  NET "IMOD_CH8" 
+  NET "IMOD_CH9" 
+  NET "IMOD_CH10" 
+  NET "IMOD_CH11" 
+  NET "IMOD_CH12" 
+  NET "IMOD_CH13" 
+  NET "IMOD_CH14" 
+  NET "IMOD_CH15" 
+  NET "I2C_SDA" 
+  NET "I2C_SCL" 
+  NET "SPI_SCLK" 
+  NET "SPI_MOSI" 
+  NET "SPI_MISO" 
+  NET "SPI_CS_DAC" 
+  NET "SPI_CS_LD" 
+  NET "SPI_CS_FLASH0" 
+  NET "SPI_CS_FLASH1" 
+  NET "CLK_MOD_P" 
+  NET "CLK_MOD_N" 
+  NET "CLK_SERDES_P" 
+  NET "CLK_SERDES_N" 
+  NET "CLK_PCIE_P" 
+  NET "CLK_PCIE_N" 
+  NET "PMBUS_SDA" 
+  NET "PMBUS_SCL" 
+  NET "ALERT" 
+  NET "TEC_HOT" 
+  NET "TEC_COLD" 
+  NET "THERMISTOR" 
+  NET "JTAG_TCK" 
+  NET "JTAG_TMS" 
+  NET "JTAG_TDI" 
+  NET "JTAG_TDO" 
+  NET "VBIAS_0" 
+  NET "VBIAS_1" 
+  NET "VBIAS_2" 
+  NET "VBIAS_3" 
+  NET "VBIAS_4" 
+  NET "VBIAS_5" 
+  NET "VBIAS_6" 
+  NET "VBIAS_7" 
+  NET "VBIAS_8" 
+  NET "VBIAS_9" 
+  NET "VBIAS_10" 
+  NET "VBIAS_11" 
+  NET "VBIAS_12" 
+  NET "VBIAS_13" 
+  NET "VBIAS_14" 
+  NET "VBIAS_15" 
+  NET "MPD_0" 
+  NET "MPD_1" 
+  NET "MPD_2" 
+  NET "MPD_3" 
+  NET "MPD_4" 
+  NET "MPD_5" 
+  NET "MPD_6" 
+  NET "MPD_7" 
+  NET "MPD_8" 
+  NET "MPD_9" 
+  NET "MPD_10" 
+  NET "MPD_11" 
+  NET "MPD_12" 
+  NET "MPD_13" 
+  NET "MPD_14" 
+  NET "MPD_15" 
+  NET "PDN_U0_T4_C0" ?.1
+  NET "PDN_U0_T4_C1" ?.1
+  NET "PDN_U0_T4_C2" ?.1
+  NET "PDN_U0_T4_C3" ?.1
+  NET "PDN_U0_T4_C4" ?.1
+  NET "PDN_U0_T4_C5" ?.1
+  NET "PDN_U0_T4_C6" ?.1
+  NET "PDN_U0_T4_C7" ?.1
+  NET "PDN_U0_T4_C8" ?.1
+  NET "PDN_U0_T4_C9" ?.1
+  NET "PDN_U0_T4_C10" ?.1
+  NET "PDN_U0_T4_C11" ?.1
+  NET "PDN_U0_T4_C12" ?.1
+  NET "PDN_U0_T4_C13" ?.1
+  NET "PDN_U0_T4_C14" ?.1
+  NET "PDN_U0_T4_C15" ?.1
+  NET "PDN_U0_T4_C16" ?.1
+  NET "PDN_U0_T4_C17" ?.1
+  NET "PDN_U0_T4_C18" ?.1
+  NET "PDN_U0_T4_C19" ?.1
+  NET "PDN_U0_T4_C20" ?.1
+  NET "PDN_U0_T4_C21" ?.1
+  NET "PDN_U0_T4_C22" ?.1
+  NET "PDN_U0_T4_C23" ?.1
+  NET "PDN_U0_T4_C24" ?.1
+  NET "PDN_U0_T4_C25" ?.1
+  NET "PDN_U0_T4_C26" ?.1
+  NET "PDN_U0_T4_C27" ?.1
+  NET "PDN_U0_T4_C28" ?.1
+  NET "PDN_U0_T4_C29" ?.1
+  NET "PDN_U0_T4_C30" ?.1
+  NET "PDN_U0_T4_C31" ?.1
+  NET "PDN_U0_T4_C32" ?.1
+  NET "PDN_U0_T4_C33" ?.1
+  NET "PDN_U0_T4_C34" ?.1
+  NET "PDN_U0_T4_C35" ?.1
+  NET "PDN_U0_T3_C0" ?.1
+  NET "PDN_U0_T3_C1" ?.1
+  NET "PDN_U0_T3_C2" ?.1
+  NET "PDN_U0_T3_C3" ?.1
+  NET "PDN_U0_T3_C4" ?.1
+  NET "PDN_U0_T3_C5" ?.1
+  NET "PDN_U0_T3_C6" ?.1
+  NET "PDN_U0_T3_C7" ?.1
+  NET "PDN_U0_T3_C8" ?.1
+  NET "PDN_U0_T3_C9" ?.1
+  NET "PDN_U0_T3_C10" ?.1
+  NET "PDN_U0_T3_C11" ?.1
+  NET "PDN_U0_T3_C12" ?.1
+  NET "PDN_U0_T3_C13" ?.1
+  NET "PDN_U0_T3_C14" ?.1
+  NET "PDN_U0_T3_C15" ?.1
+  NET "PDN_U0_T3_C16" ?.1
+  NET "PDN_U0_T3_C17" ?.1
+  NET "PDN_U0_T2_C0" ?.1
+  NET "PDN_U0_T2_C1" ?.1
+  NET "PDN_U0_T2_C2" ?.1
+  NET "PDN_U0_T2_C3" ?.1
+  NET "PDN_U0_T2_C4" ?.1
+  NET "PDN_U0_T2_C5" ?.1
+  NET "PDN_U0_T2_C6" ?.1
+  NET "PDN_U0_T2_C7" ?.1
+  NET "PDN_U0_T2_C8" ?.1
+  NET "PDN_U0_T1_C0" ?.1
+  NET "PDN_U0_T1_C1" ?.1
+  NET "PDN_U0_T1_C2" ?.1
+  NET "PDN_U0_T1_C3" ?.1
+  NET "PDN_U0_T1_C4" ?.1
+  NET "PDN_U0_T1_C5" ?.1
+  NET "PDN_U1_T4_C0" ?.1
+  NET "PDN_U1_T4_C1" ?.1
+  NET "PDN_U1_T4_C2" ?.1
+  NET "PDN_U1_T4_C3" ?.1
+  NET "PDN_U1_T4_C4" ?.1
+  NET "PDN_U1_T4_C5" ?.1
+  NET "PDN_U1_T4_C6" ?.1
+  NET "PDN_U1_T4_C7" ?.1
+  NET "PDN_U1_T4_C8" ?.1
+  NET "PDN_U1_T4_C9" ?.1
+  NET "PDN_U1_T4_C10" ?.1
+  NET "PDN_U1_T4_C11" ?.1
+  NET "PDN_U1_T4_C12" ?.1
+  NET "PDN_U1_T4_C13" ?.1
+  NET "PDN_U1_T4_C14" ?.1
+  NET "PDN_U1_T4_C15" ?.1
+  NET "PDN_U1_T4_C16" ?.1
+  NET "PDN_U1_T4_C17" ?.1
+  NET "PDN_U1_T4_C18" ?.1
+  NET "PDN_U1_T4_C19" ?.1
+  NET "PDN_U1_T4_C20" ?.1
+  NET "PDN_U1_T4_C21" ?.1
+  NET "PDN_U1_T4_C22" ?.1
+  NET "PDN_U1_T4_C23" ?.1
+  NET "PDN_U1_T4_C24" ?.1
+  NET "PDN_U1_T4_C25" ?.1
+  NET "PDN_U1_T4_C26" ?.1
+  NET "PDN_U1_T4_C27" ?.1
+  NET "PDN_U1_T4_C28" ?.1
+  NET "PDN_U1_T4_C29" ?.1
+  NET "PDN_U1_T4_C30" ?.1
+  NET "PDN_U1_T4_C31" ?.1
+  NET "PDN_U1_T4_C32" ?.1
+  NET "PDN_U1_T4_C33" ?.1
+  NET "PDN_U1_T4_C34" ?.1
+  NET "PDN_U1_T4_C35" ?.1
+  NET "PDN_U1_T3_C0" ?.1
+  NET "PDN_U1_T3_C1" ?.1
+  NET "PDN_U1_T3_C2" ?.1
+  NET "PDN_U1_T3_C3" ?.1
+  NET "PDN_U1_T3_C4" ?.1
+  NET "PDN_U1_T3_C5" ?.1
+  NET "PDN_U1_T3_C6" ?.1
+  NET "PDN_U1_T3_C7" ?.1
+  NET "PDN_U1_T3_C8" ?.1
+  NET "PDN_U1_T3_C9" ?.1
+  NET "PDN_U1_T3_C10" ?.1
+  NET "PDN_U1_T3_C11" ?.1
+  NET "PDN_U1_T3_C12" ?.1
+  NET "PDN_U1_T3_C13" ?.1
+  NET "PDN_U1_T3_C14" ?.1
+  NET "PDN_U1_T3_C15" ?.1
+  NET "PDN_U1_T3_C16" ?.1
+  NET "PDN_U1_T3_C17" ?.1
+  NET "PDN_U1_T2_C0" ?.1
+  NET "PDN_U1_T2_C1" ?.1
+  NET "PDN_U1_T2_C2" ?.1
+  NET "PDN_U1_T2_C3" ?.1
+  NET "PDN_U1_T2_C4" ?.1
+  NET "PDN_U1_T2_C5" ?.1
+  NET "PDN_U1_T2_C6" ?.1
+  NET "PDN_U1_T2_C7" ?.1
+  NET "PDN_U1_T2_C8" ?.1
+  NET "PDN_U1_T1_C0" ?.1
+  NET "PDN_U1_T1_C1" ?.1
+  NET "PDN_U1_T1_C2" ?.1
+  NET "PDN_U1_T1_C3" ?.1
+  NET "PDN_U1_T1_C4" ?.1
+  NET "PDN_U1_T1_C5" ?.1
+  NET "SW_PH0" 
+  NET "SW_PH1" 
+  NET "SW_PH2" 
+  NET "SW_PH3" 
+  NET "SW_PH4" 
+  NET "SW_PH5" 
+  NET "SW_PH6" 
+  NET "SW_PH7" 
+  NET "SW_PH8" 
+  NET "SW_PH9" 
+  NET "SW_PH10" 
+  NET "SW_PH11" 
+  NET "SW_PH12" 
+  NET "SW_PH13" 
+  NET "SW_PH14" 
+  NET "SW_PH15" 
+  NET "SW_PH16" 
+  NET "SW_PH17" 
+  NET "SW_PH18" 
+  NET "SW_PH19" 
+  NET "SW_PH20" 
+  NET "SW_PH21" 
+  NET "SW_PH22" 
+  NET "SW_PH23" 
+  NET "SW_PH24" 
+  NET "SW_PH25" 
+  NET "SW_PH26" 
+  NET "SW_PH27" 
+  NET "SW_PH28" 
+  NET "SW_PH29" 
+  NET "SW_PH30" 
+  NET "SW_PH31" 
+  NET "SW_PH32" 
+  NET "SW_PH33" 
+  NET "SW_PH34" 
+  NET "SW_PH35" 
+  NET "SW_PH36" 
+  NET "SW_PH37" 
+  NET "SW_PH38" 
+  NET "SW_PH39" 
+  NET "SW_PH40" 
+  NET "SW_PH41" 
+  NET "SW_PH42" 
+  NET "SW_PH43" 
+  NET "SW_PH44" 
+  NET "SW_PH45" 
+  NET "SW_PH46" 
+  NET "SW_PH47" 
+.END_NETS
+
+.COMPONENTS
+  COMP "?" "" "MountingHole_3.2mm_M3"
+.END_COMPONENTS
+
+.END
