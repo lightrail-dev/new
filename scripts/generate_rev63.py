@@ -863,10 +863,13 @@ def generate_pcb():
     sections.append('')
 
     # Task 1: Decoupling cap fanout (138 nets)
-    decap_fps_u0, decap_vias_u0, _ = generate_decoupling_caps(NCE_A, "U0", 15)
+    # PDN nets start at ID 312 in generate_nets() (after power, SerDes, PCIe,
+    # TFLN_RF, TFLN_ELEC, HBM4, OPT, IMOD, ctrl, VBIAS, MPD nets)
+    PDN_NET_START = 312
+    decap_fps_u0, decap_vias_u0, _ = generate_decoupling_caps(NCE_A, "U0", PDN_NET_START)
     sections.append(decap_fps_u0)
     sections.append(decap_vias_u0)
-    decap_fps_u1, decap_vias_u1, _ = generate_decoupling_caps(NCE_B, "U1", 15 + 69)
+    decap_fps_u1, decap_vias_u1, _ = generate_decoupling_caps(NCE_B, "U1", PDN_NET_START + 69)
     sections.append(decap_fps_u1)
     sections.append(decap_vias_u1)
     sections.append('')
