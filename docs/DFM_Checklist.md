@@ -1,4 +1,4 @@
-# DFM / DFA Checklist (LR-P3A Rev 6.0)
+# DFM / DFA Checklist (LR-P3A Rev 6.3)
 
 Design-for-Manufacturing and Design-for-Assembly rules for the LightRail AI
 Compute Node. This is a **pre-tapeout checklist** — every item must be

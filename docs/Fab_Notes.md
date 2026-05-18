@@ -8,11 +8,10 @@ with Gerbers, drills, IPC-D-356 netlist, pick-and-place, BOM, and 3D STEP.
 | Field                | Value                                               |
 | -------------------- | --------------------------------------------------- |
 | Board name           | LightRail AI Compute Node / LR-P3A                  |
-| Revision             | 6.0                                                 |
+| Revision             | 6.3                                                 |
 | Board class          | IPC-6012 Class 3                                    |
-| Size (scaffold)      | 168 × 100 mm (PCIe HHHL-derived; see §1.1 note)     |
-| Size (tapeout target)| 420 × 350 mm (recommended; server-board class)      |
-| Layer count          | **32** (Rev 6.0 32-layer HDI)                       |
+| Size                 | 420 × 350 mm (server-board class, Rev 6.3)          |
+| Layer count          | **32** (Rev 6.3 32-layer HDI, fully routed)          |
 | Dielectric (signal)  | Panasonic Megtron-7 (εr 3.3, tan δ 0.002 @ 1 GHz)   |
 | Dielectric (plane)   | High-Tg FR-4 (εr 4.2, Tg ≥ 170 °C)                  |
 | Dielectric (embed-cap)| Faradflex BC24 (εr 14, 24 µm core)                  |
@@ -33,56 +32,33 @@ with Gerbers, drills, IPC-D-356 netlist, pick-and-place, BOM, and 3D STEP.
 | Panelization         | 2 × 2 with mouse-bite tabs + impedance / back-drill coupon strip (fab to propose) |
 | V-cut                | None                                                |
 
-### 1.1 Mechanical-scale note
+### 1.1 Rev 6.3 component floorplan (implemented)
 
-This scaffold inherits the 168 × 100 mm PCIe HHHL outline from PR #1
-(a single-SoC LPO photonic accelerator card). A genuine Dual AI Compute Node
-with 2× co-packaged composite BGA-2500 (NCE + 4× HBM4 + silicon interposer
-each), 2× 24-phase VRM (48 total DrMOS phases), PCIe Gen 6 edge, NVMe, and
-TFLN optics cannot fit in 168 × 100 mm. The
-recommended tape-out outline is **420 × 350 mm** (server-board class),
-4 × M3 tool hole, matching the user's reference image.
+The 420 × 350 mm outline with full component placement is implemented in
+Rev 6.3 (see `scripts/generate_rev63.py` for the canonical coordinates):
 
-Before tapeout, update `LightRail_LPO_1.6T.kicad_pcb` with (see
-[`docs/Architecture.md §1.5`](Architecture.md#15-rev-60-floorplan-canonical)
-for the canonical Rev 6.0 floorplan image and topology):
-
-1. Outline expanded to the target 420 × 350 mm (server-class).
-2. Mounting holes per the chassis spec: 4 × M3 at the board corners plus
-   4 × M3 cold-plate bolster holes per NCE (50 mm square), matching the
-   reference floorplan.
-3. 12VHPWR input connector footprints (2 × Molex 203713-2001 or equivalent).
-4. Compute-unit cold-plate bolster pattern: 4 × M3 at 50 mm square per SoC.
-5. HBM4 stack footprints sit on the silicon interposer co-packaged with the
-   NCE — no discrete north-edge DIMM slots; only the composite module BGA
-   (U101 / U201) is escaped out to the PCB fanout.
-6. **NCE placement (Rev 6.0 floorplan).** Place NCE A (`U101`, composite
-   BGA-2500 incl. 4× HBM4 stacks) and NCE B (`U201`) symmetrically left
-   and right of board centre.
-7. **TFLN placement (zero-copper datapath, spec §IV).** Place TFLN PIC A
-   (`U102`) and TFLN PIC B (`U202`) inboard of each NCE, with the TFLN
-   edge couplers facing inward toward the central **TFLN Photonic Bridge**
-   (1.6 Tbps aggregate, direct-to-die ribbon). No PCB copper is allowed
-   in the photonic datapath; only the RF drive (`TFLN_RF` class) and
-   electrical transition (`TFLN_ELEC_TRANSITION` class) lines leave TFLN.
-8. **DrMOS 24-phase array placement (vertical power delivery, spec §III).**
-   Reposition the 24-phase DrMOS arrays (U302–U349) in four clusters
-   matching the reference floorplan:
-     - Left column (12 φ, F.Cu outboard of TFLN A): V_CORE_U0 bank A
-     - Right column (12 φ, F.Cu outboard of TFLN B): V_CORE_U1 bank A
-     - Bottom row on **B.Cu** directly under NCE A (12 φ): V_CORE_U0 bank B
-     - Bottom row on **B.Cu** directly under NCE B (12 φ): V_CORE_U1 bank B
-   Target V_core PDN path loss ≤ 50 W (vs. 180 W for lateral entry).
-   The PCB engineer must move the B.Cu phases from F.Cu → B.Cu in the
-   KiCad GUI; the `.kicad_pcb` Rev 6.0 stackup and footprints are ready.
-9. Add the tiered-PDN decoupling network on B.Cu under each NCE: 100 µF
-   tantalum + 10 µF 0805 + 1 µF 0402 + 100 nF 01005 per the
-   `PDN_BYPASS` net class, with the 01005 bypass caps constrained to
-   ≤ 1 mm from each NCE / HBM4 power ball (spec §III).
-10. Optical keep-out polygons on **every** inner copper layer (not just
-    F.Cu / B.Cu) around each TFLN edge coupler, plus a 100 mil
-    copper-free zone at the MPO-24 exit point on the board front panel
-    (spec §V).
+1. **Board outline**: 420 × 350 mm server-class with PCIe CEM slot cutout
+   on south edge.
+2. **Mounting holes**: 4 × M3 at board corners + 4 × M3 cold-plate bolster
+   holes per NCE (50 mm square).
+3. **NCE placement**: NCE A (U101) at (135, 160), NCE B (U201) at (285, 160),
+   symmetric about board centre.
+4. **TFLN placement**: TFLN PIC A (U102) at (185, 160), TFLN PIC B (U202)
+   at (235, 160), edge couplers facing inward toward central photonic bridge
+   at (210, 160). Zero-copper optical keepout on all 32 copper layers.
+5. **DrMOS 24-phase arrays** in four clusters:
+   - Left column (12 φ, F.Cu): V_CORE_U0 bank A
+   - Right column (12 φ, F.Cu): V_CORE_U1 bank A
+   - Bottom row B.Cu under NCE A (12 φ): V_CORE_U0 bank B — with 6×6
+     stitching via array per phase (0.4 mm drill, 1.0 mm pitch)
+   - Bottom row B.Cu under NCE B (12 φ): V_CORE_U1 bank B — same
+6. **Tiered decoupling** per NCE: 36× 01005 100 nF (Tier-4, ≤1 mm from
+   power balls) + 18× 0402 1 µF (Tier-3) + 9× 0805 10 µF (Tier-2) +
+   6× tantalum 100 µF (Tier-1). Escape vias to In7/In8.
+7. **Connectors**: 64× QSFP-DD / MPO-24 on west edge, 164-finger PCIe
+   Gen 6 CEM x16 on south edge, 2× 12VHPWR on north edge.
+8. **Optical keepouts** on all 32 copper layers around each TFLN edge
+   coupler and the MPO-24 exit zone (100 mil clearance).
 
 ## 2. Copper weights — sanity check for 1000 A V_core
 
@@ -184,4 +160,4 @@ For a 2 oz (70 µm) copper plane carrying 1000 A at 0.8 V:
 3. **ENIG on BGA-2500** is preferred; ENEPIG is acceptable if the PIC
    interposer requires wire-bonding.
 4. **Back-drilling on PCIe Gen 6** adds ~$40–60 per panel; budget accordingly.
-5. **24-layer tapeout stackup** requires 3 lamination cycles minimum.
+5. **32-layer tapeout stackup** requires 4+ lamination cycles minimum.

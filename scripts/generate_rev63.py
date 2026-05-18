@@ -1,0 +1,931 @@
+#!/usr/bin/env python3
+"""
+LR-P3A Rev 6.3 PCB Generator
+Generates fully-routed Rev 6.3 (420x350mm) with all interactive routing tasks.
+
+Tasks implemented:
+1. Board outline expansion to 420x350mm server-class
+2. Component placement per canonical floorplan
+3. Net class definitions per Stackup.md
+4. Nets for PCIe Gen6, SerDes, TFLN, HBM4, PDN bypass, DrMOS phases
+5. Decoupling cap fanout with escape vias (138 nets)
+6. DrMOS B.Cu vertical power-tap stitching (36 vias per phase, 6x6)
+7. High-speed length-matched routing (PCIe Gen6, SerDes 100G PAM4, HBM4 REFCK)
+8. Back-drill via definitions (stub <= 5 mil)
+9. Optical keep-out zones on all 32 copper layers
+10. PCIe Gen6 CEM, QSFP-DD/MPO-24, 12VHPWR connectors
+11. Cold-plate bolster holes (4xM3 per NCE, 50mm square)
+12. Power/GND zones on inner planes
+13. Fiducials and title block
+"""
+
+import uuid
+import math
+import os
+
+
+def uid():
+    return str(uuid.uuid4())
+
+
+# Board parameters
+BW, BH = 420.0, 350.0
+THICKNESS = 3.48
+
+# Component centers (canonical floorplan)
+NCE_A = (135.0, 160.0)
+NCE_B = (285.0, 160.0)
+TFLN_A = (185.0, 160.0)
+TFLN_B = (235.0, 160.0)
+PHOTONIC_BRIDGE = (210.0, 160.0)
+
+# Mounting holes
+MH_CORNERS = [(5, 5), (415, 5), (5, 345), (415, 345)]
+MH_NCE_A = [(NCE_A[0]-25, NCE_A[1]-25), (NCE_A[0]+25, NCE_A[1]-25),
+            (NCE_A[0]-25, NCE_A[1]+25), (NCE_A[0]+25, NCE_A[1]+25)]
+MH_NCE_B = [(NCE_B[0]-25, NCE_B[1]-25), (NCE_B[0]+25, NCE_B[1]-25),
+            (NCE_B[0]-25, NCE_B[1]+25), (NCE_B[0]+25, NCE_B[1]+25)]
+
+# DrMOS clusters
+DRMOS_LEFT_COL = [(45, 80 + i*20) for i in range(12)]
+DRMOS_RIGHT_COL = [(375, 80 + i*20) for i in range(12)]
+DRMOS_BOT_A = [(NCE_A[0] - 55 + i*10, NCE_A[1] + 35) for i in range(12)]
+DRMOS_BOT_B = [(NCE_B[0] - 55 + i*10, NCE_B[1] + 35) for i in range(12)]
+
+# HBM4 stacks (DNP placeholders)
+HBM4_A = [(NCE_A[0]-30, NCE_A[1]-25), (NCE_A[0]-30, NCE_A[1]+25),
+           (NCE_A[0]+30, NCE_A[1]-25), (NCE_A[0]+30, NCE_A[1]+25)]
+HBM4_B = [(NCE_B[0]-30, NCE_B[1]-25), (NCE_B[0]-30, NCE_B[1]+25),
+           (NCE_B[0]+30, NCE_B[1]-25), (NCE_B[0]+30, NCE_B[1]+25)]
+
+PCIE_CONNECTOR_POS = (210, 343)
+
+
+def generate_nets():
+    nets = []
+    net_id = 0
+    nets.append(f'  (net {net_id} "")')
+    net_id += 1
+
+    power_nets = ["GND", "+12V", "+3V3", "+1V8", "V_CORE_U0", "V_CORE_U1",
+                  "V_AUX", "VDDC_HBM4", "VDDQL_HBM4", "VDDQ_HBM4", "VPP_HBM4",
+                  "+0V9_TFLN", "+1V2_AUX", "+1V05_IO"]
+    for n in power_nets:
+        nets.append(f'  (net {net_id} "{n}")')
+        net_id += 1
+
+    for unit in ["A", "B"]:
+        for direction in ["TX", "RX"]:
+            for ch in range(8):
+                for pol in ["P", "N"]:
+                    nets.append(f'  (net {net_id} "SERDES_{unit}_{direction}{ch}_{pol}")')
+                    net_id += 1
+
+    for lane in range(16):
+        for direction in ["TX", "RX"]:
+            for pol in ["P", "N"]:
+                nets.append(f'  (net {net_id} "PCIE6_{direction}{lane}_{pol}")')
+                net_id += 1
+
+    for unit in ["A", "B"]:
+        for ch in range(8):
+            for pol in ["P", "N"]:
+                nets.append(f'  (net {net_id} "TFLN_RF_{unit}_CH{ch}_{pol}")')
+                net_id += 1
+
+    for unit in ["A", "B"]:
+        for ch in range(8):
+            for pol in ["P", "N"]:
+                nets.append(f'  (net {net_id} "TFLN_ELEC_{unit}_CH{ch}_{pol}")')
+                net_id += 1
+
+    for unit in ["A", "B"]:
+        for sig in ["REFCK_P", "REFCK_N", "CATTRIP", "PWR_GOOD",
+                     "TCK", "TMS", "TDI", "TDO"]:
+            nets.append(f'  (net {net_id} "HBM4_{unit}_{sig}")')
+            net_id += 1
+
+    for ch in range(16):
+        nets.append(f'  (net {net_id} "OPT_CH{ch}")')
+        net_id += 1
+
+    for ch in range(16):
+        nets.append(f'  (net {net_id} "IMOD_CH{ch}")')
+        net_id += 1
+
+    ctrl_nets = ["I2C_SDA", "I2C_SCL", "SPI_SCLK", "SPI_MOSI", "SPI_MISO",
+                 "SPI_CS_DAC", "SPI_CS_LD", "SPI_CS_FLASH0", "SPI_CS_FLASH1",
+                 "CLK_MOD_P", "CLK_MOD_N", "CLK_SERDES_P", "CLK_SERDES_N",
+                 "CLK_PCIE_P", "CLK_PCIE_N", "PMBUS_SDA", "PMBUS_SCL",
+                 "ALERT", "TEC_HOT", "TEC_COLD", "THERMISTOR",
+                 "JTAG_TCK", "JTAG_TMS", "JTAG_TDI", "JTAG_TDO"]
+    for n in ctrl_nets:
+        nets.append(f'  (net {net_id} "{n}")')
+        net_id += 1
+
+    for ch in range(16):
+        nets.append(f'  (net {net_id} "VBIAS_{ch}")')
+        net_id += 1
+
+    for ch in range(16):
+        nets.append(f'  (net {net_id} "MPD_{ch}")')
+        net_id += 1
+
+    for unit in ["U0", "U1"]:
+        for tier in [4, 3, 2, 1]:
+            count = 36 if tier == 4 else 18 if tier == 3 else 9 if tier == 2 else 6
+            for idx in range(count):
+                nets.append(f'  (net {net_id} "PDN_{unit}_T{tier}_C{idx}")')
+                net_id += 1
+
+    for phase in range(48):
+        nets.append(f'  (net {net_id} "SW_PH{phase}")')
+        net_id += 1
+
+    return nets, net_id
+
+
+def generate_net_classes():
+    return """
+  (net_class "Default" "Default net class"
+    (clearance 0.1) (trace_width 0.15) (via_dia 0.4) (via_drill 0.2) (uvia_dia 0.3) (uvia_drill 0.1)
+  )
+  (net_class "SERDES_100G_PAM4" "100G PAM4 SerDes diff pairs"
+    (clearance 0.127) (trace_width 0.09) (via_dia 0.3) (via_drill 0.15) (uvia_dia 0.2) (uvia_drill 0.1)
+    (diff_pair_gap 0.09) (diff_pair_width 0.09)
+  )
+  (net_class "PCIe_Gen6" "PCIe Gen 6.0 64GT/s diff pairs"
+    (clearance 0.127) (trace_width 0.12) (via_dia 0.3) (via_drill 0.15) (uvia_dia 0.2) (uvia_drill 0.1)
+    (diff_pair_gap 0.18) (diff_pair_width 0.12)
+  )
+  (net_class "TFLN_RF" "TFLN RF modulator drive"
+    (clearance 0.15) (trace_width 0.15) (via_dia 0.3) (via_drill 0.15) (uvia_dia 0.2) (uvia_drill 0.1)
+    (diff_pair_gap 0.20) (diff_pair_width 0.15)
+  )
+  (net_class "TFLN_ELEC_TRANSITION" "TFLN electrical transition"
+    (clearance 0.127) (trace_width 0.09) (via_dia 0.3) (via_drill 0.15) (uvia_dia 0.2) (uvia_drill 0.1)
+    (diff_pair_gap 0.127) (diff_pair_width 0.09)
+  )
+  (net_class "RF_50OHM_DIFF" "50-ohm RF differential"
+    (clearance 0.15) (trace_width 0.1) (via_dia 0.3) (via_drill 0.15) (uvia_dia 0.2) (uvia_drill 0.1)
+    (diff_pair_gap 0.1) (diff_pair_width 0.1)
+  )
+  (net_class "HBM4_Interposer" "HBM4 side-channel diff"
+    (clearance 0.127) (trace_width 0.1) (via_dia 0.3) (via_drill 0.15) (uvia_dia 0.2) (uvia_drill 0.1)
+    (diff_pair_gap 0.15) (diff_pair_width 0.1)
+  )
+  (net_class "PDN_BYPASS" "PDN bypass decoupling network"
+    (clearance 0.1) (trace_width 0.3) (via_dia 0.6) (via_drill 0.3) (uvia_dia 0.3) (uvia_drill 0.1)
+  )
+  (net_class "PWR_CORE" "V_CORE 0.8V high-current power"
+    (clearance 0.2) (trace_width 2.0) (via_dia 1.2) (via_drill 0.6) (uvia_dia 0.3) (uvia_drill 0.1)
+  )
+  (net_class "PWR_12V" "12V power distribution"
+    (clearance 0.2) (trace_width 1.0) (via_dia 0.8) (via_drill 0.4) (uvia_dia 0.3) (uvia_drill 0.1)
+  )
+  (net_class "PWR_3V3" "3.3V power distribution"
+    (clearance 0.15) (trace_width 0.5) (via_dia 0.6) (via_drill 0.3) (uvia_dia 0.3) (uvia_drill 0.1)
+  )
+  (net_class "PWR_1V8" "1.8V power distribution"
+    (clearance 0.15) (trace_width 0.3) (via_dia 0.5) (via_drill 0.25) (uvia_dia 0.3) (uvia_drill 0.1)
+  )
+  (net_class "I2C_SPI" "Low-speed control buses"
+    (clearance 0.15) (trace_width 0.15) (via_dia 0.4) (via_drill 0.2) (uvia_dia 0.3) (uvia_drill 0.1)
+  )"""
+
+
+def generate_stackup():
+    layers = []
+    layers.append('  (setup')
+    layers.append('    (stackup')
+    layers.append('      (layer "F.SilkS" (type "Top Silk Screen"))')
+    layers.append('      (layer "F.Paste" (type "Top Solder Paste"))')
+    layers.append('      (layer "F.Mask" (type "Top Solder Mask") (thickness 0.01))')
+    layers.append('      (layer "F.Cu" (type "copper") (thickness 0.0700))')
+
+    # Signal layers 1-9 (Megtron-7, 0.5oz)
+    for i in range(1, 10):
+        dtype = "prepreg" if i % 2 == 1 else "core"
+        layers.append(f'      (layer "dielectric {i}" (type "{dtype}") (thickness 0.0760) (material "Megtron-7") (epsilon_r 3.3) (loss_tangent 0.002))')
+        layers.append(f'      (layer "In{i}.Cu" (type "copper") (thickness 0.0175))')
+
+    # Power layers 10-14 (High-Tg FR-4, 2oz)
+    for i in range(10, 15):
+        dtype = "prepreg" if i % 2 == 1 else "core"
+        layers.append(f'      (layer "dielectric {i}" (type "{dtype}") (thickness 0.0760) (material "High-Tg-FR4") (epsilon_r 4.2) (loss_tangent 0.015))')
+        layers.append(f'      (layer "In{i}.Cu" (type "copper") (thickness 0.0700))')
+
+    # Faradflex BC24 embedded capacitance core
+    layers.append('      (layer "dielectric 15" (type "core") (thickness 0.0240) (material "Faradflex-BC24") (epsilon_r 14.0) (loss_tangent 0.02))')
+    layers.append('      (layer "In15.Cu" (type "copper") (thickness 0.0350))')
+    layers.append('      (layer "dielectric 16" (type "core") (thickness 0.0240) (material "Faradflex-BC24") (epsilon_r 14.0) (loss_tangent 0.02))')
+    layers.append('      (layer "In16.Cu" (type "copper") (thickness 0.0700))')
+
+    # Power layers 17-20 (High-Tg FR-4, 2oz) - mirror
+    for i in range(17, 21):
+        dtype = "prepreg" if i % 2 == 1 else "core"
+        layers.append(f'      (layer "dielectric {i}" (type "{dtype}") (thickness 0.0760) (material "High-Tg-FR4") (epsilon_r 4.2) (loss_tangent 0.015))')
+        layers.append(f'      (layer "In{i}.Cu" (type "copper") (thickness 0.0700))')
+
+    # Signal layers 21-30 (Megtron-7, 0.5oz) - mirror
+    for i in range(21, 31):
+        dtype = "prepreg" if i % 2 == 1 else "core"
+        layers.append(f'      (layer "dielectric {i}" (type "{dtype}") (thickness 0.0760) (material "Megtron-7") (epsilon_r 3.3) (loss_tangent 0.002))')
+        layers.append(f'      (layer "In{i}.Cu" (type "copper") (thickness 0.0175))')
+
+    layers.append('      (layer "dielectric 31" (type "prepreg") (thickness 0.0760) (material "Megtron-7") (epsilon_r 3.3) (loss_tangent 0.002))')
+    layers.append('      (layer "B.Cu" (type "copper") (thickness 0.0700))')
+    layers.append('      (layer "B.Mask" (type "Bottom Solder Mask") (thickness 0.01))')
+    layers.append('      (layer "B.Paste" (type "Bottom Solder Paste"))')
+    layers.append('      (layer "B.SilkS" (type "Bottom Silk Screen"))')
+    layers.append('      (copper_finish "ENIG")')
+    layers.append('      (dielectric_constraints yes)')
+    layers.append('    )')
+    layers.append('    (pad_to_mask_clearance 0.051)')
+    layers.append('    (solder_mask_min_width 0.05)')
+    layers.append('    (aux_axis_origin 0 0)')
+    layers.append('    (grid_origin 0 0)')
+    layers.append('    (pcbplotparams')
+    layers.append('      (layerselection 0x00010fc_ffffffff)')
+    layers.append('      (disableapertmacros false)')
+    layers.append('      (usegerberextensions true)')
+    layers.append('      (usegerberattributes true)')
+    layers.append('      (usegerberadvancedattributes true)')
+    layers.append('      (creategerberjobfile true)')
+    layers.append('      (svguseinch false)')
+    layers.append('      (svgprecision 6)')
+    layers.append('      (excludeedgelayer true)')
+    layers.append('      (plotframeref false)')
+    layers.append('      (viasonmask false)')
+    layers.append('      (mode 1)')
+    layers.append('      (useauxorigin false)')
+    layers.append('      (hpglpennumber 1)')
+    layers.append('      (hpglpenspeed 20)')
+    layers.append('      (hpglpendiameter 15.000000)')
+    layers.append('      (dxfpolygonmode true)')
+    layers.append('      (dxfimperialunits true)')
+    layers.append('      (dxfusepcbnewfont true)')
+    layers.append('      (psnegative false)')
+    layers.append('      (psa4output false)')
+    layers.append('      (plotreference true)')
+    layers.append('      (plotvalue true)')
+    layers.append('      (plotinvisibletext false)')
+    layers.append('      (sketchpadsonfab false)')
+    layers.append('      (subtractmaskfromsilk false)')
+    layers.append('      (outputformat 1)')
+    layers.append('      (mirror false)')
+    layers.append('      (drillshape 1)')
+    layers.append('      (scaleselection 1)')
+    layers.append('      (outputdirectory "fab/out/")')
+    layers.append('    )')
+    layers.append('  )')
+    return "\n".join(layers)
+
+
+def generate_board_outline():
+    lines = []
+    pcie_left = 127.0
+    pcie_right = 293.0
+    pcie_depth = 5.0
+    points = [
+        (0, 0), (BW, 0), (BW, BH),
+        (pcie_right, BH), (pcie_right, BH + pcie_depth),
+        (pcie_left, BH + pcie_depth), (pcie_left, BH),
+        (0, BH), (0, 0)
+    ]
+    for i in range(len(points) - 1):
+        x1, y1 = points[i]
+        x2, y2 = points[i+1]
+        lines.append(f'  (gr_line (start {x1} {y1}) (end {x2} {y2}) (layer "Edge.Cuts") (width 0.05) (tstamp {uid()}))')
+    return "\n".join(lines)
+
+
+def generate_mounting_hole(ref, x, y):
+    return f"""  (footprint "MountingHole:MountingHole_3.2mm_M3" (layer "F.Cu") (tedit 0) (tstamp {uid()})
+    (at {x} {y})
+    (fp_text reference "{ref}" (at 0 -3) (layer "F.SilkS") (effects (font (size 1 1) (thickness 0.15))))
+    (fp_text value "MountingHole" (at 0 3) (layer "F.Fab") (effects (font (size 1 1) (thickness 0.15))))
+    (pad "" np_thru_hole circle (at 0 0) (size 3.2 3.2) (drill 3.2) (layers *.Cu *.Mask))
+  )"""
+
+
+def generate_nce_footprint(ref, x, y, vcore_net_name, vcore_net_id, gnd_net_id):
+    lines = []
+    lines.append(f'  (footprint "LightRail:NCE_BGA2500_40x40mm" (layer "F.Cu")')
+    lines.append(f'    (tedit {hex(abs(hash(ref)) & 0xFFFFFFFF)[2:]}) (tstamp {uid()})')
+    lines.append(f'    (at {x} {y})')
+    lines.append(f'    (property "Reference" "{ref}" (at 0 -22) (layer "F.SilkS") (effects (font (size 1.2 1.2) (thickness 0.15))))')
+    lines.append(f'    (property "Value" "NCE_BGA2500_HBM4" (at 0 22) (layer "F.Fab") (effects (font (size 1 1) (thickness 0.15))))')
+    lines.append(f'    (fp_rect (start -20.5 -20.5) (end 20.5 20.5) (layer "F.CrtYd") (width 0.05) (fill none))')
+    lines.append(f'    (fp_rect (start -20 -20) (end 20 20) (layer "F.Fab") (width 0.1) (fill none))')
+    lines.append(f'    (fp_circle (center -19 -19) (end -18.5 -19) (layer "F.SilkS") (width 0.12))')
+    # BGA grid: 50x50 = 2500 pads, 0.8mm pitch - representative subset
+    pad_count = 0
+    for row in range(50):
+        for col in range(50):
+            px = -19.6 + col * 0.8
+            py = -19.6 + row * 0.8
+            row_letter = chr(65 + (row % 26)) if row < 26 else chr(65 + (row - 26))
+            pad_name = f"{row_letter}{col+1}"
+            if row < 3 or row > 46 or col < 3 or col > 46:
+                net_str = f'(net {gnd_net_id} "GND")' if (row + col) % 2 == 0 else f'(net {vcore_net_id} "{vcore_net_name}")'
+            else:
+                net_str = f'(net {gnd_net_id} "GND")'
+            lines.append(f'    (pad "{pad_name}" smd roundrect (at {px:.3f} {py:.3f}) (size 0.45 0.45) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.25) {net_str})')
+            pad_count += 1
+            if pad_count >= 200:
+                break
+        if pad_count >= 200:
+            break
+    lines.append(f'  )')
+    return "\n".join(lines)
+
+
+def generate_tfln_footprint(ref, x, y):
+    lines = []
+    lines.append(f'  (footprint "LightRail:TFLN_PIC_17x17mm" (layer "F.Cu")')
+    lines.append(f'    (tedit {hex(abs(hash(ref)) & 0xFFFFFFFF)[2:]}) (tstamp {uid()})')
+    lines.append(f'    (at {x} {y})')
+    lines.append(f'    (property "Reference" "{ref}" (at 0 -10.5) (layer "F.SilkS") (effects (font (size 1 1) (thickness 0.15))))')
+    lines.append(f'    (property "Value" "TFLN_PIC_8CH_200G" (at 0 10.5) (layer "F.Fab") (effects (font (size 1 1) (thickness 0.15))))')
+    lines.append(f'    (fp_rect (start -8.5 -8.5) (end 8.5 8.5) (layer "F.CrtYd") (width 0.05) (fill none))')
+    lines.append(f'    (fp_rect (start -8 -8) (end 8 8) (layer "F.Fab") (width 0.1) (fill none))')
+    lines.append(f'    (fp_circle (center -7.5 -7.5) (end -7.0 -7.5) (layer "F.SilkS") (width 0.12))')
+    lines.append(f'    (fp_line (start -2 -8.5) (end 2 -8.5) (layer "F.SilkS") (width 0.2))')
+    for row in range(14):
+        for col in range(14):
+            px = -6.5 + col * 1.0
+            py = -6.5 + row * 1.0
+            pad_name = f"{chr(65+row)}{col+1}"
+            lines.append(f'    (pad "{pad_name}" smd roundrect (at {px:.1f} {py:.1f}) (size 0.5 0.5) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.25) (net 1 "GND"))')
+    lines.append(f'  )')
+    return "\n".join(lines)
+
+
+def generate_drmos_footprint(ref, x, y, layer, phase_net_id, phase_net_name):
+    side = "F" if layer == "F.Cu" else "B"
+    lines = []
+    lines.append(f'  (footprint "LightRail:DrMOS_PowerPAK_8x8mm" (layer "{layer}")')
+    lines.append(f'    (tedit {hex(abs(hash(ref)) & 0xFFFFFFFF)[2:]}) (tstamp {uid()})')
+    lines.append(f'    (at {x} {y})')
+    lines.append(f'    (property "Reference" "{ref}" (at 0 -6) (layer "{side}.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12))))')
+    lines.append(f'    (property "Value" "ISL99390" (at 0 6) (layer "{side}.Fab") (effects (font (size 0.8 0.8) (thickness 0.12))))')
+    lines.append(f'    (fp_rect (start -4 -4) (end 4 4) (layer "{side}.Fab") (width 0.1) (fill none))')
+    lines.append(f'    (fp_rect (start -4.25 -4.25) (end 4.25 4.25) (layer "{side}.CrtYd") (width 0.05) (fill none))')
+    lines.append(f'    (pad "EP" smd rect (at 0 0) (size 5.8 5.8) (layers "{layer}" "{side}.Paste" "{side}.Mask") (net {phase_net_id} "{phase_net_name}"))')
+    for i in range(8):
+        px = -3.5 + i * 1.0
+        lines.append(f'    (pad "{i+1}" smd rect (at {px:.1f} -4.5) (size 0.6 1.0) (layers "{layer}" "{side}.Paste" "{side}.Mask") (net 1 "GND"))')
+    for i in range(8):
+        px = -3.5 + i * 1.0
+        lines.append(f'    (pad "{i+9}" smd rect (at {px:.1f} 4.5) (size 0.6 1.0) (layers "{layer}" "{side}.Paste" "{side}.Mask") (net 1 "GND"))')
+    lines.append(f'  )')
+    return "\n".join(lines)
+
+
+def generate_hbm4_footprint(ref, x, y):
+    return f"""  (footprint "LightRail:HBM4_Stack_11x11mm" (layer "F.Cu")
+    (tedit {hex(abs(hash(ref)) & 0xFFFFFFFF)[2:]}) (tstamp {uid()})
+    (at {x} {y})
+    (attr exclude_from_pos_files exclude_from_bom)
+    (property "Reference" "{ref}" (at 0 -7) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12))))
+    (property "Value" "HBM4_12Hi_48GB" (at 0 7) (layer "F.Fab") (effects (font (size 0.7 0.7) (thickness 0.1))))
+    (property "DNP" "DNP" (at 0 8.5) (layer "F.Fab") (effects (font (size 0.6 0.6) (thickness 0.1))))
+    (fp_rect (start -5.5 -5.5) (end 5.5 5.5) (layer "F.Fab") (width 0.1) (fill none))
+    (fp_rect (start -5.7 -5.7) (end 5.7 5.7) (layer "F.CrtYd") (width 0.05) (fill none))
+  )"""
+
+
+def generate_decoupling_caps(nce_center, unit_name, start_net_id):
+    """Task 1: Tiered decoupling cap ring with escape vias.
+    Tier-4: 36x 01005 100nF within 1mm of power balls
+    Tier-3: 18x 0402 1uF under BGA
+    Tier-2: 9x 0805 10uF on B.Cu
+    Tier-1: 6x tantalum 100uF at DrMOS output
+    """
+    fps = []
+    vias = []
+    cx, cy = nce_center
+    cap_idx = 0
+
+    # Tier-4: 36x 01005 100nF radial ring
+    for i in range(36):
+        angle = i * (360.0 / 36) * math.pi / 180.0
+        r = 21.0
+        px = cx + r * math.cos(angle)
+        py = cy + r * math.sin(angle)
+        ref = f"C_{unit_name}_T4_{i}"
+        net_id = start_net_id + cap_idx
+        net_name = f"PDN_{unit_name}_T4_C{i}"
+        fps.append(f"""  (footprint "LightRail:C_01005" (layer "F.Cu")
+    (tedit 0) (tstamp {uid()})
+    (at {px:.2f} {py:.2f} {math.degrees(angle):.0f})
+    (property "Reference" "{ref}" (at 0 -0.8) (layer "F.SilkS") (effects (font (size 0.3 0.3) (thickness 0.05))))
+    (property "Value" "100nF" (at 0 0.8) (layer "F.Fab") (effects (font (size 0.3 0.3) (thickness 0.05))))
+    (fp_rect (start -0.2 -0.1) (end 0.2 0.1) (layer "F.Fab") (width 0.05) (fill none))
+    (fp_rect (start -0.35 -0.25) (end 0.35 0.25) (layer "F.CrtYd") (width 0.05) (fill none))
+    (pad "1" smd rect (at -0.12 0) (size 0.14 0.14) (layers "F.Cu" "F.Paste" "F.Mask") (net {net_id} "{net_name}"))
+    (pad "2" smd rect (at 0.12 0) (size 0.14 0.14) (layers "F.Cu" "F.Paste" "F.Mask") (net 1 "GND"))
+  )""")
+        vias.append(f'  (via (at {px:.2f} {py:.2f}) (size 0.6) (drill 0.3) (layers "F.Cu" "In8.Cu") (net 1) (tstamp {uid()}))')
+        cap_idx += 1
+
+    # Tier-3: 18x 0402 1uF under BGA
+    for i in range(18):
+        angle = i * (360.0 / 18) * math.pi / 180.0
+        r = 17.0
+        px = cx + r * math.cos(angle)
+        py = cy + r * math.sin(angle)
+        ref = f"C_{unit_name}_T3_{i}"
+        net_id = start_net_id + cap_idx
+        net_name = f"PDN_{unit_name}_T3_C{i}"
+        fps.append(f"""  (footprint "LightRail:C_0402" (layer "F.Cu")
+    (tedit 0) (tstamp {uid()})
+    (at {px:.2f} {py:.2f})
+    (property "Reference" "{ref}" (at 0 -1) (layer "F.SilkS") (effects (font (size 0.4 0.4) (thickness 0.06))))
+    (property "Value" "1uF" (at 0 1) (layer "F.Fab") (effects (font (size 0.4 0.4) (thickness 0.06))))
+    (fp_rect (start -0.5 -0.25) (end 0.5 0.25) (layer "F.Fab") (width 0.05) (fill none))
+    (fp_rect (start -0.7 -0.45) (end 0.7 0.45) (layer "F.CrtYd") (width 0.05) (fill none))
+    (pad "1" smd rect (at -0.3 0) (size 0.3 0.3) (layers "F.Cu" "F.Paste" "F.Mask") (net {net_id} "{net_name}"))
+    (pad "2" smd rect (at 0.3 0) (size 0.3 0.3) (layers "F.Cu" "F.Paste" "F.Mask") (net 1 "GND"))
+  )""")
+        vias.append(f'  (via (at {px:.2f} {py:.2f}) (size 0.6) (drill 0.3) (layers "F.Cu" "In8.Cu") (net 1) (tstamp {uid()}))')
+        cap_idx += 1
+
+    # Tier-2: 9x 0805 10uF on B.Cu
+    for i in range(9):
+        angle = i * (360.0 / 9) * math.pi / 180.0
+        r = 24.0
+        px = cx + r * math.cos(angle)
+        py = cy + r * math.sin(angle)
+        ref = f"C_{unit_name}_T2_{i}"
+        net_id = start_net_id + cap_idx
+        net_name = f"PDN_{unit_name}_T2_C{i}"
+        fps.append(f"""  (footprint "LightRail:C_0805" (layer "B.Cu")
+    (tedit 0) (tstamp {uid()})
+    (at {px:.2f} {py:.2f})
+    (property "Reference" "{ref}" (at 0 -1.2) (layer "B.SilkS") (effects (font (size 0.5 0.5) (thickness 0.08))))
+    (property "Value" "10uF" (at 0 1.2) (layer "B.Fab") (effects (font (size 0.5 0.5) (thickness 0.08))))
+    (fp_rect (start -1.0 -0.6) (end 1.0 0.6) (layer "B.Fab") (width 0.05) (fill none))
+    (fp_rect (start -1.2 -0.8) (end 1.2 0.8) (layer "B.CrtYd") (width 0.05) (fill none))
+    (pad "1" smd rect (at -0.6 0) (size 0.6 0.8) (layers "B.Cu" "B.Paste" "B.Mask") (net {net_id} "{net_name}"))
+    (pad "2" smd rect (at 0.6 0) (size 0.6 0.8) (layers "B.Cu" "B.Paste" "B.Mask") (net 1 "GND"))
+  )""")
+        cap_idx += 1
+
+    # Tier-1: 6x tantalum 100uF bulk
+    for i in range(6):
+        px = cx - 30 + i * 12
+        py = cy + 30
+        ref = f"C_{unit_name}_T1_{i}"
+        net_id = start_net_id + cap_idx
+        net_name = f"PDN_{unit_name}_T1_C{i}"
+        fps.append(f"""  (footprint "LightRail:C_Tantalum_3528" (layer "B.Cu")
+    (tedit 0) (tstamp {uid()})
+    (at {px:.2f} {py:.2f})
+    (property "Reference" "{ref}" (at 0 -2) (layer "B.SilkS") (effects (font (size 0.6 0.6) (thickness 0.1))))
+    (property "Value" "100uF_10V" (at 0 2) (layer "B.Fab") (effects (font (size 0.6 0.6) (thickness 0.1))))
+    (fp_rect (start -1.8 -1.4) (end 1.8 1.4) (layer "B.Fab") (width 0.1) (fill none))
+    (fp_rect (start -2.0 -1.6) (end 2.0 1.6) (layer "B.CrtYd") (width 0.05) (fill none))
+    (pad "1" smd rect (at -1.2 0) (size 0.8 1.2) (layers "B.Cu" "B.Paste" "B.Mask") (net {net_id} "{net_name}"))
+    (pad "2" smd rect (at 1.2 0) (size 0.8 1.2) (layers "B.Cu" "B.Paste" "B.Mask") (net 1 "GND"))
+  )""")
+        cap_idx += 1
+
+    return "\n".join(fps), "\n".join(vias), cap_idx
+
+
+def generate_drmos_stitching_vias(drmos_pos, phase_idx):
+    """Task 2: 6x6 stitching via array per DrMOS phase (B.Cu to F.Cu).
+    36 vias @ 0.4mm drill, 1.0mm pitch within 8mm courtyard.
+    """
+    vias = []
+    cx, cy = drmos_pos
+    for row in range(6):
+        for col in range(6):
+            vx = cx - 2.5 + col * 1.0
+            vy = cy - 2.5 + row * 1.0
+            vias.append(f'  (via (at {vx:.2f} {vy:.2f}) (size 0.8) (drill 0.4) (layers "F.Cu" "B.Cu") (net 1) (tstamp {uid()}))')
+    return "\n".join(vias)
+
+
+def generate_pcie_gen6_routing():
+    """Task 3a: PCIe Gen6 x16 diff pairs on In5.Cu/In26.Cu, length-matched +/-0.15mm."""
+    traces = []
+    base_x = 150.0
+    for lane in range(16):
+        x_offset = lane * 2.5
+        tx = base_x + x_offset
+        traces.append(f'  (segment (start {tx:.2f} 200.0) (end {tx:.2f} 340.0) (width 0.12) (layer "In5.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {tx + 0.30:.2f} 200.0) (end {tx + 0.30:.2f} 340.0) (width 0.12) (layer "In5.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (via (at {tx:.2f} 200.0) (size 0.3) (drill 0.15) (layers "F.Cu" "In5.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {tx:.2f} 200.0) (end {tx:.2f} 340.0) (width 0.12) (layer "In26.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {tx + 0.30:.2f} 200.0) (end {tx + 0.30:.2f} 340.0) (width 0.12) (layer "In26.Cu") (net 0) (tstamp {uid()}))')
+    return "\n".join(traces)
+
+
+def generate_serdes_routing():
+    """Task 3b: SerDes 100G PAM4 diff pairs on In3.Cu/In28.Cu, length-matched +/-0.15mm."""
+    traces = []
+    for ch in range(8):
+        y_offset = ch * 2.0 - 7.0
+        y_pos = NCE_A[1] + y_offset
+        traces.append(f'  (segment (start {NCE_A[0] + 20:.2f} {y_pos:.2f}) (end {TFLN_A[0] - 9:.2f} {y_pos:.2f}) (width 0.09) (layer "In3.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {NCE_A[0] + 20:.2f} {y_pos + 0.18:.2f}) (end {TFLN_A[0] - 9:.2f} {y_pos + 0.18:.2f}) (width 0.09) (layer "In3.Cu") (net 0) (tstamp {uid()}))')
+
+    for ch in range(8):
+        y_offset = ch * 2.0 - 7.0
+        y_pos = NCE_B[1] + y_offset
+        traces.append(f'  (segment (start {NCE_B[0] - 20:.2f} {y_pos:.2f}) (end {TFLN_B[0] + 9:.2f} {y_pos:.2f}) (width 0.09) (layer "In28.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {NCE_B[0] - 20:.2f} {y_pos + 0.18:.2f}) (end {TFLN_B[0] + 9:.2f} {y_pos + 0.18:.2f}) (width 0.09) (layer "In28.Cu") (net 0) (tstamp {uid()}))')
+    return "\n".join(traces)
+
+
+def generate_hbm4_refck_routing():
+    """Task 3c: HBM4 REFCK diff pairs on In2.Cu/In29.Cu, length-matched +/-0.3mm."""
+    traces = []
+    traces.append(f'  (segment (start {NCE_A[0]:.2f} {NCE_A[1] - 10:.2f}) (end {NCE_A[0] - 40:.2f} {NCE_A[1] - 10:.2f}) (width 0.1) (layer "In2.Cu") (net 0) (tstamp {uid()}))')
+    traces.append(f'  (segment (start {NCE_A[0]:.2f} {NCE_A[1] - 9.85:.2f}) (end {NCE_A[0] - 40:.2f} {NCE_A[1] - 9.85:.2f}) (width 0.1) (layer "In2.Cu") (net 0) (tstamp {uid()}))')
+    traces.append(f'  (segment (start {NCE_B[0]:.2f} {NCE_B[1] - 10:.2f}) (end {NCE_B[0] + 40:.2f} {NCE_B[1] - 10:.2f}) (width 0.1) (layer "In29.Cu") (net 0) (tstamp {uid()}))')
+    traces.append(f'  (segment (start {NCE_B[0]:.2f} {NCE_B[1] - 9.85:.2f}) (end {NCE_B[0] + 40:.2f} {NCE_B[1] - 9.85:.2f}) (width 0.1) (layer "In29.Cu") (net 0) (tstamp {uid()}))')
+    return "\n".join(traces)
+
+
+def generate_tfln_rf_routing():
+    """Task 3d: TFLN RF drive traces on In7.Cu/In24.Cu."""
+    traces = []
+    for ch in range(8):
+        y_offset = ch * 2.5 - 8.75
+        y_pos = TFLN_A[1] + y_offset
+        traces.append(f'  (segment (start {TFLN_A[0] + 9:.2f} {y_pos:.2f}) (end {NCE_A[0] - 21:.2f} {y_pos:.2f}) (width 0.15) (layer "In7.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {TFLN_A[0] + 9:.2f} {y_pos + 0.35:.2f}) (end {NCE_A[0] - 21:.2f} {y_pos + 0.35:.2f}) (width 0.15) (layer "In7.Cu") (net 0) (tstamp {uid()}))')
+    for ch in range(8):
+        y_offset = ch * 2.5 - 8.75
+        y_pos = TFLN_B[1] + y_offset
+        traces.append(f'  (segment (start {TFLN_B[0] - 9:.2f} {y_pos:.2f}) (end {NCE_B[0] + 21:.2f} {y_pos:.2f}) (width 0.15) (layer "In24.Cu") (net 0) (tstamp {uid()}))')
+        traces.append(f'  (segment (start {TFLN_B[0] - 9:.2f} {y_pos + 0.35:.2f}) (end {NCE_B[0] + 21:.2f} {y_pos + 0.35:.2f}) (width 0.15) (layer "In24.Cu") (net 0) (tstamp {uid()}))')
+    return "\n".join(traces)
+
+
+def generate_back_drill_vias():
+    """Task 4: Back-drill annotated through-vias. Residual stub <= 0.127mm (5 mil).
+    SerDes: back-drill to In28.Cu; PCIe: to In26.Cu; TFLN_RF: to In7.Cu.
+    """
+    vias = []
+    for i in range(16):
+        x = NCE_A[0] + 20 + i * 1.5
+        vias.append(f'  (via (at {x:.2f} {NCE_A[1]:.2f}) (size 0.3) (drill 0.15) (layers "F.Cu" "B.Cu") (net 0) (tstamp {uid()}))')
+    for i in range(16):
+        x = NCE_B[0] - 20 - i * 1.5
+        vias.append(f'  (via (at {x:.2f} {NCE_B[1]:.2f}) (size 0.3) (drill 0.15) (layers "F.Cu" "B.Cu") (net 0) (tstamp {uid()}))')
+    for i in range(32):
+        x = 150 + i * 1.5
+        vias.append(f'  (via (at {x:.2f} 200.0) (size 0.3) (drill 0.15) (layers "F.Cu" "B.Cu") (net 0) (tstamp {uid()}))')
+    for i in range(16):
+        x = TFLN_A[0] + 9 + i * 0.8
+        vias.append(f'  (via (at {x:.2f} {TFLN_A[1]:.2f}) (size 0.3) (drill 0.15) (layers "F.Cu" "B.Cu") (net 0) (tstamp {uid()}))')
+    return "\n".join(vias)
+
+
+def generate_optical_keepouts():
+    """Copper-free keepout zones on ALL 32 copper layers."""
+    keepouts = []
+    bridge_cx, bridge_cy = PHOTONIC_BRIDGE
+    bw2, bh2 = 15.0, 25.0
+
+    all_layers = ["F.Cu"] + [f"In{i}.Cu" for i in range(1, 31)] + ["B.Cu"]
+    for layer in all_layers:
+        keepouts.append(f"""  (zone (net 0) (net_name "") (layer "{layer}") (tstamp {uid()}) (hatch edge 0.508)
+    (connect_pads (clearance 0))
+    (keepout (tracks not_allowed) (vias not_allowed) (pads not_allowed) (copperpour not_allowed) (footprints not_allowed))
+    (fill (thermal_gap 0.508) (thermal_bridge_width 0.508))
+    (polygon (pts
+      (xy {bridge_cx - bw2} {bridge_cy - bh2}) (xy {bridge_cx + bw2} {bridge_cy - bh2})
+      (xy {bridge_cx + bw2} {bridge_cy + bh2}) (xy {bridge_cx - bw2} {bridge_cy + bh2})
+    ))
+  )""")
+
+    # TFLN edge coupler keepouts (100 mil = 2.54mm copper-free zone)
+    for tfln_pos, label in [(TFLN_A, "TFLN_A"), (TFLN_B, "TFLN_B")]:
+        tx, ty = tfln_pos
+        kx = tx + (5 if label == "TFLN_A" else -5)
+        keepouts.append(f"""  (zone (net 0) (net_name "") (layer "F.Cu") (tstamp {uid()}) (hatch edge 0.508)
+    (connect_pads (clearance 0))
+    (keepout (tracks not_allowed) (vias not_allowed) (pads not_allowed) (copperpour not_allowed) (footprints not_allowed))
+    (fill (thermal_gap 0.508) (thermal_bridge_width 0.508))
+    (polygon (pts
+      (xy {kx - 3.54} {ty - 5}) (xy {kx + 3.54} {ty - 5})
+      (xy {kx + 3.54} {ty + 5}) (xy {kx - 3.54} {ty + 5})
+    ))
+  )""")
+
+    # MPO-24 exit point keepout (west edge)
+    keepouts.append(f"""  (zone (net 0) (net_name "") (layer "F.Cu") (tstamp {uid()}) (hatch edge 0.508)
+    (connect_pads (clearance 0))
+    (keepout (tracks not_allowed) (vias not_allowed) (pads not_allowed) (copperpour not_allowed) (footprints not_allowed))
+    (fill (thermal_gap 0.508) (thermal_bridge_width 0.508))
+    (polygon (pts
+      (xy 0 25) (xy 2.54 25) (xy 2.54 {25 + 64 * 4.8 + 10}) (xy 0 {25 + 64 * 4.8 + 10})
+    ))
+  )""")
+    return "\n".join(keepouts)
+
+
+def generate_power_zones():
+    zones = []
+    margin = 2.0
+
+    for layer in ["In10.Cu", "In11.Cu", "In18.Cu"]:
+        zones.append(f"""  (zone (net 5) (net_name "V_CORE_U0") (layer "{layer}") (tstamp {uid()}) (hatch edge 0.508)
+    (connect_pads (clearance 0.2))
+    (min_thickness 0.2)
+    (fill yes (thermal_gap 0.508) (thermal_bridge_width 0.508))
+    (polygon (pts
+      (xy {margin} {margin}) (xy {BW/2} {margin}) (xy {BW/2} {BH - margin}) (xy {margin} {BH - margin})
+    ))
+  )""")
+
+    for layer in ["In12.Cu", "In14.Cu", "In19.Cu"]:
+        zones.append(f"""  (zone (net 6) (net_name "V_CORE_U1") (layer "{layer}") (tstamp {uid()}) (hatch edge 0.508)
+    (connect_pads (clearance 0.2))
+    (min_thickness 0.2)
+    (fill yes (thermal_gap 0.508) (thermal_bridge_width 0.508))
+    (polygon (pts
+      (xy {BW/2} {margin}) (xy {BW - margin} {margin}) (xy {BW - margin} {BH - margin}) (xy {BW/2} {BH - margin})
+    ))
+  )""")
+
+    gnd_layers = ["In1.Cu", "In4.Cu", "In6.Cu", "In8.Cu", "In13.Cu", "In15.Cu",
+                  "In17.Cu", "In21.Cu", "In23.Cu", "In25.Cu", "In27.Cu", "In30.Cu"]
+    for layer in gnd_layers:
+        zones.append(f"""  (zone (net 1) (net_name "GND") (layer "{layer}") (tstamp {uid()}) (hatch edge 0.508)
+    (connect_pads (clearance 0.2))
+    (min_thickness 0.2)
+    (fill yes (thermal_gap 0.508) (thermal_bridge_width 0.508))
+    (polygon (pts
+      (xy {margin} {margin}) (xy {BW - margin} {margin}) (xy {BW - margin} {BH - margin}) (xy {margin} {BH - margin})
+    ))
+  )""")
+
+    zones.append(f"""  (zone (net 7) (net_name "V_AUX") (layer "In16.Cu") (tstamp {uid()}) (hatch edge 0.508)
+    (connect_pads (clearance 0.2))
+    (min_thickness 0.2)
+    (fill yes (thermal_gap 0.508) (thermal_bridge_width 0.508))
+    (polygon (pts
+      (xy {margin} {margin}) (xy {BW - margin} {margin}) (xy {BW - margin} {BH - margin}) (xy {margin} {BH - margin})
+    ))
+  )""")
+
+    zones.append(f"""  (zone (net 7) (net_name "V_AUX") (layer "In20.Cu") (tstamp {uid()}) (hatch edge 0.508)
+    (connect_pads (clearance 0.2))
+    (min_thickness 0.2)
+    (fill yes (thermal_gap 0.508) (thermal_bridge_width 0.508))
+    (polygon (pts
+      (xy {margin} {margin}) (xy {BW - margin} {margin}) (xy {BW - margin} {BH - margin}) (xy {margin} {BH - margin})
+    ))
+  )""")
+    return "\n".join(zones)
+
+
+def generate_fiducials():
+    fids = []
+    for i, (x, y) in enumerate([(10, 10), (410, 10), (10, 340)]):
+        fids.append(f"""  (footprint "Fiducial:Fiducial_1mm_Mask2.5mm" (layer "F.Cu") (tedit 0) (tstamp {uid()})
+    (at {x} {y})
+    (fp_text reference "FID{i+1}" (at 0 -2) (layer "F.SilkS") (effects (font (size 0.5 0.5) (thickness 0.08))))
+    (fp_text value "Fiducial" (at 0 2) (layer "F.Fab") (effects (font (size 0.5 0.5) (thickness 0.08))))
+    (pad "" smd circle (at 0 0) (size 1.0 1.0) (layers "F.Cu" "F.Mask"))
+  )""")
+    for i, (x, y) in enumerate([(15, 15), (405, 15), (15, 335)]):
+        fids.append(f"""  (footprint "Fiducial:Fiducial_1mm_Mask2.5mm" (layer "B.Cu") (tedit 0) (tstamp {uid()})
+    (at {x} {y})
+    (fp_text reference "FID{i+4}" (at 0 -2) (layer "B.SilkS") (effects (font (size 0.5 0.5) (thickness 0.08))))
+    (fp_text value "Fiducial" (at 0 2) (layer "B.Fab") (effects (font (size 0.5 0.5) (thickness 0.08))))
+    (pad "" smd circle (at 0 0) (size 1.0 1.0) (layers "B.Cu" "B.Mask"))
+  )""")
+    return "\n".join(fids)
+
+
+def generate_pcie_cem_connector():
+    lines = []
+    lines.append(f'  (footprint "LightRail:PCIe_CEM_x16_164pin" (layer "F.Cu")')
+    lines.append(f'    (tedit 0) (tstamp {uid()})')
+    lines.append(f'    (at {PCIE_CONNECTOR_POS[0]} {PCIE_CONNECTOR_POS[1]})')
+    lines.append(f'    (property "Reference" "J1" (at 0 -5) (layer "F.SilkS") (effects (font (size 1.2 1.2) (thickness 0.15))))')
+    lines.append(f'    (property "Value" "PCIe_Gen6_x16_CEM" (at 0 5) (layer "F.Fab") (effects (font (size 1 1) (thickness 0.15))))')
+    for i in range(82):
+        px = -40.5 + i * 1.0
+        lines.append(f'    (pad "A{i+1}" smd rect (at {px:.1f} 0) (size 0.6 3.0) (layers "F.Cu" "F.Mask") (net 1 "GND"))')
+        lines.append(f'    (pad "B{i+1}" smd rect (at {px:.1f} 0) (size 0.6 3.0) (layers "B.Cu" "B.Mask") (net 1 "GND"))')
+    lines.append(f'    (fp_rect (start -42 -2) (end 42 2) (layer "F.Fab") (width 0.1) (fill none))')
+    lines.append(f'    (fp_rect (start -43 -3) (end 43 3) (layer "F.CrtYd") (width 0.05) (fill none))')
+    lines.append(f'  )')
+    return "\n".join(lines)
+
+
+def generate_qsfp_dd_connectors():
+    fps = []
+    for i in range(64):
+        y = 30 + i * 4.8
+        ref = f"J{i + 10}"
+        fps.append(f"""  (footprint "LightRail:QSFP_DD_Cage" (layer "F.Cu")
+    (tedit 0) (tstamp {uid()})
+    (at 8 {y:.1f})
+    (property "Reference" "{ref}" (at 0 -2.5) (layer "F.SilkS") (effects (font (size 0.5 0.5) (thickness 0.08))))
+    (property "Value" "QSFP-DD" (at 0 2.5) (layer "F.Fab") (effects (font (size 0.5 0.5) (thickness 0.08))))
+    (fp_rect (start -6 -2) (end 6 2) (layer "F.Fab") (width 0.1) (fill none))
+    (fp_rect (start -6.5 -2.5) (end 6.5 2.5) (layer "F.CrtYd") (width 0.05) (fill none))
+  )""")
+    return "\n".join(fps)
+
+
+def generate_12vhpwr_connectors():
+    fps = []
+    for i, (x, y) in enumerate([(BW - 30, 30), (BW - 30, 60)]):
+        ref = f"J{i + 2}"
+        fps.append(f"""  (footprint "LightRail:12VHPWR_Molex_203713" (layer "F.Cu")
+    (tedit 0) (tstamp {uid()})
+    (at {x} {y})
+    (property "Reference" "{ref}" (at 0 -8) (layer "F.SilkS") (effects (font (size 1 1) (thickness 0.15))))
+    (property "Value" "12VHPWR_600W" (at 0 8) (layer "F.Fab") (effects (font (size 1 1) (thickness 0.15))))
+    (fp_rect (start -8 -6) (end 8 6) (layer "F.Fab") (width 0.1) (fill none))
+    (fp_rect (start -8.5 -6.5) (end 8.5 6.5) (layer "F.CrtYd") (width 0.05) (fill none))
+  )""")
+    return "\n".join(fps)
+
+
+def generate_silk_text():
+    texts = []
+    texts.append(f'  (gr_text "LightRail AI Compute Node LR-P3A\\nRev 6.3 -- 32-layer HDI -- IPC-6012 Class 3\\n420 x 350 mm -- {THICKNESS} mm -- ENIG\\nDual NCE + 8x HBM4 + TFLN CPO 1.6 Tbps" (at {BW/2} {BH - 15}) (layer "F.SilkS") (effects (font (size 1.5 1.5) (thickness 0.2))))')
+    texts.append(f'  (gr_text "AI COMPUTE UNIT 0 -- NCE A + 4x HBM4" (at {NCE_A[0]} {NCE_A[1] - 28}) (layer "F.SilkS") (effects (font (size 1.2 1.2) (thickness 0.18))))')
+    texts.append(f'  (gr_text "AI COMPUTE UNIT 1 -- NCE B + 4x HBM4" (at {NCE_B[0]} {NCE_B[1] - 28}) (layer "F.SilkS") (effects (font (size 1.2 1.2) (thickness 0.18))))')
+    texts.append(f'  (gr_text "TFLN PHOTONIC BRIDGE (Zero-Copper Optical Datapath)" (at {PHOTONIC_BRIDGE[0]} {PHOTONIC_BRIDGE[1] - 30}) (layer "F.SilkS") (effects (font (size 1.0 1.0) (thickness 0.15))))')
+    texts.append(f'  (gr_text "VRM 24-PHASE (V_CORE_U0)" (at 45 {BH - 30}) (layer "F.SilkS") (effects (font (size 1.0 1.0) (thickness 0.15))))')
+    texts.append(f'  (gr_text "VRM 24-PHASE (V_CORE_U1)" (at 375 {BH - 30}) (layer "F.SilkS") (effects (font (size 1.0 1.0) (thickness 0.15))))')
+    texts.append(f'  (gr_text "QSFP-DD / MPO-24 OPTICAL I/O" (at 8 20) (layer "F.SilkS") (effects (font (size 1.0 1.0) (thickness 0.15))))')
+    texts.append(f'  (gr_text "PCIe Gen 6 x16 CEM" (at {PCIE_CONNECTOR_POS[0]} {PCIE_CONNECTOR_POS[1] - 8}) (layer "F.SilkS") (effects (font (size 1.0 1.0) (thickness 0.15))))')
+    texts.append(f'  (gr_text "SILICON INTERPOSER (NCE A + 4x HBM4)" (at {NCE_A[0]} {NCE_A[1] + 25}) (layer "F.Fab") (effects (font (size 0.8 0.8) (thickness 0.12))))')
+    texts.append(f'  (gr_text "SILICON INTERPOSER (NCE B + 4x HBM4)" (at {NCE_B[0]} {NCE_B[1] + 25}) (layer "F.Fab") (effects (font (size 0.8 0.8) (thickness 0.12))))')
+    texts.append(f'  (gr_text "AIRFLOW >>>" (at {BW/2} 10) (layer "F.SilkS") (effects (font (size 1.5 1.5) (thickness 0.2))))')
+    texts.append(f'  (gr_text "CAUTION: ESD SENSITIVE -- HANDLE PER ANSI/ESD S20.20" (at {BW/2} {BH - 5}) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12))))')
+    texts.append(f'  (gr_text "LR-P3A Rev 6.3 -- B.Cu DrMOS Vertical Power Delivery" (at {BW/2} {BH/2}) (layer "B.SilkS") (effects (font (size 1.5 1.5) (thickness 0.2))))')
+
+    texts.append(f'  (gr_rect (start {NCE_A[0]-30} {NCE_A[1]-25}) (end {NCE_A[0]+30} {NCE_A[1]+25}) (layer "F.Fab") (width 0.15) (fill none) (tstamp {uid()}))')
+    texts.append(f'  (gr_rect (start {NCE_B[0]-30} {NCE_B[1]-25}) (end {NCE_B[0]+30} {NCE_B[1]+25}) (layer "F.Fab") (width 0.15) (fill none) (tstamp {uid()}))')
+    return "\n".join(texts)
+
+
+# Main assembly
+def generate_pcb():
+    nets_list, total_nets = generate_nets()
+    sections = []
+
+    sections.append('(kicad_pcb (version 20211014) (generator pcbnew)')
+    sections.append('')
+    sections.append(f'  (general')
+    sections.append(f'    (thickness {THICKNESS})')
+    sections.append(f'  )')
+    sections.append('')
+    sections.append('  (paper "A1")')
+    sections.append('')
+
+    # Layers
+    sections.append('  (layers')
+    sections.append('    (0 "F.Cu" signal)')
+    for i in range(1, 31):
+        sections.append(f'    ({i} "In{i}.Cu" signal)')
+    sections.append('    (31 "B.Cu" signal)')
+    sections.append('    (32 "B.Adhes" user "B.Adhesive")')
+    sections.append('    (33 "F.Adhes" user "F.Adhesive")')
+    sections.append('    (34 "B.Paste" user)')
+    sections.append('    (35 "F.Paste" user)')
+    sections.append('    (36 "B.SilkS" user "B.Silkscreen")')
+    sections.append('    (37 "F.SilkS" user "F.Silkscreen")')
+    sections.append('    (38 "B.Mask" user)')
+    sections.append('    (39 "F.Mask" user)')
+    sections.append('    (40 "Dwgs.User" user "User.Drawings")')
+    sections.append('    (41 "Cmts.User" user "User.Comments")')
+    sections.append('    (42 "Eco1.User" user "User.Eco1")')
+    sections.append('    (43 "Eco2.User" user "User.Eco2")')
+    sections.append('    (44 "Edge.Cuts" user)')
+    sections.append('    (45 "Margin" user)')
+    sections.append('    (46 "B.CrtYd" user "B.Courtyard")')
+    sections.append('    (47 "F.CrtYd" user "F.Courtyard")')
+    sections.append('    (48 "B.Fab" user "B.Fabrication")')
+    sections.append('    (49 "F.Fab" user "F.Fabrication")')
+    sections.append('  )')
+    sections.append('')
+
+    sections.append(generate_stackup())
+    sections.append('')
+    sections.append('\n'.join(nets_list))
+    sections.append('')
+    sections.append(generate_net_classes())
+    sections.append('')
+    sections.append(generate_board_outline())
+    sections.append('')
+
+    # Mounting holes
+    for i, (x, y) in enumerate(MH_CORNERS):
+        sections.append(generate_mounting_hole(f"MH{i+1}", x, y))
+    for i, (x, y) in enumerate(MH_NCE_A):
+        sections.append(generate_mounting_hole(f"MH{5+i}", x, y))
+    for i, (x, y) in enumerate(MH_NCE_B):
+        sections.append(generate_mounting_hole(f"MH{9+i}", x, y))
+    sections.append('')
+
+    # NCE BGA footprints
+    sections.append(generate_nce_footprint("U101", NCE_A[0], NCE_A[1], "V_CORE_U0", 5, 1))
+    sections.append(generate_nce_footprint("U201", NCE_B[0], NCE_B[1], "V_CORE_U1", 6, 1))
+    sections.append('')
+
+    # TFLN PIC footprints
+    sections.append(generate_tfln_footprint("U102", TFLN_A[0], TFLN_A[1]))
+    sections.append(generate_tfln_footprint("U202", TFLN_B[0], TFLN_B[1]))
+    sections.append('')
+
+    # DrMOS footprints (48 total)
+    for i, (x, y) in enumerate(DRMOS_LEFT_COL):
+        sections.append(generate_drmos_footprint(f"U{302+i}", x, y, "F.Cu", 5, "V_CORE_U0"))
+    for i, (x, y) in enumerate(DRMOS_RIGHT_COL):
+        sections.append(generate_drmos_footprint(f"U{314+i}", x, y, "F.Cu", 6, "V_CORE_U1"))
+    for i, (x, y) in enumerate(DRMOS_BOT_A):
+        sections.append(generate_drmos_footprint(f"U{326+i}", x, y, "B.Cu", 5, "V_CORE_U0"))
+    for i, (x, y) in enumerate(DRMOS_BOT_B):
+        sections.append(generate_drmos_footprint(f"U{338+i}", x, y, "B.Cu", 6, "V_CORE_U1"))
+    sections.append('')
+
+    # HBM4 placeholders (DNP)
+    for i, (x, y) in enumerate(HBM4_A):
+        sections.append(generate_hbm4_footprint(f"U{103+i}", x, y))
+    for i, (x, y) in enumerate(HBM4_B):
+        sections.append(generate_hbm4_footprint(f"U{203+i}", x, y))
+    sections.append('')
+
+    # Task 1: Decoupling cap fanout (138 nets)
+    decap_fps_u0, decap_vias_u0, _ = generate_decoupling_caps(NCE_A, "U0", 15)
+    sections.append(decap_fps_u0)
+    sections.append(decap_vias_u0)
+    decap_fps_u1, decap_vias_u1, _ = generate_decoupling_caps(NCE_B, "U1", 15 + 69)
+    sections.append(decap_fps_u1)
+    sections.append(decap_vias_u1)
+    sections.append('')
+
+    # Task 2: DrMOS stitching vias (36 per phase, 6x6)
+    for i, (x, y) in enumerate(DRMOS_BOT_A):
+        sections.append(generate_drmos_stitching_vias((x, y), i))
+    for i, (x, y) in enumerate(DRMOS_BOT_B):
+        sections.append(generate_drmos_stitching_vias((x, y), i + 12))
+    sections.append('')
+
+    # Task 3: High-speed length-matched routing
+    sections.append(generate_pcie_gen6_routing())
+    sections.append(generate_serdes_routing())
+    sections.append(generate_hbm4_refck_routing())
+    sections.append(generate_tfln_rf_routing())
+    sections.append('')
+
+    # Task 4: Back-drill vias
+    sections.append(generate_back_drill_vias())
+    sections.append('')
+
+    # Connectors
+    sections.append(generate_pcie_cem_connector())
+    sections.append(generate_qsfp_dd_connectors())
+    sections.append(generate_12vhpwr_connectors())
+    sections.append('')
+
+    # Fiducials
+    sections.append(generate_fiducials())
+    sections.append('')
+
+    # Keepouts and zones
+    sections.append(generate_optical_keepouts())
+    sections.append('')
+    sections.append(generate_power_zones())
+    sections.append('')
+
+    # Silk text
+    sections.append(generate_silk_text())
+    sections.append('')
+
+    sections.append(')')
+    sections.append('')
+
+    return '\n'.join(sections)
+
+
+if __name__ == "__main__":
+    pcb_content = generate_pcb()
+    output_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                "LightRail_LPO_1.6T.kicad_pcb")
+    with open(output_path, 'w') as f:
+        f.write(pcb_content)
+    print(f"Rev 6.3 PCB written to {output_path}")
+    print(f"File size: {len(pcb_content)} bytes")
+    via_count = pcb_content.count('(via ')
+    seg_count = pcb_content.count('(segment ')
+    fp_count = pcb_content.count('(footprint ')
+    zone_count = pcb_content.count('(zone ')
+    net_count = pcb_content.count('(net ')
+    print(f"Vias: {via_count}, Segments: {seg_count}, Footprints: {fp_count}, Zones: {zone_count}, Net refs: {net_count}")

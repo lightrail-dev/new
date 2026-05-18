@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# export_gerbers.sh — LightRail AI Compute Node (LR-P3A Rev 6.0) fab release.
+# export_gerbers.sh — LightRail AI Compute Node (LR-P3A Rev 6.3) fab release.
 #
 # Requires KiCad 8.0.4+ with `kicad-cli` in PATH. This script is intended to
 # run locally (or in a CI container with KiCad pre-installed); the scaffold
 # itself cannot render complete Gerbers because pad-to-net assignments are
 # incomplete — finish the design in KiCad first, then run this.
 #
-# Rev 6.0 output set (spec §V):
+# Rev 6.3 output set (spec §V):
 #   * 32 copper layers (F.Cu, In1..In30, B.Cu) as RS-274X / X2
 #   * ODB++ as the primary fab transfer format
 #   * IPC-2581C and IPC-D-356A as redundant formats
@@ -43,7 +43,7 @@ fi
 
 mkdir -p "$OUT/gerbers" "$OUT/drill" "$OUT/assembly" "$OUT/docs"
 
-# Full 32-layer copper stack + non-copper layers (Rev 6.0).
+# Full 32-layer copper stack + non-copper layers (Rev 6.3).
 COPPER_LAYERS="F.Cu,\
 In1.Cu,In2.Cu,In3.Cu,In4.Cu,In5.Cu,In6.Cu,In7.Cu,In8.Cu,In9.Cu,In10.Cu,\
 In11.Cu,In12.Cu,In13.Cu,In14.Cu,In15.Cu,In16.Cu,In17.Cu,In18.Cu,In19.Cu,In20.Cu,\
@@ -161,4 +161,4 @@ kicad-cli sch erc --output "$OUT/docs/erc_report.rpt" --format report \
 
 echo
 echo "Fab package exported to: $OUT"
-echo "Zip for release with:   (cd $OUT && zip -r ../LightRail_LPO_1.6T-rev6.0.zip .)"
+echo "Zip for release with:   (cd $OUT && zip -r ../LightRail_LPO_1.6T-rev6.3.zip .)"
