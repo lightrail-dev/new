@@ -869,5 +869,27 @@
     (pin "IEEE1500_TDO" bidirectional (at 215.0 402.5 0) (effects (font (size 1.0 1.0))))
   )
 
+  ;; QPA Subsystem (TFLN Quantum Photonic Accelerator)
+  (sheet (at 220.0 380.0) (size 30.0 25.0)
+    (stroke (width 0.254) (type solid) (color 0 0 0 0))
+    (fill (color 200 220 255 1.0))
+    (uuid qpa-sheet-0000-4000-8000-000000000000)
+    (property "Sheet name" "QPA_Subsystem" (id 0) (at 220.0 378.0 0) (effects (font (size 1.27 1.27))))
+    (property "Sheet file" "QPA.kicad_sch" (id 1) (at 220.0 407.0 0) (effects (font (size 1.0 1.0))))
+    (pin "CXL_TX[7:0]P"    bidirectional (at 220.0 385.0 180) (effects (font (size 1.0 1.0))))
+    (pin "CXL_TX[7:0]N"    bidirectional (at 220.0 387.5 180) (effects (font (size 1.0 1.0))))
+    (pin "CXL_RX[7:0]P"    bidirectional (at 220.0 390.0 180) (effects (font (size 1.0 1.0))))
+    (pin "CXL_RX[7:0]N"    bidirectional (at 220.0 392.5 180) (effects (font (size 1.0 1.0))))
+    (pin "VDD_QPA_0V85"     input         (at 220.0 395.0 180) (effects (font (size 1.0 1.0))))
+    (pin "VDD_QPA_1V8"      input         (at 220.0 397.5 180) (effects (font (size 1.0 1.0))))
+    (pin "VDD_QPA_CRYO"     input         (at 220.0 400.0 180) (effects (font (size 1.0 1.0))))
+    (pin "GND"              passive       (at 220.0 402.5 180) (effects (font (size 1.0 1.0))))
+    (pin "TELEM_SDA"        bidirectional (at 250.0 385.0 0) (effects (font (size 1.0 1.0))))
+    (pin "TELEM_SCL"        input         (at 250.0 387.5 0) (effects (font (size 1.0 1.0))))
+    (pin "FAULT_INT"        output        (at 250.0 390.0 0) (effects (font (size 1.0 1.0))))
+    (pin "CLK_250MHZ"       input         (at 250.0 392.5 0) (effects (font (size 1.0 1.0))))
+    (pin "CLK_500MHZ"       input         (at 250.0 395.0 0) (effects (font (size 1.0 1.0))))
+  )
+
 
 ) ;; end kicad_sch

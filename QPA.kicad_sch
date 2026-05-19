@@ -1,0 +1,385 @@
+(kicad_sch (version 20211123) (generator eeschema)
+
+  (uuid qpa00000-0000-0000-4000-000000000000)
+  (paper "A3")
+
+  (title_block
+    (title "TFLN Quantum Photonic Accelerator (QPA) Subsystem")
+    (date "2026-05-19")
+    (rev "1.0")
+    (company "LightRail AI")
+    (comment 1 "QPA Integration for LR-P3A Rev 6.3 NCE")
+    (comment 2 "8-channel MZI Mesh | 100 GHz DAC | SNSPD Readout | CXL 2.0")
+    (comment 3 "FPGA Trigger Matrix (XCKU5P) | BiCMOS RF Drivers | Quantum Memory")
+    (comment 4 "Scalable TFLN Quantum-Photonic Accelerator Architecture")
+  )
+
+  (lib_symbols
+
+    (symbol "LightRail:XCKU5P_FPGA" (in_bom yes) (on_board yes)
+      (property "Reference" "U" (id 0) (at 0 22.86 0) (effects (font (size 1.27 1.27))))
+      (property "Value" "XCKU5P_FPGA" (id 1) (at 0 -22.86 0) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "LightRail:BGA-676_26x26mm" (id 2) (at 0 -25 0) (effects (font (size 1.27 1.27)) hide))
+      (property "Datasheet" "" (id 3) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+      (symbol "XCKU5P_FPGA_0_0"
+        (rectangle (start -17.78 21.59) (end 17.78 -21.59) (stroke (width 0.254) (type default) (color 0 0 0 0)) (fill (type background)))
+        (pin output (at -20.32 19.05 0) (length 2.54) (name "LVDS_TX_0P" (effects (font (size 1.0 1.0)))) (number "A1" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 17.78 0) (length 2.54) (name "LVDS_TX_0N" (effects (font (size 1.0 1.0)))) (number "A2" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 15.24 0) (length 2.54) (name "LVDS_TX_1P" (effects (font (size 1.0 1.0)))) (number "A3" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 13.97 0) (length 2.54) (name "LVDS_TX_1N" (effects (font (size 1.0 1.0)))) (number "A4" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 11.43 0) (length 2.54) (name "LVDS_TX_2P" (effects (font (size 1.0 1.0)))) (number "B1" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 10.16 0) (length 2.54) (name "LVDS_TX_2N" (effects (font (size 1.0 1.0)))) (number "B2" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 7.62 0) (length 2.54) (name "LVDS_TX_3P" (effects (font (size 1.0 1.0)))) (number "B3" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 6.35 0) (length 2.54) (name "LVDS_TX_3N" (effects (font (size 1.0 1.0)))) (number "B4" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 3.81 0) (length 2.54) (name "LVDS_TX_4P" (effects (font (size 1.0 1.0)))) (number "C1" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 2.54 0) (length 2.54) (name "LVDS_TX_4N" (effects (font (size 1.0 1.0)))) (number "C2" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 0 0) (length 2.54) (name "LVDS_TX_5P" (effects (font (size 1.0 1.0)))) (number "C3" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 -1.27 0) (length 2.54) (name "LVDS_TX_5N" (effects (font (size 1.0 1.0)))) (number "C4" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 -3.81 0) (length 2.54) (name "LVDS_TX_6P" (effects (font (size 1.0 1.0)))) (number "D1" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 -5.08 0) (length 2.54) (name "LVDS_TX_6N" (effects (font (size 1.0 1.0)))) (number "D2" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 -7.62 0) (length 2.54) (name "LVDS_TX_7P" (effects (font (size 1.0 1.0)))) (number "D3" (effects (font (size 1.0 1.0)))))
+        (pin output (at -20.32 -8.89 0) (length 2.54) (name "LVDS_TX_7N" (effects (font (size 1.0 1.0)))) (number "D4" (effects (font (size 1.0 1.0)))))
+        (pin input (at 20.32 19.05 180) (length 2.54) (name "SNSPD_RD_0" (effects (font (size 1.0 1.0)))) (number "E1" (effects (font (size 1.0 1.0)))))
+        (pin input (at 20.32 17.78 180) (length 2.54) (name "SNSPD_RD_1" (effects (font (size 1.0 1.0)))) (number "E2" (effects (font (size 1.0 1.0)))))
+        (pin input (at 20.32 15.24 180) (length 2.54) (name "SNSPD_RD_2" (effects (font (size 1.0 1.0)))) (number "E3" (effects (font (size 1.0 1.0)))))
+        (pin input (at 20.32 13.97 180) (length 2.54) (name "SNSPD_RD_3" (effects (font (size 1.0 1.0)))) (number "E4" (effects (font (size 1.0 1.0)))))
+        (pin input (at 20.32 11.43 180) (length 2.54) (name "SNSPD_RD_4" (effects (font (size 1.0 1.0)))) (number "F1" (effects (font (size 1.0 1.0)))))
+        (pin input (at 20.32 10.16 180) (length 2.54) (name "SNSPD_RD_5" (effects (font (size 1.0 1.0)))) (number "F2" (effects (font (size 1.0 1.0)))))
+        (pin input (at 20.32 7.62 180) (length 2.54) (name "SNSPD_RD_6" (effects (font (size 1.0 1.0)))) (number "F3" (effects (font (size 1.0 1.0)))))
+        (pin input (at 20.32 6.35 180) (length 2.54) (name "SNSPD_RD_7" (effects (font (size 1.0 1.0)))) (number "F4" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at 20.32 3.81 180) (length 2.54) (name "CXL_TX_0P" (effects (font (size 1.0 1.0)))) (number "G1" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at 20.32 2.54 180) (length 2.54) (name "CXL_TX_0N" (effects (font (size 1.0 1.0)))) (number "G2" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at 20.32 0 180) (length 2.54) (name "CXL_RX_0P" (effects (font (size 1.0 1.0)))) (number "G3" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at 20.32 -1.27 180) (length 2.54) (name "CXL_RX_0N" (effects (font (size 1.0 1.0)))) (number "G4" (effects (font (size 1.0 1.0)))))
+        (pin output (at 20.32 -3.81 180) (length 2.54) (name "QMEM_WR_EN" (effects (font (size 1.0 1.0)))) (number "H1" (effects (font (size 1.0 1.0)))))
+        (pin output (at 20.32 -5.08 180) (length 2.54) (name "QMEM_RD_EN" (effects (font (size 1.0 1.0)))) (number "H2" (effects (font (size 1.0 1.0)))))
+        (pin output (at 20.32 -7.62 180) (length 2.54) (name "QMEM_ADDR[3:0]" (effects (font (size 1.0 1.0)))) (number "H3" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at 20.32 -8.89 180) (length 2.54) (name "QMEM_DATA" (effects (font (size 1.0 1.0)))) (number "H4" (effects (font (size 1.0 1.0)))))
+        (pin input (at 0 24.13 270) (length 2.54) (name "CLK_250MHZ" (effects (font (size 1.0 1.0)))) (number "J1" (effects (font (size 1.0 1.0)))))
+        (pin input (at 2.54 24.13 270) (length 2.54) (name "CLK_500MHZ" (effects (font (size 1.0 1.0)))) (number "J2" (effects (font (size 1.0 1.0)))))
+        (pin power_in (at -5.08 24.13 270) (length 2.54) (name "VDD_0V85" (effects (font (size 1.0 1.0)))) (number "P1" (effects (font (size 1.0 1.0)))))
+        (pin power_in (at -7.62 24.13 270) (length 2.54) (name "VDD_1V8" (effects (font (size 1.0 1.0)))) (number "P2" (effects (font (size 1.0 1.0)))))
+        (pin power_in (at 0 -24.13 90) (length 2.54) (name "GND" (effects (font (size 1.0 1.0)))) (number "P3" (effects (font (size 1.0 1.0)))))
+      )
+    )
+
+    (symbol "LightRail:AD9082_DAC" (in_bom yes) (on_board yes)
+      (property "Reference" "U" (id 0) (at 0 13.97 0) (effects (font (size 1.27 1.27))))
+      (property "Value" "AD9082_DAC" (id 1) (at 0 -13.97 0) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "LightRail:QFN-64_9x9mm" (id 2) (at 0 -16 0) (effects (font (size 1.27 1.27)) hide))
+      (property "Datasheet" "" (id 3) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+      (symbol "AD9082_DAC_0_0"
+        (rectangle (start -12.7 12.7) (end 12.7 -12.7) (stroke (width 0.254) (type default) (color 0 0 0 0)) (fill (type background)))
+        (pin input (at -15.24 10.16 0) (length 2.54) (name "LVDS_IN_0P" (effects (font (size 1.0 1.0)))) (number "1" (effects (font (size 1.0 1.0)))))
+        (pin input (at -15.24 8.89 0) (length 2.54) (name "LVDS_IN_0N" (effects (font (size 1.0 1.0)))) (number "2" (effects (font (size 1.0 1.0)))))
+        (pin input (at -15.24 6.35 0) (length 2.54) (name "LVDS_IN_1P" (effects (font (size 1.0 1.0)))) (number "3" (effects (font (size 1.0 1.0)))))
+        (pin input (at -15.24 5.08 0) (length 2.54) (name "LVDS_IN_1N" (effects (font (size 1.0 1.0)))) (number "4" (effects (font (size 1.0 1.0)))))
+        (pin input (at -15.24 2.54 0) (length 2.54) (name "LVDS_IN_2P" (effects (font (size 1.0 1.0)))) (number "5" (effects (font (size 1.0 1.0)))))
+        (pin input (at -15.24 1.27 0) (length 2.54) (name "LVDS_IN_2N" (effects (font (size 1.0 1.0)))) (number "6" (effects (font (size 1.0 1.0)))))
+        (pin input (at -15.24 -1.27 0) (length 2.54) (name "LVDS_IN_3P" (effects (font (size 1.0 1.0)))) (number "7" (effects (font (size 1.0 1.0)))))
+        (pin input (at -15.24 -2.54 0) (length 2.54) (name "LVDS_IN_3N" (effects (font (size 1.0 1.0)))) (number "8" (effects (font (size 1.0 1.0)))))
+        (pin output (at 15.24 10.16 180) (length 2.54) (name "RF_OUT_0P" (effects (font (size 1.0 1.0)))) (number "9" (effects (font (size 1.0 1.0)))))
+        (pin output (at 15.24 8.89 180) (length 2.54) (name "RF_OUT_0N" (effects (font (size 1.0 1.0)))) (number "10" (effects (font (size 1.0 1.0)))))
+        (pin output (at 15.24 6.35 180) (length 2.54) (name "RF_OUT_1P" (effects (font (size 1.0 1.0)))) (number "11" (effects (font (size 1.0 1.0)))))
+        (pin output (at 15.24 5.08 180) (length 2.54) (name "RF_OUT_1N" (effects (font (size 1.0 1.0)))) (number "12" (effects (font (size 1.0 1.0)))))
+        (pin output (at 15.24 2.54 180) (length 2.54) (name "RF_OUT_2P" (effects (font (size 1.0 1.0)))) (number "13" (effects (font (size 1.0 1.0)))))
+        (pin output (at 15.24 1.27 180) (length 2.54) (name "RF_OUT_2N" (effects (font (size 1.0 1.0)))) (number "14" (effects (font (size 1.0 1.0)))))
+        (pin output (at 15.24 -1.27 180) (length 2.54) (name "RF_OUT_3P" (effects (font (size 1.0 1.0)))) (number "15" (effects (font (size 1.0 1.0)))))
+        (pin output (at 15.24 -2.54 180) (length 2.54) (name "RF_OUT_3N" (effects (font (size 1.0 1.0)))) (number "16" (effects (font (size 1.0 1.0)))))
+        (pin input (at 0 15.24 270) (length 2.54) (name "CLK_100GHZ" (effects (font (size 1.0 1.0)))) (number "17" (effects (font (size 1.0 1.0)))))
+        (pin power_in (at -5.08 15.24 270) (length 2.54) (name "AVDD" (effects (font (size 1.0 1.0)))) (number "18" (effects (font (size 1.0 1.0)))))
+        (pin power_in (at -7.62 15.24 270) (length 2.54) (name "DVDD" (effects (font (size 1.0 1.0)))) (number "19" (effects (font (size 1.0 1.0)))))
+        (pin power_in (at 0 -15.24 90) (length 2.54) (name "GND" (effects (font (size 1.0 1.0)))) (number "20" (effects (font (size 1.0 1.0)))))
+      )
+    )
+
+    (symbol "LightRail:HMC7044_RF_DRV" (in_bom yes) (on_board yes)
+      (property "Reference" "U" (id 0) (at 0 10.16 0) (effects (font (size 1.27 1.27))))
+      (property "Value" "HMC7044_RF_DRV" (id 1) (at 0 -10.16 0) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "LightRail:QFN-32_5x5mm" (id 2) (at 0 -12 0) (effects (font (size 1.27 1.27)) hide))
+      (property "Datasheet" "" (id 3) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+      (symbol "HMC7044_RF_DRV_0_0"
+        (rectangle (start -10.16 8.89) (end 10.16 -8.89) (stroke (width 0.254) (type default) (color 0 0 0 0)) (fill (type background)))
+        (pin input (at -12.7 6.35 0) (length 2.54) (name "RF_IN_P" (effects (font (size 1.0 1.0)))) (number "1" (effects (font (size 1.0 1.0)))))
+        (pin input (at -12.7 5.08 0) (length 2.54) (name "RF_IN_N" (effects (font (size 1.0 1.0)))) (number "2" (effects (font (size 1.0 1.0)))))
+        (pin output (at 12.7 6.35 180) (length 2.54) (name "RF_OUT_P" (effects (font (size 1.0 1.0)))) (number "3" (effects (font (size 1.0 1.0)))))
+        (pin output (at 12.7 5.08 180) (length 2.54) (name "RF_OUT_N" (effects (font (size 1.0 1.0)))) (number "4" (effects (font (size 1.0 1.0)))))
+        (pin power_in (at 0 11.43 270) (length 2.54) (name "VCC" (effects (font (size 1.0 1.0)))) (number "5" (effects (font (size 1.0 1.0)))))
+        (pin power_in (at 0 -11.43 90) (length 2.54) (name "GND" (effects (font (size 1.0 1.0)))) (number "6" (effects (font (size 1.0 1.0)))))
+      )
+    )
+
+    (symbol "LightRail:SNSPD_8CH" (in_bom yes) (on_board yes)
+      (property "Reference" "U" (id 0) (at 0 10.16 0) (effects (font (size 1.27 1.27))))
+      (property "Value" "SNSPD_8CH" (id 1) (at 0 -10.16 0) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "LightRail:LGA-16_4x4mm" (id 2) (at 0 -12 0) (effects (font (size 1.27 1.27)) hide))
+      (property "Datasheet" "" (id 3) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+      (symbol "SNSPD_8CH_0_0"
+        (rectangle (start -10.16 8.89) (end 10.16 -8.89) (stroke (width 0.254) (type default) (color 0 0 0 0)) (fill (type background)))
+        (pin output (at 12.7 6.35 180) (length 2.54) (name "DET_0" (effects (font (size 1.0 1.0)))) (number "1" (effects (font (size 1.0 1.0)))))
+        (pin output (at 12.7 5.08 180) (length 2.54) (name "DET_1" (effects (font (size 1.0 1.0)))) (number "2" (effects (font (size 1.0 1.0)))))
+        (pin output (at 12.7 3.81 180) (length 2.54) (name "DET_2" (effects (font (size 1.0 1.0)))) (number "3" (effects (font (size 1.0 1.0)))))
+        (pin output (at 12.7 2.54 180) (length 2.54) (name "DET_3" (effects (font (size 1.0 1.0)))) (number "4" (effects (font (size 1.0 1.0)))))
+        (pin output (at 12.7 -2.54 180) (length 2.54) (name "DET_4" (effects (font (size 1.0 1.0)))) (number "5" (effects (font (size 1.0 1.0)))))
+        (pin output (at 12.7 -3.81 180) (length 2.54) (name "DET_5" (effects (font (size 1.0 1.0)))) (number "6" (effects (font (size 1.0 1.0)))))
+        (pin output (at 12.7 -5.08 180) (length 2.54) (name "DET_6" (effects (font (size 1.0 1.0)))) (number "7" (effects (font (size 1.0 1.0)))))
+        (pin output (at 12.7 -6.35 180) (length 2.54) (name "DET_7" (effects (font (size 1.0 1.0)))) (number "8" (effects (font (size 1.0 1.0)))))
+        (pin input (at -12.7 6.35 0) (length 2.54) (name "BIAS" (effects (font (size 1.0 1.0)))) (number "9" (effects (font (size 1.0 1.0)))))
+        (pin power_in (at 0 11.43 270) (length 2.54) (name "VDD_CRYO" (effects (font (size 1.0 1.0)))) (number "10" (effects (font (size 1.0 1.0)))))
+        (pin power_in (at 0 -11.43 90) (length 2.54) (name "GND" (effects (font (size 1.0 1.0)))) (number "11" (effects (font (size 1.0 1.0)))))
+      )
+    )
+
+    (symbol "LightRail:QMEM_CELL" (in_bom yes) (on_board yes)
+      (property "Reference" "U" (id 0) (at 0 8.89 0) (effects (font (size 1.27 1.27))))
+      (property "Value" "QMEM_CELL" (id 1) (at 0 -8.89 0) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "LightRail:LGA-24_5x3mm" (id 2) (at 0 -11 0) (effects (font (size 1.27 1.27)) hide))
+      (property "Datasheet" "" (id 3) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+      (symbol "QMEM_CELL_0_0"
+        (rectangle (start -8.89 7.62) (end 8.89 -7.62) (stroke (width 0.254) (type default) (color 0 0 0 0)) (fill (type background)))
+        (pin input (at -11.43 5.08 0) (length 2.54) (name "WR_EN" (effects (font (size 1.0 1.0)))) (number "1" (effects (font (size 1.0 1.0)))))
+        (pin input (at -11.43 3.81 0) (length 2.54) (name "RD_EN" (effects (font (size 1.0 1.0)))) (number "2" (effects (font (size 1.0 1.0)))))
+        (pin input (at -11.43 1.27 0) (length 2.54) (name "ADDR_0" (effects (font (size 1.0 1.0)))) (number "3" (effects (font (size 1.0 1.0)))))
+        (pin input (at -11.43 0 0) (length 2.54) (name "ADDR_1" (effects (font (size 1.0 1.0)))) (number "4" (effects (font (size 1.0 1.0)))))
+        (pin input (at -11.43 -1.27 0) (length 2.54) (name "ADDR_2" (effects (font (size 1.0 1.0)))) (number "5" (effects (font (size 1.0 1.0)))))
+        (pin input (at -11.43 -2.54 0) (length 2.54) (name "ADDR_3" (effects (font (size 1.0 1.0)))) (number "6" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at 11.43 5.08 180) (length 2.54) (name "DATA_IN" (effects (font (size 1.0 1.0)))) (number "7" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at 11.43 3.81 180) (length 2.54) (name "DATA_OUT" (effects (font (size 1.0 1.0)))) (number "8" (effects (font (size 1.0 1.0)))))
+        (pin power_in (at 0 10.16 270) (length 2.54) (name "VDD_CRYO" (effects (font (size 1.0 1.0)))) (number "9" (effects (font (size 1.0 1.0)))))
+        (pin power_in (at 0 -10.16 90) (length 2.54) (name "GND" (effects (font (size 1.0 1.0)))) (number "10" (effects (font (size 1.0 1.0)))))
+      )
+    )
+
+    (symbol "LightRail:CXL_SWITCH_256" (in_bom yes) (on_board yes)
+      (property "Reference" "U" (id 0) (at 0 16.51 0) (effects (font (size 1.27 1.27))))
+      (property "Value" "CXL_SWITCH_256" (id 1) (at 0 -16.51 0) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "LightRail:BGA-256_16x16mm" (id 2) (at 0 -18.5 0) (effects (font (size 1.27 1.27)) hide))
+      (property "Datasheet" "" (id 3) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+      (symbol "CXL_SWITCH_256_0_0"
+        (rectangle (start -12.7 15.24) (end 12.7 -15.24) (stroke (width 0.254) (type default) (color 0 0 0 0)) (fill (type background)))
+        (pin bidirectional (at -15.24 12.7 0) (length 2.54) (name "PORT_A_TX[7:0]P" (effects (font (size 1.0 1.0)))) (number "A1" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at -15.24 11.43 0) (length 2.54) (name "PORT_A_TX[7:0]N" (effects (font (size 1.0 1.0)))) (number "A2" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at -15.24 8.89 0) (length 2.54) (name "PORT_A_RX[7:0]P" (effects (font (size 1.0 1.0)))) (number "A3" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at -15.24 7.62 0) (length 2.54) (name "PORT_A_RX[7:0]N" (effects (font (size 1.0 1.0)))) (number "A4" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at 15.24 12.7 180) (length 2.54) (name "PORT_B_TX[7:0]P" (effects (font (size 1.0 1.0)))) (number "B1" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at 15.24 11.43 180) (length 2.54) (name "PORT_B_TX[7:0]N" (effects (font (size 1.0 1.0)))) (number "B2" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at 15.24 8.89 180) (length 2.54) (name "PORT_B_RX[7:0]P" (effects (font (size 1.0 1.0)))) (number "B3" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at 15.24 7.62 180) (length 2.54) (name "PORT_B_RX[7:0]N" (effects (font (size 1.0 1.0)))) (number "B4" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at -15.24 -7.62 0) (length 2.54) (name "HOST_TX[7:0]P" (effects (font (size 1.0 1.0)))) (number "C1" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at -15.24 -8.89 0) (length 2.54) (name "HOST_TX[7:0]N" (effects (font (size 1.0 1.0)))) (number "C2" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at -15.24 -11.43 0) (length 2.54) (name "HOST_RX[7:0]P" (effects (font (size 1.0 1.0)))) (number "C3" (effects (font (size 1.0 1.0)))))
+        (pin bidirectional (at -15.24 -12.7 0) (length 2.54) (name "HOST_RX[7:0]N" (effects (font (size 1.0 1.0)))) (number "C4" (effects (font (size 1.0 1.0)))))
+        (pin power_in (at 0 17.78 270) (length 2.54) (name "VDD_0V9" (effects (font (size 1.0 1.0)))) (number "P1" (effects (font (size 1.0 1.0)))))
+        (pin power_in (at 0 -17.78 90) (length 2.54) (name "GND" (effects (font (size 1.0 1.0)))) (number "P2" (effects (font (size 1.0 1.0)))))
+      )
+    )
+
+  ) ;; end lib_symbols
+
+
+  ;; ========================================================================
+  ;; QPA Side A — FPGA Trigger Matrix A → DAC A → RF Drivers A → TFLN PIC A
+  ;; ========================================================================
+
+  (symbol (lib_id "LightRail:XCKU5P_FPGA") (at 60.0 60.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-fpga-a-0000-4000-8000-000000000000)
+    (property "Reference" "U401" (id 0) (at 60.0 35.0 0))
+    (property "Value" "XCKU5P" (id 1) (at 60.0 85.0 0))
+    (property "Footprint" "LightRail:BGA-676_26x26mm" (id 2) (at 60.0 87.0 0) (effects hide))
+  )
+
+  (symbol (lib_id "LightRail:AD9082_DAC") (at 60.0 140.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-dac-a-0000-4000-8000-000000000000)
+    (property "Reference" "U411" (id 0) (at 60.0 124.0 0))
+    (property "Value" "AD9082" (id 1) (at 60.0 156.0 0))
+    (property "Footprint" "LightRail:QFN-64_9x9mm" (id 2) (at 60.0 158.0 0) (effects hide))
+  )
+
+  (symbol (lib_id "LightRail:HMC7044_RF_DRV") (at 30.0 200.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-rf-a0-0000-4000-8000-000000000000)
+    (property "Reference" "U421" (id 0) (at 30.0 188.0 0))
+    (property "Value" "HMC7044" (id 1) (at 30.0 212.0 0))
+    (property "Footprint" "LightRail:QFN-32_5x5mm" (id 2) (at 30.0 214.0 0) (effects hide))
+  )
+
+  (symbol (lib_id "LightRail:HMC7044_RF_DRV") (at 55.0 200.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-rf-a1-0000-4000-8000-000000000000)
+    (property "Reference" "U422" (id 0) (at 55.0 188.0 0))
+    (property "Value" "HMC7044" (id 1) (at 55.0 212.0 0))
+    (property "Footprint" "LightRail:QFN-32_5x5mm" (id 2) (at 55.0 214.0 0) (effects hide))
+  )
+
+  (symbol (lib_id "LightRail:HMC7044_RF_DRV") (at 80.0 200.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-rf-a2-0000-4000-8000-000000000000)
+    (property "Reference" "U423" (id 0) (at 80.0 188.0 0))
+    (property "Value" "HMC7044" (id 1) (at 80.0 212.0 0))
+    (property "Footprint" "LightRail:QFN-32_5x5mm" (id 2) (at 80.0 214.0 0) (effects hide))
+  )
+
+  (symbol (lib_id "LightRail:HMC7044_RF_DRV") (at 105.0 200.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-rf-a3-0000-4000-8000-000000000000)
+    (property "Reference" "U424" (id 0) (at 105.0 188.0 0))
+    (property "Value" "HMC7044" (id 1) (at 105.0 212.0 0))
+    (property "Footprint" "LightRail:QFN-32_5x5mm" (id 2) (at 105.0 214.0 0) (effects hide))
+  )
+
+  (symbol (lib_id "LightRail:SNSPD_8CH") (at 60.0 260.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-snspd-a-0000-4000-8000-000000000000)
+    (property "Reference" "U431" (id 0) (at 60.0 248.0 0))
+    (property "Value" "SNSPD_8CH" (id 1) (at 60.0 272.0 0))
+    (property "Footprint" "LightRail:LGA-16_4x4mm" (id 2) (at 60.0 274.0 0) (effects hide))
+  )
+
+  (symbol (lib_id "LightRail:QMEM_CELL") (at 60.0 310.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-qmem-a-0000-4000-8000-000000000000)
+    (property "Reference" "U441" (id 0) (at 60.0 300.0 0))
+    (property "Value" "QMEM_CELL" (id 1) (at 60.0 320.0 0))
+    (property "Footprint" "LightRail:LGA-24_5x3mm" (id 2) (at 60.0 322.0 0) (effects hide))
+  )
+
+
+  ;; ========================================================================
+  ;; QPA Side B — FPGA Trigger Matrix B → DAC B → RF Drivers B → TFLN PIC B
+  ;; ========================================================================
+
+  (symbol (lib_id "LightRail:XCKU5P_FPGA") (at 200.0 60.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-fpga-b-0000-4000-8000-000000000000)
+    (property "Reference" "U402" (id 0) (at 200.0 35.0 0))
+    (property "Value" "XCKU5P" (id 1) (at 200.0 85.0 0))
+    (property "Footprint" "LightRail:BGA-676_26x26mm" (id 2) (at 200.0 87.0 0) (effects hide))
+  )
+
+  (symbol (lib_id "LightRail:AD9082_DAC") (at 200.0 140.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-dac-b-0000-4000-8000-000000000000)
+    (property "Reference" "U412" (id 0) (at 200.0 124.0 0))
+    (property "Value" "AD9082" (id 1) (at 200.0 156.0 0))
+    (property "Footprint" "LightRail:QFN-64_9x9mm" (id 2) (at 200.0 158.0 0) (effects hide))
+  )
+
+  (symbol (lib_id "LightRail:HMC7044_RF_DRV") (at 170.0 200.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-rf-b0-0000-4000-8000-000000000000)
+    (property "Reference" "U425" (id 0) (at 170.0 188.0 0))
+    (property "Value" "HMC7044" (id 1) (at 170.0 212.0 0))
+    (property "Footprint" "LightRail:QFN-32_5x5mm" (id 2) (at 170.0 214.0 0) (effects hide))
+  )
+
+  (symbol (lib_id "LightRail:HMC7044_RF_DRV") (at 195.0 200.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-rf-b1-0000-4000-8000-000000000000)
+    (property "Reference" "U426" (id 0) (at 195.0 188.0 0))
+    (property "Value" "HMC7044" (id 1) (at 195.0 212.0 0))
+    (property "Footprint" "LightRail:QFN-32_5x5mm" (id 2) (at 195.0 214.0 0) (effects hide))
+  )
+
+  (symbol (lib_id "LightRail:HMC7044_RF_DRV") (at 220.0 200.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-rf-b2-0000-4000-8000-000000000000)
+    (property "Reference" "U427" (id 0) (at 220.0 188.0 0))
+    (property "Value" "HMC7044" (id 1) (at 220.0 212.0 0))
+    (property "Footprint" "LightRail:QFN-32_5x5mm" (id 2) (at 220.0 214.0 0) (effects hide))
+  )
+
+  (symbol (lib_id "LightRail:HMC7044_RF_DRV") (at 245.0 200.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-rf-b3-0000-4000-8000-000000000000)
+    (property "Reference" "U428" (id 0) (at 245.0 188.0 0))
+    (property "Value" "HMC7044" (id 1) (at 245.0 212.0 0))
+    (property "Footprint" "LightRail:QFN-32_5x5mm" (id 2) (at 245.0 214.0 0) (effects hide))
+  )
+
+  (symbol (lib_id "LightRail:SNSPD_8CH") (at 200.0 260.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-snspd-b-0000-4000-8000-000000000000)
+    (property "Reference" "U432" (id 0) (at 200.0 248.0 0))
+    (property "Value" "SNSPD_8CH" (id 1) (at 200.0 272.0 0))
+    (property "Footprint" "LightRail:LGA-16_4x4mm" (id 2) (at 200.0 274.0 0) (effects hide))
+  )
+
+  (symbol (lib_id "LightRail:QMEM_CELL") (at 200.0 310.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-qmem-b-0000-4000-8000-000000000000)
+    (property "Reference" "U442" (id 0) (at 200.0 300.0 0))
+    (property "Value" "QMEM_CELL" (id 1) (at 200.0 320.0 0))
+    (property "Footprint" "LightRail:LGA-24_5x3mm" (id 2) (at 200.0 322.0 0) (effects hide))
+  )
+
+
+  ;; ========================================================================
+  ;; CXL 2.0 Switch (shared between Side A and Side B)
+  ;; ========================================================================
+
+  (symbol (lib_id "LightRail:CXL_SWITCH_256") (at 130.0 380.0 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (uuid qpa-cxl-sw-0000-4000-8000-000000000000)
+    (property "Reference" "U450" (id 0) (at 130.0 361.0 0))
+    (property "Value" "CXL_SWITCH" (id 1) (at 130.0 399.0 0))
+    (property "Footprint" "LightRail:BGA-256_16x16mm" (id 2) (at 130.0 401.0 0) (effects hide))
+  )
+
+
+  ;; ========================================================================
+  ;; Signal wires: FPGA_A LVDS → DAC_A
+  ;; ========================================================================
+
+  (wire (pts (xy 39.68 41.0) (xy 39.68 126.0)) (stroke (width 0) (type default) (color 0 0 0 0)) (uuid qwire-fa-da-0000))
+  (wire (pts (xy 39.68 42.0) (xy 39.68 127.0)) (stroke (width 0) (type default) (color 0 0 0 0)) (uuid qwire-fa-da-0001))
+  (wire (pts (xy 39.68 45.0) (xy 39.68 131.0)) (stroke (width 0) (type default) (color 0 0 0 0)) (uuid qwire-fa-da-0002))
+  (wire (pts (xy 39.68 46.0) (xy 39.68 132.0)) (stroke (width 0) (type default) (color 0 0 0 0)) (uuid qwire-fa-da-0003))
+
+  ;; Signal wires: DAC_A RF_OUT → RF Drivers A
+  (wire (pts (xy 75.24 130.0) (xy 80.0 193.65)) (stroke (width 0) (type default) (color 0 0 0 0)) (uuid qwire-da-rf-0000))
+  (wire (pts (xy 75.24 131.0) (xy 80.0 195.08)) (stroke (width 0) (type default) (color 0 0 0 0)) (uuid qwire-da-rf-0001))
+
+  ;; Signal wires: SNSPD_A → FPGA_A
+  (wire (pts (xy 72.7 253.65) (xy 80.32 41.0)) (stroke (width 0) (type default) (color 0 0 0 0)) (uuid qwire-sa-fa-0000))
+  (wire (pts (xy 72.7 255.08) (xy 80.32 42.0)) (stroke (width 0) (type default) (color 0 0 0 0)) (uuid qwire-sa-fa-0001))
+
+  ;; Signal wires: FPGA_A QMEM → QMEM_A
+  (wire (pts (xy 80.32 56.0) (xy 71.43 305.0)) (stroke (width 0) (type default) (color 0 0 0 0)) (uuid qwire-fa-qm-0000))
+  (wire (pts (xy 80.32 55.0) (xy 71.43 306.0)) (stroke (width 0) (type default) (color 0 0 0 0)) (uuid qwire-fa-qm-0001))
+
+  ;; Signal wires: FPGA_A CXL → CXL Switch Port A
+  (wire (pts (xy 80.32 63.81) (xy 114.76 372.7)) (stroke (width 0) (type default) (color 0 0 0 0)) (uuid qwire-fa-cxl-0000))
+  (wire (pts (xy 80.32 62.54) (xy 114.76 371.43)) (stroke (width 0) (type default) (color 0 0 0 0)) (uuid qwire-fa-cxl-0001))
+
+  ;; Signal wires: FPGA_B CXL → CXL Switch Port B
+  (wire (pts (xy 220.32 63.81) (xy 145.24 372.7)) (stroke (width 0) (type default) (color 0 0 0 0)) (uuid qwire-fb-cxl-0000))
+  (wire (pts (xy 220.32 62.54) (xy 145.24 371.43)) (stroke (width 0) (type default) (color 0 0 0 0)) (uuid qwire-fb-cxl-0001))
+
+
+  ;; ========================================================================
+  ;; Power symbols (GND and supply rails)
+  ;; ========================================================================
+
+  (text "TFLN Quantum Photonic Accelerator (QPA)\nDual-channel MZI Mesh Architecture\nFPGA Trigger Matrix -> 100GHz DAC -> BiCMOS RF -> TFLN Electrode\nSNSPD Readout -> FPGA -> CXL 2.0 -> NCE Host\nQuantum Memory Cells for Photon Storage"
+    (at 130.0 15.0 0)
+    (effects (font (size 2.0 2.0)) (justify left))
+  )
+
+  (text "Side A (NCE Unit 0)"
+    (at 60.0 25.0 0)
+    (effects (font (size 1.5 1.5)) (justify left))
+  )
+
+  (text "Side B (NCE Unit 1)"
+    (at 200.0 25.0 0)
+    (effects (font (size 1.5 1.5)) (justify left))
+  )
+
+  (text "CXL 2.0 Fabric"
+    (at 130.0 355.0 0)
+    (effects (font (size 1.5 1.5)) (justify left))
+  )
+
+) ;; end kicad_sch
