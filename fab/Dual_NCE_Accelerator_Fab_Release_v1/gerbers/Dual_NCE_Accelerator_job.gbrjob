@@ -1,0 +1,719 @@
+{
+  "Header": {
+    "GenerationSoftware": {
+      "Vendor": "KiCad",
+      "Application": "Pcbnew",
+      "Version": "8.0.9-8.0.9-0~ubuntu22.04.1"
+    },
+    "CreationDate": "2026-05-19T06:17:48+00:00"
+  },
+  "GeneralSpecs": {
+    "ProjectId": {
+      "Name": "LightRail_LPO_1.6T",
+      "GUID": "4c696768-7452-4616-996c-5f4c504f5f31",
+      "Revision": "rev?"
+    },
+    "Size": {
+      "X": 420.05,
+      "Y": 355.05
+    },
+    "LayerNumber": 32,
+    "BoardThickness": 3.48,
+    "Finish": "ENIG",
+    "ImpedanceControlled": true
+  },
+  "DesignRules": [
+    {
+      "Layers": "Outer",
+      "PadToPad": 0.1,
+      "PadToTrack": 0.1,
+      "TrackToTrack": 0.1,
+      "MinLineWidth": 0.2,
+      "TrackToRegion": 0.2,
+      "RegionToRegion": 0.2
+    },
+    {
+      "Layers": "Inner",
+      "PadToPad": 0.1,
+      "PadToTrack": 0.1,
+      "TrackToTrack": 0.1,
+      "MinLineWidth": 0.08,
+      "TrackToRegion": 0.2,
+      "RegionToRegion": 0.2
+    }
+  ],
+  "FilesAttributes": [
+    {
+      "Path": "LightRail_LPO_1.6T-F_Cu.gtl",
+      "FileFunction": "Copper,L1,Top",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In1_Cu.g2",
+      "FileFunction": "Copper,L2,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In2_Cu.g3",
+      "FileFunction": "Copper,L3,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In3_Cu.g4",
+      "FileFunction": "Copper,L4,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In4_Cu.g5",
+      "FileFunction": "Copper,L5,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In5_Cu.g6",
+      "FileFunction": "Copper,L6,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In6_Cu.g7",
+      "FileFunction": "Copper,L7,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In7_Cu.g8",
+      "FileFunction": "Copper,L8,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In8_Cu.g9",
+      "FileFunction": "Copper,L9,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In9_Cu.g10",
+      "FileFunction": "Copper,L10,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In10_Cu.g11",
+      "FileFunction": "Copper,L11,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In11_Cu.g12",
+      "FileFunction": "Copper,L12,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In12_Cu.g13",
+      "FileFunction": "Copper,L13,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In13_Cu.g14",
+      "FileFunction": "Copper,L14,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In14_Cu.g15",
+      "FileFunction": "Copper,L15,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In15_Cu.g16",
+      "FileFunction": "Copper,L16,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In16_Cu.g17",
+      "FileFunction": "Copper,L17,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In17_Cu.g18",
+      "FileFunction": "Copper,L18,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In18_Cu.g19",
+      "FileFunction": "Copper,L19,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In19_Cu.g20",
+      "FileFunction": "Copper,L20,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In20_Cu.g21",
+      "FileFunction": "Copper,L21,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In21_Cu.g22",
+      "FileFunction": "Copper,L22,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In22_Cu.g23",
+      "FileFunction": "Copper,L23,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In23_Cu.g24",
+      "FileFunction": "Copper,L24,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In24_Cu.g25",
+      "FileFunction": "Copper,L25,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In25_Cu.g26",
+      "FileFunction": "Copper,L26,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In26_Cu.g27",
+      "FileFunction": "Copper,L27,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In27_Cu.g28",
+      "FileFunction": "Copper,L28,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In28_Cu.g29",
+      "FileFunction": "Copper,L29,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In29_Cu.g30",
+      "FileFunction": "Copper,L30,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-In30_Cu.g31",
+      "FileFunction": "Copper,L31,Inr",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-B_Cu.gbl",
+      "FileFunction": "Copper,L32,Bot",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-F_Paste.gtp",
+      "FileFunction": "SolderPaste,Top",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-B_Paste.gbp",
+      "FileFunction": "SolderPaste,Bot",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-F_Silkscreen.gto",
+      "FileFunction": "Legend,Top",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-B_Silkscreen.gbo",
+      "FileFunction": "Legend,Bot",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-F_Mask.gts",
+      "FileFunction": "SolderMask,Top",
+      "FilePolarity": "Negative"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-B_Mask.gbs",
+      "FileFunction": "SolderMask,Bot",
+      "FilePolarity": "Negative"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-Edge_Cuts.gm1",
+      "FileFunction": "Profile",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-F_Fabrication.gbr",
+      "FileFunction": "AssemblyDrawing,Top",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "LightRail_LPO_1.6T-B_Fabrication.gbr",
+      "FileFunction": "AssemblyDrawing,Bot",
+      "FilePolarity": "Positive"
+    }
+  ],
+  "MaterialStackup": [
+    {
+      "Type": "Legend",
+      "Name": "Top Silk Screen"
+    },
+    {
+      "Type": "SolderPaste",
+      "Name": "Top Solder Paste"
+    },
+    {
+      "Type": "SolderMask",
+      "Thickness": 0.01,
+      "Name": "Top Solder Mask"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.07,
+      "Name": "F.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "F.Cu/In1.Cu",
+      "Notes": "Type: dielectric layer 1 (from F.Cu to In1.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In1.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In1.Cu/In2.Cu",
+      "Notes": "Type: dielectric layer 2 (from In1.Cu to In2.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In2.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In2.Cu/In3.Cu",
+      "Notes": "Type: dielectric layer 3 (from In2.Cu to In3.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In3.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In3.Cu/In4.Cu",
+      "Notes": "Type: dielectric layer 4 (from In3.Cu to In4.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In4.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In4.Cu/In5.Cu",
+      "Notes": "Type: dielectric layer 5 (from In4.Cu to In5.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In5.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In5.Cu/In6.Cu",
+      "Notes": "Type: dielectric layer 6 (from In5.Cu to In6.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In6.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In6.Cu/In7.Cu",
+      "Notes": "Type: dielectric layer 7 (from In6.Cu to In7.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In7.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In7.Cu/In8.Cu",
+      "Notes": "Type: dielectric layer 8 (from In7.Cu to In8.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In8.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In8.Cu/In9.Cu",
+      "Notes": "Type: dielectric layer 9 (from In8.Cu to In9.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In9.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "In9.Cu/In10.Cu",
+      "Notes": "Type: dielectric layer 10 (from In9.Cu to In10.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.07,
+      "Name": "In10.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "In10.Cu/In11.Cu",
+      "Notes": "Type: dielectric layer 11 (from In10.Cu to In11.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.07,
+      "Name": "In11.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "In11.Cu/In12.Cu",
+      "Notes": "Type: dielectric layer 12 (from In11.Cu to In12.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.07,
+      "Name": "In12.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "In12.Cu/In13.Cu",
+      "Notes": "Type: dielectric layer 13 (from In12.Cu to In13.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.07,
+      "Name": "In13.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "In13.Cu/In14.Cu",
+      "Notes": "Type: dielectric layer 14 (from In13.Cu to In14.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.07,
+      "Name": "In14.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.024,
+      "Material": "Faradflex-BC24",
+      "DielectricConstant": "14",
+      "LossTangent": "0.02",
+      "Name": "In14.Cu/In15.Cu",
+      "Notes": "Type: dielectric layer 15 (from In14.Cu to In15.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "In15.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.024,
+      "Material": "Faradflex-BC24",
+      "DielectricConstant": "14",
+      "LossTangent": "0.02",
+      "Name": "In15.Cu/In16.Cu",
+      "Notes": "Type: dielectric layer 16 (from In15.Cu to In16.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.07,
+      "Name": "In16.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "In16.Cu/In17.Cu",
+      "Notes": "Type: dielectric layer 17 (from In16.Cu to In17.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.07,
+      "Name": "In17.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "In17.Cu/In18.Cu",
+      "Notes": "Type: dielectric layer 18 (from In17.Cu to In18.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.07,
+      "Name": "In18.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "In18.Cu/In19.Cu",
+      "Notes": "Type: dielectric layer 19 (from In18.Cu to In19.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.07,
+      "Name": "In19.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "In19.Cu/In20.Cu",
+      "Notes": "Type: dielectric layer 20 (from In19.Cu to In20.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.07,
+      "Name": "In20.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In20.Cu/In21.Cu",
+      "Notes": "Type: dielectric layer 21 (from In20.Cu to In21.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In21.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In21.Cu/In22.Cu",
+      "Notes": "Type: dielectric layer 22 (from In21.Cu to In22.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In22.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In22.Cu/In23.Cu",
+      "Notes": "Type: dielectric layer 23 (from In22.Cu to In23.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In23.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In23.Cu/In24.Cu",
+      "Notes": "Type: dielectric layer 24 (from In23.Cu to In24.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In24.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In24.Cu/In25.Cu",
+      "Notes": "Type: dielectric layer 25 (from In24.Cu to In25.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In25.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In25.Cu/In26.Cu",
+      "Notes": "Type: dielectric layer 26 (from In25.Cu to In26.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In26.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In26.Cu/In27.Cu",
+      "Notes": "Type: dielectric layer 27 (from In26.Cu to In27.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In27.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In27.Cu/In28.Cu",
+      "Notes": "Type: dielectric layer 28 (from In27.Cu to In28.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In28.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In28.Cu/In29.Cu",
+      "Notes": "Type: dielectric layer 29 (from In28.Cu to In29.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In29.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In29.Cu/In30.Cu",
+      "Notes": "Type: dielectric layer 30 (from In29.Cu to In30.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.0175,
+      "Name": "In30.Cu"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.076,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "In30.Cu/B.Cu",
+      "Notes": "Type: dielectric layer 31 (from In30.Cu to B.Cu)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.07,
+      "Name": "B.Cu"
+    },
+    {
+      "Type": "SolderMask",
+      "Thickness": 0.01,
+      "Name": "Bottom Solder Mask"
+    },
+    {
+      "Type": "SolderPaste",
+      "Name": "Bottom Solder Paste"
+    },
+    {
+      "Type": "Legend",
+      "Name": "Bottom Silk Screen"
+    }
+  ]
+}
