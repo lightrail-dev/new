@@ -1,0 +1,52 @@
+# GDSII Layer Map — Dual_NCE_Accelerator
+# LightRail AI Compute Node LR-P3A Rev 6.3
+# KiCad Layer Name -> GDSII Layer Number
+
+KiCad Layer           GDS Layer  Description
+-------------------- ----------  ------------------------------
+F.Cu                          1  Top copper (2oz, ENIG)
+In1.Cu                        2  Inner signal/power layer
+In2.Cu                        3  Inner signal/power layer
+In3.Cu                        4  Inner signal/power layer
+In4.Cu                        5  Inner signal/power layer
+In5.Cu                        6  Inner signal/power layer
+In6.Cu                        7  Inner signal/power layer
+In7.Cu                        8  Inner signal/power layer
+In8.Cu                        9  Inner signal/power layer
+In9.Cu                       10  Inner signal/power layer
+In10.Cu                      11  Inner signal/power layer
+In11.Cu                      12  Inner signal/power layer
+In12.Cu                      13  Inner signal/power layer
+In13.Cu                      14  Inner signal/power layer
+In14.Cu                      15  Inner signal/power layer
+In15.Cu                      16  Inner signal/power layer
+In16.Cu                      17  Inner signal/power layer
+In17.Cu                      18  Inner signal/power layer
+In18.Cu                      19  Inner signal/power layer
+In19.Cu                      20  Inner signal/power layer
+In20.Cu                      21  Inner signal/power layer
+In21.Cu                      22  Inner signal/power layer
+In22.Cu                      23  Inner signal/power layer
+In23.Cu                      24  Inner signal/power layer
+In24.Cu                      25  Inner signal/power layer
+In25.Cu                      26  Inner signal/power layer
+In26.Cu                      27  Inner signal/power layer
+In27.Cu                      28  Inner signal/power layer
+In28.Cu                      29  Inner signal/power layer
+In29.Cu                      30  Inner signal/power layer
+In30.Cu                      31  Inner signal/power layer
+B.Cu                         32  Bottom copper (2oz, ENIG)
+F.SilkS                      40  Top silkscreen
+B.SilkS                      41  Bottom silkscreen
+F.Mask                       42  Top solder mask
+B.Mask                       43  Bottom solder mask
+F.Paste                      44  Top solder paste
+B.Paste                      45  Bottom solder paste
+Edge.Cuts                    50  Board outline
+F.Fab                        51  Top fabrication
+B.Fab                        52  Bottom fabrication
+Dwgs.User                    60  MZI photonic waveguides
+Eco1.User                    61  Green substrate fills
+Eco2.User                    62  Photonic bridge (magenta)
+
+Drill Holes                 100  Via and mounting hole drills

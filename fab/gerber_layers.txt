@@ -1,4 +1,4 @@
-# Gerber layer mapping — LightRail AI Compute Node / LR-P3A Rev 6.0 (32-layer HDI)
+# Gerber layer mapping — LightRail AI Compute Node / LR-P3A Rev 6.3 (32-layer HDI)
 #
 # Fabricator-facing description of each Gerber file. Use this table to
 # cross-reference what comes out of `export_gerbers.sh`.

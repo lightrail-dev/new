@@ -1,7 +1,7 @@
 (version 1)
 
 # ============================================================================
-# Custom DRC rules — LightRail AI Compute Node / LR-P3A Rev 6.0 (32-layer HDI)
+# Custom DRC rules — LightRail AI Compute Node / LR-P3A Rev 6.3 (32-layer HDI)
 # ============================================================================
 # Target standard: IPC-6012 Class 3 / IPC-A-600 Class 3 (high-reliability).
 # Paste into KiCad 8 PCB Editor -> File -> Custom Rules, or import from
