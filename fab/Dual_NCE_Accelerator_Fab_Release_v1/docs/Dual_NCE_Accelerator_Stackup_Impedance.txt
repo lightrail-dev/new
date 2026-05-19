@@ -1,0 +1,103 @@
+================================================================================
+STACKUP & IMPEDANCE CONTROL REPORT
+Dual_NCE_Accelerator — LightRail AI LR-P3A Rev 6.3
+Date: 2026-05-19
+================================================================================
+
+1. LAYER STACKUP (32 layers, symmetric around In15/In16 midplane)
+   Total thickness: 3.48 mm +/- 10%
+
+Layer        Type           Copper               Dielectric                               Function                      
+--------------------------------------------------------------------------------------------------------------------
+F.Cu         Signal/Power   2 oz (70 um)         ENIG                                     Outer copper                  
+In1.Cu       Signal         0.5 oz (17.5 um)     Megtron-7 (er=3.3, tand=0.002)           High-speed signal             
+In2.Cu       Signal         0.5 oz (17.5 um)     Megtron-7                                HBM4 REFCK routing            
+In3.Cu       Signal         0.5 oz (17.5 um)     Megtron-7                                SerDes 100G PAM4              
+In4.Cu       Signal         0.5 oz (17.5 um)     Megtron-7                                High-speed signal             
+In5.Cu       Signal         0.5 oz (17.5 um)     Megtron-7                                PCIe Gen6 x16                 
+In6.Cu       Signal         0.5 oz (17.5 um)     Megtron-7                                QSFP-DD fanout                
+In7.Cu       Signal         0.5 oz (17.5 um)     Megtron-7                                TFLN RF / decoupling          
+In8.Cu       Signal         0.5 oz (17.5 um)     Megtron-7                                Decoupling plane              
+In9.Cu       Signal         0.5 oz (17.5 um)     Megtron-7                                Power bus routing             
+In10.Cu      Power          2 oz (70 um)         High-Tg FR-4 (er=4.2, Tg>=170C)          V_CORE_U0 plane               
+In11.Cu      Power          2 oz (70 um)         High-Tg FR-4                             V_CORE_U1 plane               
+In12.Cu      Ground         2 oz (70 um)         High-Tg FR-4                             GND reference plane           
+In13.Cu      Signal         2 oz (70 um)         High-Tg FR-4                             Clock distribution            
+In14.Cu      Power          2 oz (70 um)         High-Tg FR-4                             V_AUX plane                   
+In15.Cu      Capacitance    1 oz (35 um)         Faradflex BC24 (er=14, 24um)             Embedded cap (top)            
+In16.Cu      Capacitance    2 oz (70 um)         Faradflex BC24 (er=14, 24um)             Embedded cap (bottom)         
+In17.Cu      Power          2 oz (70 um)         High-Tg FR-4                             V_AUX plane (mirror)          
+In18.Cu      Signal         2 oz (70 um)         High-Tg FR-4                             Clock distribution (mirror)   
+In19.Cu      Ground         2 oz (70 um)         High-Tg FR-4                             GND reference plane (mirror)  
+In20.Cu      Power          2 oz (70 um)         High-Tg FR-4                             V_CORE_U1 plane (mirror)      
+In21.Cu      Signal         0.5 oz (17.5 um)     Megtron-7                                Power bus routing (mirror)    
+In22.Cu      Signal         0.5 oz (17.5 um)     Megtron-7                                Signal (mirror)               
+In23.Cu      Signal         0.5 oz (17.5 um)     Megtron-7                                Signal (mirror)               
+In24.Cu      Signal         0.5 oz (17.5 um)     Megtron-7                                TFLN RF (mirror)              
+In25.Cu      Signal         0.5 oz (17.5 um)     Megtron-7                                Signal (mirror)               
+In26.Cu      Signal         0.5 oz (17.5 um)     Megtron-7                                PCIe Gen6 x16 (mirror)        
+In27.Cu      Signal         0.5 oz (17.5 um)     Megtron-7                                Signal (mirror)               
+In28.Cu      Signal         0.5 oz (17.5 um)     Megtron-7                                SerDes 100G PAM4 (mirror)     
+In29.Cu      Signal         0.5 oz (17.5 um)     Megtron-7                                HBM4 REFCK (mirror)           
+In30.Cu      Signal         0.5 oz (17.5 um)     Megtron-7                                Signal (mirror)               
+B.Cu         Signal/Power   2 oz (70 um)         ENIG                                     Outer copper / DrMOS          
+
+   Dielectric between layers: 76 um (Megtron-7) or 76 um (High-Tg FR-4)
+   Embedded capacitance core: 24 um (Faradflex BC24, er=14)
+
+2. IMPEDANCE TARGETS
+
+   All impedance values must be within the specified tolerance.
+   Manufacturer MUST provide impedance test coupons for verification.
+
+Signal Class             Layers                   Target Impedance         Tolerance    Geometry                      
+------------------------------------------------------------------------------------------------------------------
+PCIe Gen6 x16            In5.Cu / In26.Cu         85 Ohm differential      +/- 10%      0.10 mm trace, 0.15 mm space  
+SerDes 100G PAM4         In3.Cu / In28.Cu         100 Ohm differential     +/- 10%      0.10 mm trace, 0.20 mm space  
+HBM4 REFCK               In2.Cu / In29.Cu         100 Ohm differential     +/- 10%      0.10 mm trace, 0.20 mm space  
+TFLN RF                  In7.Cu / In24.Cu         50 Ohm single-ended      +/- 10%      0.12 mm trace, GND coplanar   
+General signal           In1-In9, In21-In30       50 Ohm single-ended      +/- 10%      0.10 mm trace                 
+Power bus                In9-In11, In20-In21      N/A (power)              N/A          1.0-2.0 mm trace              
+
+
+3. IMPEDANCE CALCULATION NOTES
+
+   Signal layer dielectric: Megtron-7
+     er = 3.3 @ 1 GHz
+     tan_d = 0.002 @ 1 GHz
+     Dk tolerance: +/- 0.05
+
+   Power layer dielectric: High-Tg FR-4
+     er = 4.2 @ 1 GHz
+     tan_d = 0.015 @ 1 GHz
+     Tg >= 170C (per IPC-4101/126)
+
+   Embedded capacitance: Faradflex BC24
+     er = 14.0 @ 1 MHz
+     Core thickness: 24 um
+     Positioned between In15 and In16 (midplane)
+
+4. LENGTH MATCHING REQUIREMENTS
+
+   PCIe Gen6 x16 (In5/In26):
+     Match to +/- 1 ps (+/- 0.15 mm on Megtron-7)
+     85 Ohm differential
+
+   SerDes 100G PAM4 (In3/In28):
+     Match to +/- 1 ps (+/- 0.15 mm on Megtron-7)
+     100 Ohm differential
+
+   HBM4 REFCK (In2/In29):
+     Match to +/- 2 ps (+/- 0.30 mm on Megtron-7)
+     100 Ohm differential
+
+5. BACK-DRILL REQUIREMENTS
+
+   All high-speed through-vias must be back-drilled to minimize stub.
+   Maximum residual stub: 0.127 mm (5 mil)
+   Applicable nets: PCIe_Gen6, SERDES_100G_PAM4, TFLN_RF
+   Back-drill from B.Cu side unless specified otherwise.
+
+================================================================================
+END OF STACKUP & IMPEDANCE REPORT
+================================================================================
