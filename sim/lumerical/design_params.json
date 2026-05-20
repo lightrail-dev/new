@@ -1,0 +1,230 @@
+{
+  "project": {
+    "name": "LightRail LR-P3A Rev 6.3 \u2014 TFLN QPA",
+    "board_width_mm": 420.0,
+    "board_height_mm": 350.0,
+    "wavelength_nm": 1550.0,
+    "tfln_thickness_nm": 600,
+    "slab_height_nm": 200,
+    "wg_width_nm": 800,
+    "n_eff": 2.211,
+    "n_group": 2.35,
+    "v_pi": 3.5,
+    "num_channels": 8,
+    "mzi_arm_length_um": 500,
+    "mzi_arm_spacing_um": 5.0,
+    "bend_radius_um": 50,
+    "electrode_gap_um": 3.0,
+    "electrode_width_um": 5.0
+  },
+  "gds_layers": {
+    "0": {
+      "name": "F.Cu",
+      "desc": "Top copper (electrodes, pads)"
+    },
+    "31": {
+      "name": "B.Cu",
+      "desc": "Bottom copper"
+    },
+    "32": {
+      "name": "F.SilkS",
+      "desc": "Top silkscreen"
+    },
+    "33": {
+      "name": "B.SilkS",
+      "desc": "Bottom silkscreen"
+    },
+    "34": {
+      "name": "F.Mask",
+      "desc": "Top solder mask"
+    },
+    "35": {
+      "name": "B.Mask",
+      "desc": "Bottom solder mask"
+    },
+    "36": {
+      "name": "F.Fab",
+      "desc": "Fabrication (NCE die pads)"
+    },
+    "37": {
+      "name": "B.Fab",
+      "desc": "Bottom fabrication"
+    },
+    "38": {
+      "name": "F.Paste",
+      "desc": "Top solder paste"
+    },
+    "39": {
+      "name": "B.Paste",
+      "desc": "Bottom solder paste"
+    },
+    "40": {
+      "name": "Dwgs.User",
+      "desc": "MZI photonic waveguides"
+    },
+    "41": {
+      "name": "Cmts.User",
+      "desc": "Comments/annotations"
+    },
+    "44": {
+      "name": "Edge.Cuts",
+      "desc": "Board outline"
+    },
+    "46": {
+      "name": "B.CrtYd",
+      "desc": "Bottom courtyard"
+    },
+    "47": {
+      "name": "F.CrtYd",
+      "desc": "Front courtyard"
+    },
+    "48": {
+      "name": "Eco1.User",
+      "desc": "Green substrate fills (NCE/TFLN)"
+    },
+    "49": {
+      "name": "Eco2.User",
+      "desc": "Photonic bridge region (magenta)"
+    },
+    "100": {
+      "name": "In1.Cu",
+      "desc": "Inner copper layer 1"
+    },
+    "101": {
+      "name": "In2.Cu",
+      "desc": "Inner copper layer 2"
+    },
+    "102": {
+      "name": "In3.Cu",
+      "desc": "Inner copper layer 3"
+    },
+    "103": {
+      "name": "In4.Cu",
+      "desc": "Inner copper layer 4"
+    },
+    "104": {
+      "name": "In5.Cu",
+      "desc": "Inner copper layer 5"
+    },
+    "105": {
+      "name": "In6.Cu",
+      "desc": "Inner copper layer 6"
+    },
+    "106": {
+      "name": "In7.Cu",
+      "desc": "Inner copper layer 7"
+    },
+    "107": {
+      "name": "In8.Cu",
+      "desc": "Inner copper layer 8"
+    },
+    "108": {
+      "name": "In9.Cu",
+      "desc": "Inner copper layer 9"
+    },
+    "109": {
+      "name": "In10.Cu",
+      "desc": "Inner copper layer 10"
+    },
+    "110": {
+      "name": "In11.Cu",
+      "desc": "Inner copper layer 11"
+    },
+    "111": {
+      "name": "In12.Cu",
+      "desc": "Inner copper layer 12"
+    },
+    "112": {
+      "name": "In13.Cu",
+      "desc": "Inner copper layer 13"
+    },
+    "113": {
+      "name": "In14.Cu",
+      "desc": "Inner copper layer 14"
+    },
+    "114": {
+      "name": "In15.Cu",
+      "desc": "Inner copper layer 15"
+    },
+    "115": {
+      "name": "In16.Cu",
+      "desc": "Inner copper layer 16"
+    },
+    "116": {
+      "name": "In17.Cu",
+      "desc": "Inner copper layer 17"
+    },
+    "117": {
+      "name": "In18.Cu",
+      "desc": "Inner copper layer 18"
+    },
+    "118": {
+      "name": "In19.Cu",
+      "desc": "Inner copper layer 19"
+    },
+    "119": {
+      "name": "In20.Cu",
+      "desc": "Inner copper layer 20"
+    },
+    "120": {
+      "name": "In21.Cu",
+      "desc": "Inner copper layer 21"
+    },
+    "121": {
+      "name": "In22.Cu",
+      "desc": "Inner copper layer 22"
+    },
+    "122": {
+      "name": "In23.Cu",
+      "desc": "Inner copper layer 23"
+    },
+    "123": {
+      "name": "In24.Cu",
+      "desc": "Inner copper layer 24"
+    },
+    "124": {
+      "name": "In25.Cu",
+      "desc": "Inner copper layer 25"
+    },
+    "125": {
+      "name": "In26.Cu",
+      "desc": "Inner copper layer 26"
+    },
+    "126": {
+      "name": "In27.Cu",
+      "desc": "Inner copper layer 27"
+    },
+    "127": {
+      "name": "In28.Cu",
+      "desc": "Inner copper layer 28"
+    },
+    "128": {
+      "name": "In29.Cu",
+      "desc": "Inner copper layer 29"
+    },
+    "129": {
+      "name": "In30.Cu",
+      "desc": "Inner copper layer 30"
+    }
+  },
+  "photonic_layers": {
+    "waveguides": 40,
+    "electrodes": 0,
+    "photonic_bridge": 49,
+    "substrate_fill": 48,
+    "board_outline": 44
+  },
+  "simulation_files": {
+    "fdtd_script": "TFLN_MZI_FDTD.lsf",
+    "mode_script": "TFLN_Waveguide_MODE.lsf",
+    "interconnect_script": "TFLN_QPA_INTERCONNECT.lsf",
+    "gds_import_script": "TFLN_GDS_Import.lsf",
+    "lumapi_script": "TFLN_QPA_Lumapi_Import.py"
+  },
+  "sparam_files": [
+    "TFLN_CPW_50ohm_100GHz.s2p",
+    "TFLN_MZI_Optical_2x2.s2p",
+    "CXL_Diff_Pair_85ohm.s4p",
+    "LVDS_Trigger_100ohm.s2p"
+  ]
+}

@@ -1,0 +1,176 @@
+########################################################################
+# Lumerical INTERCONNECT Script — 8-Channel MZI Mesh Photonic Circuit
+# LightRail AI LR-P3A Rev 6.3 — Quantum Photonic Accelerator
+#
+# Builds a circuit-level model of the 8×8 Clements MZI mesh used in
+# the NCE photonic accelerator. Each MZI is modeled as a tunable
+# coupler with (theta, phi) phase shifts from the mesh compiler.
+#
+# To use: Open Lumerical INTERCONNECT → Script File Editor → load
+# Or: File → Run Script
+#
+# Prerequisites: Lumerical INTERCONNECT 2024 R1+ (Ansys 2024 R1+)
+########################################################################
+
+switchtolayout;
+deleteall;
+
+########################################################################
+# Design Parameters (from MZI Mesh Compiler)
+########################################################################
+
+N_ch         = 8;       # Number of optical channels
+N_layers     = 7;       # Clements decomposition layers (N-1)
+lambda_c     = 1.55e-6; # Center wavelength
+V_pi         = 3.5;     # Half-wave voltage (V)
+IL_per_MZI   = 0.4;     # Insertion loss per MZI node (dB)
+arm_length   = 500e-6;  # MZI arm length (m)
+n_eff        = 2.211;   # TFLN effective index
+n_group      = 2.35;    # Group index
+
+# MZI phase settings from mesh compiler (theta_frac, phi_frac of pi)
+# Layer format: [channel_top, theta/pi, phi/pi]
+layer_config = [
+    # Layer 1: 4 parallel MZIs (even)
+    1, 0, 0.42, 0.15;
+    1, 2, 0.67, 0.33;
+    1, 4, 0.55, 0.22;
+    1, 6, 0.81, 0.48;
+    # Layer 2: 3 staggered MZIs (odd)
+    2, 1, 0.38, 0.12;
+    2, 3, 0.72, 0.41;
+    2, 5, 0.59, 0.28;
+    # Layer 3: 4 parallel
+    3, 0, 0.44, 0.19;
+    3, 2, 0.63, 0.37;
+    3, 4, 0.51, 0.26;
+    3, 6, 0.77, 0.44;
+    # Layer 4: 3 staggered
+    4, 1, 0.35, 0.14;
+    4, 3, 0.69, 0.39;
+    4, 5, 0.56, 0.31;
+    # Layer 5: 4 parallel
+    5, 0, 0.48, 0.21;
+    5, 2, 0.61, 0.35;
+    5, 4, 0.53, 0.24;
+    5, 6, 0.73, 0.42;
+    # Layer 6: 3 staggered
+    6, 1, 0.41, 0.17;
+    6, 3, 0.66, 0.38;
+    6, 5, 0.57, 0.29;
+    # Layer 7: 4 parallel (final)
+    7, 0, 0.46, 0.20;
+    7, 2, 0.64, 0.36;
+    7, 4, 0.52, 0.25;
+    7, 6, 0.75, 0.43
+];
+
+########################################################################
+# Build Circuit: Input Ports
+########################################################################
+
+x_start = -400e-6;
+y_spacing = 50e-6;
+
+for (ch = 1:N_ch) {
+    addport;
+    set("name", "IN_" + num2str(ch));
+    set("x", x_start);
+    set("y", (ch - (N_ch+1)/2) * y_spacing);
+    set("type", "Optical Signal");
+}
+
+########################################################################
+# Build Circuit: MZI Mesh (7 Layers x up to 4 MZIs each)
+########################################################################
+
+x_layer_spacing = 100e-6;
+num_mzi = length(layer_config(:,1));
+
+for (m = 1:num_mzi) {
+    layer = layer_config(m, 1);
+    ch_top = layer_config(m, 2) + 1;  # 1-indexed
+    theta = layer_config(m, 3) * pi;
+    phi = layer_config(m, 4) * pi;
+
+    mzi_name = "MZI_L" + num2str(layer) + "_CH" + num2str(ch_top);
+    x_pos = x_start + layer * x_layer_spacing;
+    y_pos = ((ch_top + 0.5) - (N_ch+1)/2) * y_spacing;
+
+    # Add tunable MZI coupler
+    addelement("Optical Mach-Zehnder Modulator");
+    set("name", mzi_name);
+    set("x position", x_pos);
+    set("y position", y_pos);
+
+    # Set MZI parameters
+    setnamed(mzi_name, "insertion loss", IL_per_MZI);
+
+    ?"Added " + mzi_name + ": theta=" + num2str(theta*180/pi) + "deg, phi=" + num2str(phi*180/pi) + "deg";
+}
+
+########################################################################
+# Build Circuit: Output Ports
+########################################################################
+
+x_end = x_start + (N_layers + 1) * x_layer_spacing;
+
+for (ch = 1:N_ch) {
+    addport;
+    set("name", "OUT_" + num2str(ch));
+    set("x", x_end);
+    set("y", (ch - (N_ch+1)/2) * y_spacing);
+    set("type", "Optical Signal");
+}
+
+########################################################################
+# Add Laser Source (CW, 1550 nm)
+########################################################################
+
+addelement("CW Laser");
+set("name", "Laser_1550");
+set("x position", x_start - 100e-6);
+set("y position", 0);
+setnamed("Laser_1550", "frequency", 3e8 / lambda_c);
+setnamed("Laser_1550", "power", 10e-3);  # 10 mW
+
+########################################################################
+# Add Optical Spectrum Analyzer at Output
+########################################################################
+
+addelement("Optical Spectrum Analyzer");
+set("name", "OSA_Output");
+set("x position", x_end + 100e-6);
+set("y position", 0);
+
+########################################################################
+# Add Optical Power Meters at Each Output
+########################################################################
+
+for (ch = 1:N_ch) {
+    addelement("Optical Power Meter");
+    set("name", "PM_OUT_" + num2str(ch));
+    set("x position", x_end + 50e-6);
+    set("y position", (ch - (N_ch+1)/2) * y_spacing);
+}
+
+########################################################################
+# Summary
+########################################################################
+
+?"";
+?"========== TFLN QPA INTERCONNECT Circuit ==========";
+?"Channels:          " + num2str(N_ch);
+?"MZI layers:        " + num2str(N_layers);
+?"Total MZI nodes:   " + num2str(num_mzi);
+?"V_pi:              " + num2str(V_pi) + " V";
+?"IL per MZI:        " + num2str(IL_per_MZI) + " dB";
+?"Total worst-case IL: " + num2str(IL_per_MZI * N_layers) + " dB";
+?"Wavelength:        " + num2str(lambda_c * 1e9) + " nm";
+?"";
+?"Circuit built. Connect ports and run simulation.";
+?"Use the Schematic Editor to verify connections visually.";
+?"";
+?"To run S-parameter sweep:";
+?"  runsweep('s-parameter');";
+?"  S = getsweepresult('s-parameter', 'S');";

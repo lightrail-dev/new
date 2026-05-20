@@ -1,0 +1,193 @@
+########################################################################
+# Lumerical MODE Script — TFLN Rib Waveguide Mode Analysis
+# LightRail AI LR-P3A Rev 6.3 — Quantum Photonic Accelerator
+#
+# Computes the guided modes (TE/TM) of the TFLN rib waveguide used
+# in the MZI mesh. Extracts effective index, group index, loss,
+# and mode profiles for the fundamental and higher-order modes.
+#
+# To use: Open Lumerical MODE Solutions → Script File Editor → load
+# Or: File → Run Script
+#
+# Prerequisites: Lumerical MODE 2024 R1+ (Ansys 2024 R1+)
+########################################################################
+
+switchtolayout;
+deleteall;
+
+########################################################################
+# Design Parameters
+########################################################################
+
+# TFLN rib waveguide cross-section
+tfln_thickness   = 600e-9;    # 600 nm total TFLN film
+slab_height      = 200e-9;    # 200 nm unetched slab
+rib_height       = tfln_thickness - slab_height;  # 400 nm rib
+wg_width         = 800e-9;    # 800 nm waveguide width
+box_thickness    = 2.0e-6;    # 2 um SiO2 BOX
+clad_thickness   = 1.0e-6;    # 1 um SiO2 top cladding (optional)
+
+# Simulation wavelength
+lambda_c         = 1550e-9;   # 1550 nm C-band
+
+# Sweep parameters
+wg_width_min     = 400e-9;
+wg_width_max     = 1200e-9;
+wg_width_points  = 17;
+
+lambda_min       = 1500e-9;
+lambda_max       = 1600e-9;
+lambda_points    = 21;
+
+########################################################################
+# Material Definitions
+########################################################################
+
+if (!materialexists("LiNbO3_TFLN")) {
+    temp = addmaterial("Dielectric");
+    setmaterial(temp, "name", "LiNbO3_TFLN");
+    setmaterial("LiNbO3_TFLN", "Refractive Index", 2.211);
+}
+
+if (!materialexists("SiO2_Clad")) {
+    temp = addmaterial("Dielectric");
+    setmaterial(temp, "name", "SiO2_Clad");
+    setmaterial("SiO2_Clad", "Refractive Index", 1.444);
+}
+
+########################################################################
+# Geometry: TFLN Rib Waveguide Cross-Section
+########################################################################
+
+# Buried oxide
+addrect;
+set("name", "BOX");
+set("x", 0); set("x span", 10e-6);
+set("y min", -box_thickness); set("y max", 0);
+set("material", "SiO2_Clad");
+
+# TFLN slab (full width, slab height)
+addrect;
+set("name", "TFLN_Slab");
+set("x", 0); set("x span", 10e-6);
+set("y min", 0); set("y max", slab_height);
+set("material", "LiNbO3_TFLN");
+
+# TFLN rib (waveguide core)
+addrect;
+set("name", "TFLN_Rib");
+set("x", 0); set("x span", wg_width);
+set("y min", slab_height); set("y max", tfln_thickness);
+set("material", "LiNbO3_TFLN");
+
+# Top cladding (if present)
+addrect;
+set("name", "Top_Clad");
+set("x", 0); set("x span", 10e-6);
+set("y min", tfln_thickness); set("y max", tfln_thickness + clad_thickness);
+set("material", "SiO2_Clad");
+
+########################################################################
+# FDE Solver (Finite Difference Eigenmode)
+########################################################################
+
+addfde;
+set("solver type", "2D X normal");
+set("x", 0);
+set("y", tfln_thickness / 2);
+set("y span", 4e-6);
+set("z", 0); set("z span", 4e-6);
+set("wavelength", lambda_c);
+set("number of trial modes", 6);
+set("mesh cells y", 200);
+set("mesh cells z", 200);
+
+# Boundary conditions
+set("y min bc", "PML"); set("y max bc", "PML");
+set("z min bc", "PML"); set("z max bc", "PML");
+
+########################################################################
+# Run single-point mode solve
+########################################################################
+
+findmodes;
+
+?"";
+?"========== TFLN Rib Waveguide Mode Analysis ==========";
+?"Waveguide width: " + num2str(wg_width * 1e9) + " nm";
+?"TFLN thickness:  " + num2str(tfln_thickness * 1e9) + " nm";
+?"Slab height:     " + num2str(slab_height * 1e9) + " nm";
+?"Wavelength:      " + num2str(lambda_c * 1e9) + " nm";
+?"";
+
+num_modes = 4;
+for (i = 1:num_modes) {
+    neff = getdata("FDE::data::mode" + num2str(i), "neff");
+    ?"Mode " + num2str(i) + ":  n_eff = " + num2str(real(neff));
+}
+
+########################################################################
+# Sweep: Effective Index vs. Waveguide Width
+########################################################################
+
+?"";
+?"--- Sweep: n_eff vs. waveguide width ---";
+
+width_sweep = linspace(wg_width_min, wg_width_max, wg_width_points);
+neff_te = matrix(wg_width_points);
+neff_tm = matrix(wg_width_points);
+
+for (j = 1:wg_width_points) {
+    switchtolayout;
+    select("TFLN_Rib");
+    set("x span", width_sweep(j));
+    findmodes;
+    neff_te(j) = real(getdata("FDE::data::mode1", "neff"));
+    if (nummodes >= 2) {
+        neff_tm(j) = real(getdata("FDE::data::mode2", "neff"));
+    }
+    ?"  W = " + num2str(width_sweep(j)*1e9) + " nm: n_eff(TE) = " + num2str(neff_te(j));
+}
+
+# Plot
+plot(width_sweep * 1e9, neff_te, "Waveguide Width (nm)", "Effective Index",
+     "TFLN Rib WG: n_eff(TE) vs. Width");
+
+########################################################################
+# Sweep: Effective Index vs. Wavelength (dispersion)
+########################################################################
+
+?"";
+?"--- Sweep: n_eff vs. wavelength (dispersion) ---";
+
+# Reset waveguide width
+switchtolayout;
+select("TFLN_Rib");
+set("x span", wg_width);
+
+lambda_sweep = linspace(lambda_min, lambda_max, lambda_points);
+neff_disp = matrix(lambda_points);
+
+for (k = 1:lambda_points) {
+    switchtolayout;
+    setnamed("FDE", "wavelength", lambda_sweep(k));
+    findmodes;
+    neff_disp(k) = real(getdata("FDE::data::mode1", "neff"));
+    ?"  lambda = " + num2str(lambda_sweep(k)*1e9) + " nm: n_eff = " + num2str(neff_disp(k));
+}
+
+# Compute group index: n_g = n_eff - lambda * (dn_eff/dlambda)
+d_neff = diff(neff_disp);
+d_lambda = diff(lambda_sweep);
+n_group = neff_disp(2:lambda_points) - lambda_sweep(2:lambda_points) * d_neff / d_lambda;
+
+?"";
+?"Group index at 1550 nm: ~" + num2str(n_group(round(lambda_points/2)));
+
+plot(lambda_sweep * 1e9, neff_disp,
+     "Wavelength (nm)", "Effective Index",
+     "TFLN Rib WG: Dispersion Curve");
+
+?"";
+?"MODE analysis complete. Results available in the mode list.";
+?"Use 'getresult' to extract field profiles for further analysis.";

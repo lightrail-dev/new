@@ -1,0 +1,120 @@
+########################################################################
+# Lumerical GDSII Import Script — Load QPA Layout into FDTD/MODE
+# LightRail AI LR-P3A Rev 6.3 — Quantum Photonic Accelerator
+#
+# Imports the GDSII file generated from the PCB layout into Lumerical
+# for photonic simulation. Maps GDS layers to 3D material structures.
+#
+# To use: Open Lumerical FDTD or MODE → Script File Editor → load
+# Prerequisites: Dual_NCE_Accelerator.gds in the working directory
+########################################################################
+
+switchtolayout;
+
+########################################################################
+# GDSII File Path — update to match your local path
+########################################################################
+
+gds_file = "Dual_NCE_Accelerator.gds";
+
+# Layer mapping (from GDS_LayerMap.txt):
+#   GDS Layer 0  = F.Cu          (Top copper)
+#   GDS Layer 31 = B.Cu          (Bottom copper)
+#   GDS Layer 32 = F.SilkS       (Top silkscreen)
+#   GDS Layer 36 = F.Fab         (Fabrication layer — NCE die pads)
+#   GDS Layer 37 = B.Fab         (Bottom fabrication)
+#   GDS Layer 40 = Dwgs.User     (MZI photonic waveguides)
+#   GDS Layer 41 = Cmts.User     (Comments)
+#   GDS Layer 44 = Edge.Cuts     (Board outline)
+#   GDS Layer 46 = B.CrtYd       (Bottom courtyard)
+#   GDS Layer 47 = F.CrtYd       (Front courtyard)
+#   GDS Layer 48 = Eco1.User     (Green substrate fills)
+#   GDS Layer 49 = Eco2.User     (Photonic bridge magenta)
+#   GDS Layer 100-129 = In1-In30 (Inner copper layers)
+
+########################################################################
+# Import photonic waveguide layer (Dwgs.User = GDS Layer 40)
+########################################################################
+
+?"Importing GDSII photonic waveguide layer...";
+
+addgdsimport;
+set("name", "MZI_Waveguides");
+set("filename", gds_file);
+set("layer", 40);           # Dwgs.User — MZI waveguide paths
+set("data type", 0);
+set("z min", 0);
+set("z max", 600e-9);       # 600 nm TFLN thickness
+set("material", "LiNbO3_TFLN");
+
+?"  Imported GDS layer 40 (Dwgs.User) as TFLN waveguides";
+
+########################################################################
+# Import top copper (F.Cu = GDS Layer 0) — electrodes
+########################################################################
+
+addgdsimport;
+set("name", "Top_Copper");
+set("filename", gds_file);
+set("layer", 0);            # F.Cu
+set("data type", 0);
+set("z min", 600e-9);
+set("z max", 800e-9);       # 200 nm Au electrode
+set("material", "Au (Gold) - CRC");
+
+?"  Imported GDS layer 0 (F.Cu) as gold electrodes";
+
+########################################################################
+# Import board outline (Edge.Cuts = GDS Layer 44)
+########################################################################
+
+addgdsimport;
+set("name", "Board_Outline");
+set("filename", gds_file);
+set("layer", 44);           # Edge.Cuts
+set("data type", 0);
+set("z min", -100e-6);
+set("z max", 0);
+set("material", "SiO2_Clad");
+
+?"  Imported GDS layer 44 (Edge.Cuts) as board outline";
+
+########################################################################
+# Import photonic bridge region (Eco2.User = GDS Layer 49)
+########################################################################
+
+addgdsimport;
+set("name", "Photonic_Bridge");
+set("filename", gds_file);
+set("layer", 49);           # Eco2.User — photonic bridge
+set("data type", 0);
+set("z min", 0);
+set("z max", 600e-9);
+set("material", "LiNbO3_TFLN");
+
+?"  Imported GDS layer 49 (Eco2.User) as photonic bridge region";
+
+########################################################################
+# Summary
+########################################################################
+
+?"";
+?"GDSII import complete.";
+?"";
+?"Imported layers:";
+?"  Layer 40 (Dwgs.User)  → MZI waveguides (TFLN, 600 nm)";
+?"  Layer 0  (F.Cu)       → Gold electrodes (200 nm)";
+?"  Layer 44 (Edge.Cuts)  → Board outline";
+?"  Layer 49 (Eco2.User)  → Photonic bridge (TFLN)";
+?"";
+?"Next steps:";
+?"  1. Zoom into MZI region to verify waveguide geometry";
+?"  2. Add FDTD region around area of interest";
+?"  3. Add mode sources and monitors";
+?"  4. Run simulation";
+?"";
+?"For selective import of inner copper layers (RF routing):";
+?"  Layer 103 (In3.Cu)  → RF CPW traces (100 GHz DAC output)";
+?"  Layer 104 (In4.Cu)  → LVDS trigger bus";
+?"  Layer 105 (In5.Cu)  → CXL 2.0 bus";
+?"  Layer 106 (In6.Cu)  → SNSPD readout";
