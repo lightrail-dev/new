@@ -1,0 +1,270 @@
+########################################################################
+# Lumerical FDTD Script — TFLN MZI Waveguide Simulation
+# LightRail AI LR-P3A Rev 6.3 — Quantum Photonic Accelerator
+#
+# This script sets up a 3D FDTD simulation of a single Mach-Zehnder
+# Interferometer (MZI) unit cell on Thin-Film Lithium Niobate (TFLN).
+#
+# To use: Open Lumerical FDTD Solutions → Script File Editor → load this file
+# Or: File → Run Script
+#
+# Prerequisites: Lumerical FDTD 2024 R1+ (Ansys 2024 R1+)
+########################################################################
+
+switchtolayout;
+deleteall;
+
+########################################################################
+# Design Parameters (from QPA Architecture Spec)
+########################################################################
+
+# Substrate / material stack
+tfln_thickness   = 0.6e-6;    # 600 nm TFLN film (X-cut)
+slab_thickness   = 0.2e-6;    # 200 nm slab for rib waveguide
+sio2_thickness   = 2.0e-6;    # 2 um buried oxide (BOX)
+si_thickness     = 0.5e-6;    # 500 um silicon handle (modeled thin)
+electrode_height = 0.2e-6;    # 200 nm Au electrode
+
+# Waveguide geometry
+wg_width         = 0.8e-6;    # 800 nm rib waveguide width
+wg_etch_depth    = 0.4e-6;    # 400 nm etch (leaving 200 nm slab)
+bend_radius      = 50e-6;     # 50 um minimum bend radius
+
+# MZI dimensions
+mzi_length       = 500e-6;    # 500 um MZI arm length
+splitter_length  = 30e-6;     # 30 um Y-splitter
+gap_between_arms = 5.0e-6;    # 5.0 um arm spacing (crosstalk < -30 dB)
+electrode_gap    = 3.0e-6;    # 3 um electrode-to-waveguide gap
+
+# Operating parameters
+lambda_c         = 1.55e-6;   # 1550 nm C-band center wavelength
+lambda_span      = 0.1e-6;    # 100 nm bandwidth
+
+# Simulation region
+sim_span_x = mzi_length + 2 * splitter_length + 20e-6;
+sim_span_y = gap_between_arms + 2 * wg_width + 10e-6;
+sim_span_z = tfln_thickness + sio2_thickness + 5e-6;
+
+########################################################################
+# Material Definitions
+########################################################################
+
+# TFLN (Lithium Niobate — extraordinary axis, X-cut)
+if (!materialexists("LiNbO3_TFLN")) {
+    temp = addmaterial("Dielectric");
+    setmaterial(temp, "name", "LiNbO3_TFLN");
+    setmaterial("LiNbO3_TFLN", "Refractive Index", 2.211);
+    setmaterial("LiNbO3_TFLN", "color", [0.4, 0.6, 0.9, 0.7]);
+}
+
+# Silicon dioxide cladding
+if (!materialexists("SiO2_Clad")) {
+    temp = addmaterial("Dielectric");
+    setmaterial(temp, "name", "SiO2_Clad");
+    setmaterial("SiO2_Clad", "Refractive Index", 1.444);
+    setmaterial("SiO2_Clad", "color", [0.8, 0.8, 0.8, 0.5]);
+}
+
+########################################################################
+# Geometry: TFLN Rib Waveguide MZI
+########################################################################
+
+# --- Buried Oxide Layer ---
+addrect;
+set("name", "BOX");
+set("x", 0); set("x span", sim_span_x + 10e-6);
+set("y", 0); set("y span", sim_span_y + 10e-6);
+set("z min", -sio2_thickness); set("z max", 0);
+set("material", "SiO2_Clad");
+
+# --- TFLN Slab (unetched region) ---
+addrect;
+set("name", "TFLN_Slab");
+set("x", 0); set("x span", sim_span_x + 10e-6);
+set("y", 0); set("y span", sim_span_y + 10e-6);
+set("z min", 0); set("z max", slab_thickness);
+set("material", "LiNbO3_TFLN");
+
+# --- Input Waveguide (before splitter) ---
+addrect;
+set("name", "WG_Input");
+set("x min", -sim_span_x/2); set("x max", -mzi_length/2 - splitter_length);
+set("y", 0); set("y span", wg_width);
+set("z min", 0); set("z max", tfln_thickness);
+set("material", "LiNbO3_TFLN");
+
+# --- Y-Splitter Input Taper ---
+addtriangle;
+set("name", "Y_Splitter_In");
+V1 = [-mzi_length/2 - splitter_length, 0, 0];
+V2 = [-mzi_length/2, gap_between_arms/2, 0];
+V3 = [-mzi_length/2, -gap_between_arms/2, 0];
+set("vertices", [V1; V2; V3]);
+set("z min", 0); set("z max", tfln_thickness);
+set("material", "LiNbO3_TFLN");
+
+# --- Upper MZI Arm ---
+addrect;
+set("name", "MZI_Arm_Upper");
+set("x min", -mzi_length/2); set("x max", mzi_length/2);
+set("y", gap_between_arms/2); set("y span", wg_width);
+set("z min", 0); set("z max", tfln_thickness);
+set("material", "LiNbO3_TFLN");
+
+# --- Lower MZI Arm ---
+addrect;
+set("name", "MZI_Arm_Lower");
+set("x min", -mzi_length/2); set("x max", mzi_length/2);
+set("y", -gap_between_arms/2); set("y span", wg_width);
+set("z min", 0); set("z max", tfln_thickness);
+set("material", "LiNbO3_TFLN");
+
+# --- Y-Combiner Output Taper ---
+addtriangle;
+set("name", "Y_Combiner_Out");
+V1 = [mzi_length/2 + splitter_length, 0, 0];
+V2 = [mzi_length/2, gap_between_arms/2, 0];
+V3 = [mzi_length/2, -gap_between_arms/2, 0];
+set("vertices", [V1; V2; V3]);
+set("z min", 0); set("z max", tfln_thickness);
+set("material", "LiNbO3_TFLN");
+
+# --- Output Waveguide (after combiner) ---
+addrect;
+set("name", "WG_Output");
+set("x min", mzi_length/2 + splitter_length); set("x max", sim_span_x/2);
+set("y", 0); set("y span", wg_width);
+set("z min", 0); set("z max", tfln_thickness);
+set("material", "LiNbO3_TFLN");
+
+# --- Gold Electrodes (for EO modulation) ---
+addrect;
+set("name", "Electrode_Signal");
+set("x min", -mzi_length/2 + 10e-6); set("x max", mzi_length/2 - 10e-6);
+set("y", gap_between_arms/2 + wg_width/2 + electrode_gap);
+set("y span", 5e-6);
+set("z min", tfln_thickness); set("z max", tfln_thickness + electrode_height);
+set("material", "Au (Gold) - CRC");
+
+addrect;
+set("name", "Electrode_Ground_Top");
+set("x min", -mzi_length/2 + 10e-6); set("x max", mzi_length/2 - 10e-6);
+set("y", gap_between_arms/2 - wg_width/2 - electrode_gap);
+set("y span", 5e-6);
+set("z min", tfln_thickness); set("z max", tfln_thickness + electrode_height);
+set("material", "Au (Gold) - CRC");
+
+########################################################################
+# FDTD Simulation Region
+########################################################################
+
+addfdtd;
+set("x", 0); set("x span", sim_span_x);
+set("y", 0); set("y span", sim_span_y);
+set("z min", -sio2_thickness - 0.5e-6);
+set("z max", tfln_thickness + 2e-6);
+set("mesh accuracy", 3);
+set("simulation time", 5000e-15);  # 5 ps
+
+# PML boundaries
+set("x min bc", "PML"); set("x max bc", "PML");
+set("y min bc", "PML"); set("y max bc", "PML");
+set("z min bc", "PML"); set("z max bc", "PML");
+
+########################################################################
+# Source: Mode Source at Input Waveguide
+########################################################################
+
+addmode;
+set("name", "mode_source");
+set("injection axis", "x-axis");
+set("direction", "Forward");
+set("x", -sim_span_x/2 + 5e-6);
+set("y", 0); set("y span", 4e-6);
+set("z", tfln_thickness/2); set("z span", 3e-6);
+set("wavelength start", lambda_c - lambda_span/2);
+set("wavelength stop", lambda_c + lambda_span/2);
+set("mode selection", "fundamental TE mode");
+
+########################################################################
+# Monitors
+########################################################################
+
+# Frequency-domain power monitor at output
+addpower;
+set("name", "output_monitor");
+set("monitor type", "2D X-normal");
+set("x", sim_span_x/2 - 5e-6);
+set("y", 0); set("y span", sim_span_y);
+set("z min", -1e-6); set("z max", tfln_thickness + 1e-6);
+
+# Cross-section monitor (XZ plane through upper arm)
+addpower;
+set("name", "arm_upper_xsec");
+set("monitor type", "2D Y-normal");
+set("y", gap_between_arms/2);
+set("x", 0); set("x span", mzi_length);
+set("z min", -0.5e-6); set("z max", tfln_thickness + 0.5e-6);
+
+# Cross-section monitor (XZ plane through lower arm)
+addpower;
+set("name", "arm_lower_xsec");
+set("monitor type", "2D Y-normal");
+set("y", -gap_between_arms/2);
+set("x", 0); set("x span", mzi_length);
+set("z min", -0.5e-6); set("z max", tfln_thickness + 0.5e-6);
+
+# Field profile monitor (XY plane at waveguide center height)
+addpower;
+set("name", "field_xy");
+set("monitor type", "2D Z-normal");
+set("z", tfln_thickness/2);
+set("x", 0); set("x span", sim_span_x);
+set("y", 0); set("y span", sim_span_y);
+
+# Transmission monitor
+addpower;
+set("name", "T_output");
+set("monitor type", "2D X-normal");
+set("x", sim_span_x/2 - 3e-6);
+set("y", 0); set("y span", 4e-6);
+set("z", tfln_thickness/2); set("z span", 3e-6);
+
+########################################################################
+# Mesh Override (fine mesh around waveguide core)
+########################################################################
+
+addmesh;
+set("name", "mesh_wg_core");
+set("x", 0); set("x span", mzi_length + 2 * splitter_length);
+set("y", 0); set("y span", gap_between_arms + 2 * wg_width);
+set("z min", -0.2e-6); set("z max", tfln_thickness + 0.2e-6);
+set("dx", 20e-9);  # 20 nm mesh
+set("dy", 20e-9);
+set("dz", 20e-9);
+
+########################################################################
+# Analysis Group: Extinction Ratio & Insertion Loss
+########################################################################
+
+addanalysisgroup;
+set("name", "MZI_Performance");
+set("x", 0); set("y", 0); set("z", 0);
+
+# After simulation, run this to extract results:
+# T = getresult("T_output", "T");
+# ER_dB = 10*log10(max(T)/min(T));  # Extinction ratio
+# IL_dB = -10*log10(max(T));         # Insertion loss
+
+?"TFLN MZI FDTD simulation setup complete.";
+?"  MZI arm length:     " + num2str(mzi_length*1e6) + " um";
+?"  Arm spacing:        " + num2str(gap_between_arms*1e6) + " um";
+?"  Waveguide width:    " + num2str(wg_width*1e6) + " um";
+?"  TFLN thickness:     " + num2str(tfln_thickness*1e6) + " um";
+?"  Wavelength:         " + num2str(lambda_c*1e9) + " nm";
+?"";
+?"Ready to run. Use the Run button or type 'run;' in the script console.";
+?"After simulation, extract results with:";
+?"  T = getresult('T_output', 'T');";
+?"  ER_dB = 10*log10(max(T)/min(T));";
+?"  IL_dB = -10*log10(max(T));";

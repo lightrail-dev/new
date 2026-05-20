@@ -1,0 +1,84 @@
+########################################################################
+# Ansys SIwave Import Instructions
+# LightRail AI LR-P3A Rev 6.3 — Quantum Photonic Accelerator
+########################################################################
+
+SUPPORTED IMPORT FORMATS (already generated):
+=============================================
+
+1. ODB++ (.tgz)
+   - Not yet generated; SIwave prefers this for full PCB import
+   - Can be exported from KiCad via third-party plugin or Allegro
+
+2. IPC-2581 (.xml)
+   - File: fab/Dual_NCE_Accelerator_Fab_Release_v1/docs/Dual_NCE_Accelerator.ipc2581
+   - Import: SIwave → File → Import → IPC2581 → select file
+   - Contains full stackup, netlist, and copper geometry
+
+3. GDSII (.gds)
+   - File: fab/Dual_NCE_Accelerator_Fab_Release_v1/Dual_NCE_Accelerator.gds
+   - Import: SIwave → File → Import → GDSII → select file
+   - Layer mapping file: Dual_NCE_Accelerator_GDS_LayerMap.txt
+   - Map GDS layers to SIwave signal/plane/via layers
+
+4. Gerber Files (.gbr)
+   - Directory: fab/Dual_NCE_Accelerator_Fab_Release_v1/gerbers/
+   - 42 Gerber RS-274X files (32 copper + masks + silk + paste)
+   - Import via HFSS 3D Layout → File → Import → Gerber
+
+5. DXF Files (.dxf)
+   - File: sim/ansys/TFLN_QPA_RF_CPW.dxf (RF structures only)
+   - File: sim/ansys/TFLN_QPA_MZI_Electrodes.dxf (MZI unit cell)
+   - Import: SIwave → File → Import → DXF → select file
+
+
+RECOMMENDED WORKFLOW:
+=====================
+
+For PCB Signal Integrity (SIwave):
+  1. Import IPC-2581 file (contains full board with stackup)
+  2. Verify 32-layer stackup matches spec (Megtron-7 signal, FR-4 planes)
+  3. Run DC IR drop analysis on QPA power nets (VDD_QPA_0V85, VDD_QPA_1V8)
+  4. Run AC impedance analysis on CXL 2.0 differential pairs
+  5. Extract S-parameters for QPA signal buses
+
+For RF EM Simulation (HFSS):
+  1. Import GDSII or DXF of RF CPW structures
+  2. Set up driven terminal simulation (1-120 GHz)
+  3. Validate 50-ohm CPW impedance on TFLN substrate
+  4. Extract S21 (insertion loss) and S11 (return loss)
+  5. Verify 100 GHz bandwidth for DAC output routing
+
+For Thermal Analysis (Icepak):
+  1. Import 3D STEP model from fab/Dual_NCE_Accelerator_Fab_Release_v1/3d_model/
+  2. Set power dissipation for QPA components:
+     - FPGA (U401/U402): 15W each
+     - DAC (U411/U412): 5W each
+     - RF Drivers (U421-U428): 1W each
+     - SNSPD (U431/U432): 0.001W each (cryogenic, <4K)
+     - CXL Switch (U450): 10W
+  3. Model cryogenic interface (diamond substrate, 2000 W/mK)
+  4. Verify thermal gradient across TFLN PIC region
+
+
+STACKUP FOR IMPEDANCE SIMULATION:
+==================================
+
+Layer  | Name     | Type    | Material    | Thickness | Cu Weight
+-------|----------|---------|-------------|-----------|----------
+1      | F.Cu     | Signal  | Megtron-7   | 70 um     | 2 oz
+2      | In1.Cu   | Signal  | Megtron-7   | 17.5 um   | 0.5 oz
+3      | In2.Cu   | Plane   | FR-4 HiTg   | 35 um     | 2 oz
+...
+15     | In14.Cu  | Signal  | Megtron-7   | 17.5 um   | 0.5 oz
+16     | In15.Cu  | Plane   | Faradflex   | 35 um     | 1 oz
+17     | In16.Cu  | Plane   | Faradflex   | 35 um     | 2 oz
+...
+32     | B.Cu     | Signal  | Megtron-7   | 70 um     | 2 oz
+
+Target Impedances:
+  - PCIe Gen 6 differential: 85 ohm +/- 10%
+  - SerDes 100G PAM4: 100 ohm differential +/- 10%
+  - TFLN RF CPW: 50 ohm single-ended +/- 5%
+  - CXL 2.0 differential: 85 ohm +/- 10%
+  - LVDS trigger: 100 ohm differential +/- 10%

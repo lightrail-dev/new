@@ -60,6 +60,25 @@ HBM4_B = [(NCE_B[0]-30, NCE_B[1]-25), (NCE_B[0]-30, NCE_B[1]+25),
 
 PCIE_CONNECTOR_POS = (210, 343)
 
+# QPA Subsystem positions (TFLN Quantum Photonic Accelerator)
+# Host FPGA (trigger matrix + CXL interface) — between NCEs and south edge
+FPGA_A = (135.0, 250.0)
+FPGA_B = (285.0, 250.0)
+# 100 GHz Interleaved DACs — between FPGA and TFLN PICs
+DAC_A = (160.0, 210.0)
+DAC_B = (260.0, 210.0)
+# BiCMOS RF Drivers — between DACs and TFLN electrode inputs
+RF_DRIVER_A = (172.0, 185.0)
+RF_DRIVER_B = (248.0, 185.0)
+# SNSPD Photodetector arrays — outboard of TFLN PICs
+SNSPD_A = (195.0, 135.0)
+SNSPD_B = (225.0, 135.0)
+# Quantum Memory cells — near TFLN PICs
+QMEM_A = (175.0, 140.0)
+QMEM_B = (245.0, 140.0)
+# CXL Switch — central, south of photonic bridge
+CXL_SWITCH = (210.0, 280.0)
+
 
 def generate_nets():
     nets = []
@@ -142,6 +161,65 @@ def generate_nets():
         nets.append(f'  (net {net_id} "SW_PH{phase}")')
         net_id += 1
 
+    # QPA subsystem nets
+    qpa_power = ["+1V0_FPGA", "+0V85_FPGA_CORE", "+3V3_DAC", "+1V8_DAC",
+                 "+2V5_RF", "+3V3_SNSPD", "+1V2_QMEM", "VCCINT_CXL"]
+    for n in qpa_power:
+        nets.append(f'  (net {net_id} "{n}")')
+        net_id += 1
+
+    # FPGA trigger matrix LVDS outputs to DACs (8 channels per side)
+    for unit in ["A", "B"]:
+        for ch in range(8):
+            for pol in ["P", "N"]:
+                nets.append(f'  (net {net_id} "LVDS_TRIG_{unit}_CH{ch}_{pol}")')
+                net_id += 1
+
+    # DAC analog outputs to RF drivers (8 channels per side)
+    for unit in ["A", "B"]:
+        for ch in range(8):
+            nets.append(f'  (net {net_id} "DAC_OUT_{unit}_CH{ch}")')
+            net_id += 1
+
+    # RF driver outputs to TFLN electrodes (100 GHz CPW, 8 channels per side)
+    for unit in ["A", "B"]:
+        for ch in range(8):
+            for pol in ["P", "N"]:
+                nets.append(f'  (net {net_id} "RF_ELEC_{unit}_CH{ch}_{pol}")')
+                net_id += 1
+
+    # SNSPD readout channels (single-photon detector outputs)
+    for unit in ["A", "B"]:
+        for ch in range(8):
+            nets.append(f'  (net {net_id} "SNSPD_{unit}_CH{ch}")')
+            net_id += 1
+
+    # Quantum memory control lines
+    for unit in ["A", "B"]:
+        for sig in ["WR_EN", "RD_EN", "ADDR0", "ADDR1", "ADDR2", "ADDR3",
+                    "DATA_IN", "DATA_OUT"]:
+            nets.append(f'  (net {net_id} "QMEM_{unit}_{sig}")')
+            net_id += 1
+
+    # CXL 2.0 bus (host FPGA <-> CXL switch)
+    for lane in range(16):
+        for pol in ["P", "N"]:
+            nets.append(f'  (net {net_id} "CXL_{"TX" if lane < 8 else "RX"}{lane % 8}_{pol}")')
+            net_id += 1
+
+    # FPGA system clocks
+    for clk in ["CLK_250MHZ_P", "CLK_250MHZ_N", "CLK_500MHZ_P", "CLK_500MHZ_N",
+                "CXL_REFCLK_P", "CXL_REFCLK_N"]:
+        nets.append(f'  (net {net_id} "{clk}")')
+        net_id += 1
+
+    # MZI mesh phase control (8 theta + 8 phi per NCE)
+    for unit in ["A", "B"]:
+        for mzi in range(8):
+            for phase in ["THETA", "PHI"]:
+                nets.append(f'  (net {net_id} "MZI_{unit}_M{mzi}_{phase}")')
+                net_id += 1
+
     return nets, net_id
 
 
@@ -191,6 +269,24 @@ def generate_net_classes():
   )
   (net_class "I2C_SPI" "Low-speed control buses"
     (clearance 0.15) (trace_width 0.15) (via_dia 0.4) (via_drill 0.2) (uvia_dia 0.3) (uvia_drill 0.1)
+  )
+  (net_class "CXL_2_0" "CXL 2.0 high-speed differential"
+    (clearance 0.127) (trace_width 0.09) (via_dia 0.3) (via_drill 0.15) (uvia_dia 0.2) (uvia_drill 0.1)
+    (diff_pair_gap 0.09) (diff_pair_width 0.09)
+  )
+  (net_class "LVDS_TRIGGER" "FPGA-to-DAC zero-skew LVDS trigger bus"
+    (clearance 0.127) (trace_width 0.10) (via_dia 0.3) (via_drill 0.15) (uvia_dia 0.2) (uvia_drill 0.1)
+    (diff_pair_gap 0.10) (diff_pair_width 0.10)
+  )
+  (net_class "RF_100GHZ_CPW" "100 GHz coplanar waveguide to TFLN electrodes"
+    (clearance 0.15) (trace_width 0.08) (via_dia 0.25) (via_drill 0.12) (uvia_dia 0.2) (uvia_drill 0.1)
+    (diff_pair_gap 0.08) (diff_pair_width 0.08)
+  )
+  (net_class "SNSPD_READOUT" "Single-photon detector readout"
+    (clearance 0.15) (trace_width 0.12) (via_dia 0.3) (via_drill 0.15) (uvia_dia 0.2) (uvia_drill 0.1)
+  )
+  (net_class "QMEM_CTRL" "Quantum memory control bus"
+    (clearance 0.12) (trace_width 0.10) (via_dia 0.3) (via_drill 0.15) (uvia_dia 0.2) (uvia_drill 0.1)
   )"""
 
 
@@ -1528,9 +1624,239 @@ def generate_12vhpwr_connectors():
     return "\n".join(fps)
 
 
+def generate_qpa_fpga_footprint(ref, x, y):
+    """Host FPGA footprint (BGA-676, 26x26, 1.0mm pitch) for trigger matrix + CXL."""
+    pads = []
+    for row in range(26):
+        for col in range(26):
+            px = -12.5 + col * 1.0
+            py = -12.5 + row * 1.0
+            pads.append(f'    (pad "{row*26+col+1}" smd circle (at {px} {py}) (size 0.5 0.5) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+    return f"""  (footprint "BGA-676_FPGA" (layer "F.Cu") (at {x} {y}) (tstamp {uid()})
+    (property "Reference" "{ref}" (at 0 -14.5) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12))))
+    (property "Value" "XCKU5P" (at 0 14.5) (layer "F.Fab") (effects (font (size 0.8 0.8) (thickness 0.12))))
+    (fp_rect (start -13.5 -13.5) (end 13.5 13.5) (layer "F.CrtYd") (width 0.1))
+    (fp_rect (start -13 -13) (end 13 13) (layer "F.Fab") (width 0.15))
+    (fp_circle (center -12 -12) (end -11.5 -12) (layer "F.SilkS") (width 0.15))
+{chr(10).join(pads)}
+  )"""
+
+
+def generate_qpa_dac_footprint(ref, x, y):
+    """100 GHz Interleaved DAC footprint (QFN-64, 9x9mm)."""
+    pads = []
+    for i in range(16):
+        pads.append(f'    (pad "{i+1}" smd rect (at {-3.75 + i*0.5} -4.5) (size 0.3 0.8) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+        pads.append(f'    (pad "{i+17}" smd rect (at 4.5 {-3.75 + i*0.5}) (size 0.8 0.3) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+        pads.append(f'    (pad "{i+33}" smd rect (at {3.75 - i*0.5} 4.5) (size 0.3 0.8) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+        pads.append(f'    (pad "{i+49}" smd rect (at -4.5 {3.75 - i*0.5}) (size 0.8 0.3) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+    # Thermal pad
+    pads.append(f'    (pad "65" smd rect (at 0 0) (size 5.0 5.0) (layers "F.Cu" "F.Mask") (net 1 "GND"))')
+    return f"""  (footprint "QFN-64_DAC" (layer "F.Cu") (at {x} {y}) (tstamp {uid()})
+    (property "Reference" "{ref}" (at 0 -6) (layer "F.SilkS") (effects (font (size 0.6 0.6) (thickness 0.1))))
+    (property "Value" "AD9082" (at 0 6) (layer "F.Fab") (effects (font (size 0.6 0.6) (thickness 0.1))))
+    (fp_rect (start -5 -5) (end 5 5) (layer "F.CrtYd") (width 0.1))
+    (fp_rect (start -4.5 -4.5) (end 4.5 4.5) (layer "F.Fab") (width 0.15))
+{chr(10).join(pads)}
+  )"""
+
+
+def generate_qpa_rf_driver_footprint(ref, x, y):
+    """BiCMOS RF Driver footprint (QFN-32, 5x5mm) for 100 GHz TFLN electrode drive."""
+    pads = []
+    for i in range(8):
+        pads.append(f'    (pad "{i+1}" smd rect (at {-1.75 + i*0.5} -2.5) (size 0.25 0.65) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+        pads.append(f'    (pad "{i+9}" smd rect (at 2.5 {-1.75 + i*0.5}) (size 0.65 0.25) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+        pads.append(f'    (pad "{i+17}" smd rect (at {1.75 - i*0.5} 2.5) (size 0.25 0.65) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+        pads.append(f'    (pad "{i+25}" smd rect (at -2.5 {1.75 - i*0.5}) (size 0.65 0.25) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+    pads.append(f'    (pad "33" smd rect (at 0 0) (size 3.0 3.0) (layers "F.Cu" "F.Mask") (net 1 "GND"))')
+    return f"""  (footprint "QFN-32_RF" (layer "F.Cu") (at {x} {y}) (tstamp {uid()})
+    (property "Reference" "{ref}" (at 0 -3.5) (layer "F.SilkS") (effects (font (size 0.5 0.5) (thickness 0.08))))
+    (property "Value" "HMC7044" (at 0 3.5) (layer "F.Fab") (effects (font (size 0.5 0.5) (thickness 0.08))))
+    (fp_rect (start -3 -3) (end 3 3) (layer "F.CrtYd") (width 0.1))
+    (fp_rect (start -2.5 -2.5) (end 2.5 2.5) (layer "F.Fab") (width 0.15))
+{chr(10).join(pads)}
+  )"""
+
+
+def generate_qpa_snspd_footprint(ref, x, y):
+    """SNSPD Photodetector array footprint (LGA-16, 4x4mm, 8-channel)."""
+    pads = []
+    for i in range(4):
+        pads.append(f'    (pad "{i+1}" smd rect (at {-0.75 + i*0.5} -2.0) (size 0.3 0.5) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+        pads.append(f'    (pad "{i+5}" smd rect (at 2.0 {-0.75 + i*0.5}) (size 0.5 0.3) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+        pads.append(f'    (pad "{i+9}" smd rect (at {0.75 - i*0.5} 2.0) (size 0.3 0.5) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+        pads.append(f'    (pad "{i+13}" smd rect (at -2.0 {0.75 - i*0.5}) (size 0.5 0.3) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+    return f"""  (footprint "LGA-16_SNSPD" (layer "F.Cu") (at {x} {y}) (tstamp {uid()})
+    (property "Reference" "{ref}" (at 0 -3) (layer "F.SilkS") (effects (font (size 0.5 0.5) (thickness 0.08))))
+    (property "Value" "SNSPD_8CH" (at 0 3) (layer "F.Fab") (effects (font (size 0.5 0.5) (thickness 0.08))))
+    (fp_rect (start -2.5 -2.5) (end 2.5 2.5) (layer "F.CrtYd") (width 0.1))
+    (fp_rect (start -2 -2) (end 2 2) (layer "F.Fab") (width 0.15))
+{chr(10).join(pads)}
+  )"""
+
+
+def generate_qpa_qmem_footprint(ref, x, y):
+    """Quantum Memory cell footprint (LGA-24, 5x3mm)."""
+    pads = []
+    for i in range(6):
+        pads.append(f'    (pad "{i+1}" smd rect (at {-1.25 + i*0.5} -1.5) (size 0.25 0.5) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+        pads.append(f'    (pad "{i+7}" smd rect (at {-1.25 + i*0.5} 1.5) (size 0.25 0.5) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+    for i in range(6):
+        pads.append(f'    (pad "{i+13}" smd rect (at 2.5 {-1.25 + i*0.5}) (size 0.5 0.25) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+        pads.append(f'    (pad "{i+19}" smd rect (at -2.5 {-1.25 + i*0.5}) (size 0.5 0.25) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+    return f"""  (footprint "LGA-24_QMEM" (layer "F.Cu") (at {x} {y}) (tstamp {uid()})
+    (property "Reference" "{ref}" (at 0 -2.5) (layer "F.SilkS") (effects (font (size 0.4 0.4) (thickness 0.06))))
+    (property "Value" "QMEM_CELL" (at 0 2.5) (layer "F.Fab") (effects (font (size 0.4 0.4) (thickness 0.06))))
+    (fp_rect (start -3 -2) (end 3 2) (layer "F.CrtYd") (width 0.1))
+    (fp_rect (start -2.5 -1.5) (end 2.5 1.5) (layer "F.Fab") (width 0.15))
+{chr(10).join(pads)}
+  )"""
+
+
+def generate_qpa_cxl_switch_footprint(ref, x, y):
+    """CXL 2.0 Switch footprint (BGA-256, 16x16, 1.0mm pitch)."""
+    pads = []
+    for row in range(16):
+        for col in range(16):
+            px = -7.5 + col * 1.0
+            py = -7.5 + row * 1.0
+            pads.append(f'    (pad "{row*16+col+1}" smd circle (at {px} {py}) (size 0.5 0.5) (layers "F.Cu" "F.Mask" "F.Paste") (net 1 "GND"))')
+    return f"""  (footprint "BGA-256_CXL" (layer "F.Cu") (at {x} {y}) (tstamp {uid()})
+    (property "Reference" "{ref}" (at 0 -9.5) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12))))
+    (property "Value" "CXL_SWITCH" (at 0 9.5) (layer "F.Fab") (effects (font (size 0.8 0.8) (thickness 0.12))))
+    (fp_rect (start -8.5 -8.5) (end 8.5 8.5) (layer "F.CrtYd") (width 0.1))
+    (fp_rect (start -8 -8) (end 8 8) (layer "F.Fab") (width 0.15))
+    (fp_circle (center -7 -7) (end -6.5 -7) (layer "F.SilkS") (width 0.15))
+{chr(10).join(pads)}
+  )"""
+
+
+def generate_qpa_lvds_routing():
+    """FPGA trigger matrix → DAC LVDS bus routing (zero-skew, length-matched).
+    8 differential pairs per side, routed on In4.Cu with 50Ω CPW shielding."""
+    segs = []
+    layer = "In4.Cu"
+    w = 0.10
+    for unit, fpga, dac in [("A", FPGA_A, DAC_A), ("B", FPGA_B, DAC_B)]:
+        fx, fy = fpga
+        dx, dy = dac
+        for ch in range(8):
+            offset = -3.5 + ch * 1.0
+            # LVDS P trace
+            x1, y1 = fx + offset, fy - 13.5
+            x2, y2 = dx + offset * 0.6, dy + 5.0
+            mid_y = (y1 + y2) / 2
+            segs.append(f'  (segment (start {x1} {y1}) (end {x1} {mid_y}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            segs.append(f'  (segment (start {x1} {mid_y}) (end {x2} {mid_y}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            segs.append(f'  (segment (start {x2} {mid_y}) (end {x2} {y2}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            # LVDS N trace (paired, offset by gap)
+            gap = 0.10
+            x1n, x2n = x1 + gap, x2 + gap
+            segs.append(f'  (segment (start {x1n} {y1}) (end {x1n} {mid_y + 0.2}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            segs.append(f'  (segment (start {x1n} {mid_y + 0.2}) (end {x2n} {mid_y + 0.2}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            segs.append(f'  (segment (start {x2n} {mid_y + 0.2}) (end {x2n} {y2}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+    return "\n".join(segs)
+
+
+def generate_qpa_rf_cpw_routing():
+    """DAC → RF Driver → TFLN electrode 100 GHz CPW routing.
+    Coplanar waveguide with ground shielding, 50Ω impedance matched.
+    Routed on In3.Cu (high-speed signal layer)."""
+    segs = []
+    layer = "In3.Cu"
+    w = 0.08
+    for unit, dac, rf, tfln in [("A", DAC_A, RF_DRIVER_A, TFLN_A),
+                                 ("B", DAC_B, RF_DRIVER_B, TFLN_B)]:
+        dx, dy = dac
+        rx, ry = rf
+        tx, ty = tfln
+        for ch in range(8):
+            offset = -3.5 + ch * 1.0
+            # DAC out → RF driver in
+            x1, y1 = dx + offset * 0.6, dy - 5.0
+            x2, y2 = rx + offset * 0.4, ry + 2.5
+            segs.append(f'  (segment (start {x1} {y1}) (end {x2} {y2}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            # RF driver out → TFLN electrode (CPW differential pair)
+            x3, y3 = rx + offset * 0.4, ry - 2.5
+            x4, y4 = tx + offset * 0.3, ty + 6.0
+            segs.append(f'  (segment (start {x3} {y3}) (end {x4} {y4}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            # N trace with gap for CPW
+            gap = 0.08
+            segs.append(f'  (segment (start {x1+gap} {y1}) (end {x2+gap} {y2}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            segs.append(f'  (segment (start {x3+gap} {y3}) (end {x4+gap} {y4}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+    return "\n".join(segs)
+
+
+def generate_qpa_cxl_routing():
+    """CXL 2.0 bus routing: Host FPGAs ↔ CXL Switch.
+    16 lanes (8 TX + 8 RX), differential, on In5.Cu/In26.Cu."""
+    segs = []
+    w = 0.09
+    for unit, fpga, layers in [("A", FPGA_A, ["In5.Cu", "In26.Cu"]),
+                                ("B", FPGA_B, ["In5.Cu", "In26.Cu"])]:
+        fx, fy = fpga
+        sx, sy = CXL_SWITCH
+        for lane in range(8):
+            offset = -3.5 + lane * 1.0
+            layer = layers[0]  # TX on In5.Cu
+            x1, y1 = fx + offset, fy + 13.5
+            x2, y2 = sx + offset + (-15 if unit == "A" else 15), sy - 8.5
+            mid_y = (y1 + y2) / 2
+            segs.append(f'  (segment (start {x1} {y1}) (end {x1} {mid_y}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            segs.append(f'  (segment (start {x1} {mid_y}) (end {x2} {mid_y}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            segs.append(f'  (segment (start {x2} {mid_y}) (end {x2} {y2}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            # RX on In26.Cu
+            layer = layers[1]
+            segs.append(f'  (segment (start {x1+0.3} {y1}) (end {x1+0.3} {mid_y+0.5}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            segs.append(f'  (segment (start {x1+0.3} {mid_y+0.5}) (end {x2+0.3} {mid_y+0.5}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            segs.append(f'  (segment (start {x2+0.3} {mid_y+0.5}) (end {x2+0.3} {y2}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+    return "\n".join(segs)
+
+
+def generate_qpa_snspd_routing():
+    """SNSPD photodetector readout → FPGA routing on In6.Cu.
+    8 single-ended channels per side, shielded traces."""
+    segs = []
+    layer = "In6.Cu"
+    w = 0.12
+    for unit, snspd, fpga in [("A", SNSPD_A, FPGA_A), ("B", SNSPD_B, FPGA_B)]:
+        sx, sy = snspd
+        fx, fy = fpga
+        for ch in range(8):
+            offset = -1.75 + ch * 0.5
+            x1, y1 = sx + offset, sy + 2.5
+            x2, y2 = fx + offset * 2.0, fy - 13.5
+            mid_y = (y1 + y2) / 2
+            segs.append(f'  (segment (start {x1} {y1}) (end {x1} {mid_y}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            segs.append(f'  (segment (start {x1} {mid_y}) (end {x2} {mid_y}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            segs.append(f'  (segment (start {x2} {mid_y}) (end {x2} {y2}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+    return "\n".join(segs)
+
+
+def generate_qpa_qmem_routing():
+    """Quantum memory control bus routing on In7.Cu.
+    8 control lines per side (WR_EN, RD_EN, ADDR[3:0], DATA_IN, DATA_OUT)."""
+    segs = []
+    layer = "In7.Cu"
+    w = 0.10
+    for unit, qmem, fpga in [("A", QMEM_A, FPGA_A), ("B", QMEM_B, FPGA_B)]:
+        qx, qy = qmem
+        fx, fy = fpga
+        for i in range(8):
+            offset = -1.75 + i * 0.5
+            x1, y1 = qx + offset, qy + 2.0
+            x2, y2 = fx + offset * 3.0, fy - 13.5
+            mid_x = (x1 + x2) / 2
+            segs.append(f'  (segment (start {x1} {y1}) (end {mid_x} {y1}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            segs.append(f'  (segment (start {mid_x} {y1}) (end {mid_x} {y2}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+            segs.append(f'  (segment (start {mid_x} {y2}) (end {x2} {y2}) (width {w}) (layer "{layer}") (net 0) (tstamp {uid()}))')
+    return "\n".join(segs)
+
+
 def generate_silk_text():
     texts = []
-    texts.append(f'  (gr_text "LightRail AI Compute Node LR-P3A\\nRev 6.3 -- 32-layer HDI -- IPC-6012 Class 3\\n420 x 350 mm -- {THICKNESS} mm -- ENIG\\nDual NCE + 8x HBM4 + TFLN CPO 1.6 Tbps" (at {BW/2} {BH - 15}) (layer "F.SilkS") (effects (font (size 1.5 1.5) (thickness 0.2))))')
+    texts.append(f'  (gr_text "LightRail AI Compute Node LR-P3A\\nRev 6.3 QPA -- 32-layer HDI -- IPC-6012 Class 3\\n420 x 350 mm -- {THICKNESS} mm -- ENIG\\nDual NCE + 8x HBM4 + TFLN QPA + MZI Photonic Compute" (at {BW/2} {BH - 15}) (layer "F.SilkS") (effects (font (size 1.5 1.5) (thickness 0.2))))')
     texts.append(f'  (gr_text "AI COMPUTE UNIT 0 -- NCE A + 4x HBM4" (at {NCE_A[0]} {NCE_A[1] - 28}) (layer "F.SilkS") (effects (font (size 1.2 1.2) (thickness 0.18))))')
     texts.append(f'  (gr_text "AI COMPUTE UNIT 1 -- NCE B + 4x HBM4" (at {NCE_B[0]} {NCE_B[1] - 28}) (layer "F.SilkS") (effects (font (size 1.2 1.2) (thickness 0.18))))')
     texts.append(f'  (gr_text "TFLN PHOTONIC BRIDGE (Zero-Copper Optical Datapath)" (at {PHOTONIC_BRIDGE[0]} {PHOTONIC_BRIDGE[1] - 30}) (layer "F.SilkS") (effects (font (size 1.0 1.0) (thickness 0.15))))')
@@ -1542,10 +1868,29 @@ def generate_silk_text():
     texts.append(f'  (gr_text "SILICON INTERPOSER (NCE B + 4x HBM4)" (at {NCE_B[0]} {NCE_B[1] + 25}) (layer "F.Fab") (effects (font (size 0.8 0.8) (thickness 0.12))))')
     texts.append(f'  (gr_text "AIRFLOW >>>" (at {BW/2} 10) (layer "F.SilkS") (effects (font (size 1.5 1.5) (thickness 0.2))))')
     texts.append(f'  (gr_text "CAUTION: ESD SENSITIVE -- HANDLE PER ANSI/ESD S20.20" (at {BW/2} {BH - 5}) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12))))')
-    texts.append(f'  (gr_text "LR-P3A Rev 6.3 -- B.Cu DrMOS Vertical Power Delivery" (at {BW/2} {BH/2}) (layer "B.SilkS") (effects (font (size 1.5 1.5) (thickness 0.2))))')
+    texts.append(f'  (gr_text "LR-P3A Rev 6.3 QPA -- B.Cu DrMOS + Quantum Photonic Accelerator" (at {BW/2} {BH/2}) (layer "B.SilkS") (effects (font (size 1.5 1.5) (thickness 0.2))))')
 
     texts.append(f'  (gr_rect (start {NCE_A[0]-30} {NCE_A[1]-25}) (end {NCE_A[0]+30} {NCE_A[1]+25}) (layer "F.Fab") (width 0.15) (fill none) (tstamp {uid()}))')
     texts.append(f'  (gr_rect (start {NCE_B[0]-30} {NCE_B[1]-25}) (end {NCE_B[0]+30} {NCE_B[1]+25}) (layer "F.Fab") (width 0.15) (fill none) (tstamp {uid()}))')
+
+    # QPA subsystem labels
+    texts.append(f'  (gr_text "FPGA TRIGGER MATRIX A\\n(XCKU5P BGA-676)" (at {FPGA_A[0]} {FPGA_A[1] + 16}) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12))))')
+    texts.append(f'  (gr_text "FPGA TRIGGER MATRIX B\\n(XCKU5P BGA-676)" (at {FPGA_B[0]} {FPGA_B[1] + 16}) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12))))')
+    texts.append(f'  (gr_text "100GHz DAC A" (at {DAC_A[0]} {DAC_A[1] + 7}) (layer "F.SilkS") (effects (font (size 0.6 0.6) (thickness 0.1))))')
+    texts.append(f'  (gr_text "100GHz DAC B" (at {DAC_B[0]} {DAC_B[1] + 7}) (layer "F.SilkS") (effects (font (size 0.6 0.6) (thickness 0.1))))')
+    texts.append(f'  (gr_text "RF DRV A" (at {RF_DRIVER_A[0]} {RF_DRIVER_A[1] + 4}) (layer "F.SilkS") (effects (font (size 0.5 0.5) (thickness 0.08))))')
+    texts.append(f'  (gr_text "RF DRV B" (at {RF_DRIVER_B[0]} {RF_DRIVER_B[1] + 4}) (layer "F.SilkS") (effects (font (size 0.5 0.5) (thickness 0.08))))')
+    texts.append(f'  (gr_text "SNSPD A" (at {SNSPD_A[0]} {SNSPD_A[1] - 4}) (layer "F.SilkS") (effects (font (size 0.5 0.5) (thickness 0.08))))')
+    texts.append(f'  (gr_text "SNSPD B" (at {SNSPD_B[0]} {SNSPD_B[1] - 4}) (layer "F.SilkS") (effects (font (size 0.5 0.5) (thickness 0.08))))')
+    texts.append(f'  (gr_text "QMEM A" (at {QMEM_A[0]} {QMEM_A[1] - 3}) (layer "F.SilkS") (effects (font (size 0.4 0.4) (thickness 0.06))))')
+    texts.append(f'  (gr_text "QMEM B" (at {QMEM_B[0]} {QMEM_B[1] - 3}) (layer "F.SilkS") (effects (font (size 0.4 0.4) (thickness 0.06))))')
+    texts.append(f'  (gr_text "CXL 2.0 SWITCH" (at {CXL_SWITCH[0]} {CXL_SWITCH[1] + 10}) (layer "F.SilkS") (effects (font (size 0.8 0.8) (thickness 0.12))))')
+
+    # QPA subsystem bounding boxes on F.Fab
+    texts.append(f'  (gr_rect (start {FPGA_A[0]-14} {FPGA_A[1]-14}) (end {FPGA_A[0]+14} {FPGA_A[1]+14}) (layer "F.Fab") (width 0.15) (fill none) (tstamp {uid()}))')
+    texts.append(f'  (gr_rect (start {FPGA_B[0]-14} {FPGA_B[1]-14}) (end {FPGA_B[0]+14} {FPGA_B[1]+14}) (layer "F.Fab") (width 0.15) (fill none) (tstamp {uid()}))')
+    texts.append(f'  (gr_rect (start {CXL_SWITCH[0]-9} {CXL_SWITCH[1]-9}) (end {CXL_SWITCH[0]+9} {CXL_SWITCH[1]+9}) (layer "F.Fab") (width 0.15) (fill none) (tstamp {uid()}))')
+
     return "\n".join(texts)
 
 
@@ -1635,6 +1980,68 @@ def generate_pcb():
     for i, (x, y) in enumerate(HBM4_B):
         sections.append(generate_hbm4_footprint(f"U{203+i}", x, y))
     sections.append('')
+
+    # ====================================================================
+    # QPA Subsystem Components (TFLN Quantum Photonic Accelerator)
+    # ====================================================================
+
+    # Host FPGAs (trigger matrix + CXL interface, BGA-676)
+    sections.append(generate_qpa_fpga_footprint("U401", FPGA_A[0], FPGA_A[1]))
+    sections.append(generate_qpa_fpga_footprint("U402", FPGA_B[0], FPGA_B[1]))
+    sections.append('')
+
+    # 100 GHz Interleaved DACs (QFN-64, 8-channel each)
+    sections.append(generate_qpa_dac_footprint("U411", DAC_A[0], DAC_A[1]))
+    sections.append(generate_qpa_dac_footprint("U412", DAC_B[0], DAC_B[1]))
+    sections.append('')
+
+    # BiCMOS RF Drivers (QFN-32, 8-channel each)
+    for i in range(4):
+        sections.append(generate_qpa_rf_driver_footprint(
+            f"U{421+i}", RF_DRIVER_A[0] - 6 + i*4, RF_DRIVER_A[1]))
+    for i in range(4):
+        sections.append(generate_qpa_rf_driver_footprint(
+            f"U{425+i}", RF_DRIVER_B[0] - 6 + i*4, RF_DRIVER_B[1]))
+    sections.append('')
+
+    # SNSPD Photodetector arrays (LGA-16, 8-channel)
+    sections.append(generate_qpa_snspd_footprint("U431", SNSPD_A[0], SNSPD_A[1]))
+    sections.append(generate_qpa_snspd_footprint("U432", SNSPD_B[0], SNSPD_B[1]))
+    sections.append('')
+
+    # Quantum Memory cells (LGA-24)
+    sections.append(generate_qpa_qmem_footprint("U441", QMEM_A[0], QMEM_A[1]))
+    sections.append(generate_qpa_qmem_footprint("U442", QMEM_B[0], QMEM_B[1]))
+    sections.append('')
+
+    # CXL 2.0 Switch (BGA-256)
+    sections.append(generate_qpa_cxl_switch_footprint("U450", CXL_SWITCH[0], CXL_SWITCH[1]))
+    sections.append('')
+
+    # QPA Signal Routing
+    # FPGA → DAC LVDS trigger bus (zero-skew, length-matched)
+    sections.append(generate_qpa_lvds_routing())
+    sections.append('')
+
+    # DAC → RF Driver → TFLN electrode 100 GHz CPW routing
+    sections.append(generate_qpa_rf_cpw_routing())
+    sections.append('')
+
+    # CXL 2.0 bus (Host FPGAs ↔ CXL Switch)
+    sections.append(generate_qpa_cxl_routing())
+    sections.append('')
+
+    # SNSPD readout → FPGA
+    sections.append(generate_qpa_snspd_routing())
+    sections.append('')
+
+    # Quantum memory control bus
+    sections.append(generate_qpa_qmem_routing())
+    sections.append('')
+
+    # ====================================================================
+    # End QPA Subsystem
+    # ====================================================================
 
     # Task 1: Decoupling cap fanout (138 nets)
     # PDN nets start at ID 312 in generate_nets() (after power, SerDes, PCIe,

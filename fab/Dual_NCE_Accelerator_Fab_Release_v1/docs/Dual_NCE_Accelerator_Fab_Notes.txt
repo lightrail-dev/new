@@ -1,0 +1,90 @@
+========================================================================
+FABRICATION NOTES — Dual_NCE_Accelerator
+LightRail AI Compute Node (LR-P3A) Rev 6.3
+Date: 2026-05-19
+========================================================================
+
+1. BOARD DIMENSIONS
+   Length:  420.0 mm (16.535 in)
+   Width:   350.0 mm (13.780 in)
+   Thickness: 3.48 mm +/- 10%
+   Board outline tolerance: +/- 0.15 mm
+
+2. LAYER COUNT: 32 layers (see Stackup_Impedance report)
+
+3. MATERIAL SYSTEM
+   Signal layers: Panasonic Megtron-7 (er=3.3, tan_d=0.002 @ 1 GHz)
+   Power/Ground planes: High-Tg FR-4 (er=4.2, Tg >= 170C)
+   Embedded capacitance: Faradflex BC24 (er=14, 24 um core)
+   between layers In15 and In16
+
+4. COPPER WEIGHTS
+   F.Cu, B.Cu: 2 oz (70 um finished)
+   In10-In14, In16-In20: 2 oz (70 um finished)
+   In15: 1 oz (35 um finished)
+   In1-In9, In21-In30: 0.5 oz (17.5 um finished)
+
+5. SURFACE FINISH
+   ENIG (Electroless Nickel Immersion Gold)
+   Per IPC-4552 Class 3
+   Ni: 3-6 um, Au: 0.05-0.10 um
+
+6. SOLDER MASK
+   LPI solder mask, both sides
+   Color: Matte green (Taiyo PSR-4000 AUS703 or equivalent)
+   Minimum web width: 0.075 mm (3 mil)
+   Pad-to-mask clearance: 0.051 mm per side (IPC-7351B)
+
+7. SILKSCREEN
+   White epoxy ink, both sides
+   Minimum text height: 0.8 mm
+   Minimum line width: 0.15 mm
+
+8. MOUNTING HOLES (6 total)
+   Corner holes (4x): M3 NPTH, diameter 3.2 mm +/- 0.05 mm
+     Locations: (5,5), (415,5), (5,345), (415,345) mm from origin
+   NCE cold-plate bolster holes (8x per NCE): M3 NPTH, 3.2 mm
+     NCE A pattern: 50 mm square centered at (135,160)
+     NCE B pattern: 50 mm square centered at (285,160)
+
+9. MINIMUM DESIGN RULES (IPC-6012 Class 3)
+   Min trace width: 0.075 mm (3 mil)
+   Min trace space: 0.075 mm (3 mil)
+   Min annular ring: 0.050 mm (2 mil)
+   Via drill: 0.30 mm min (aspect ratio 11.6:1 max)
+   Via aspect ratio limit: 12:1
+
+10. DRILL SPECIFICATIONS
+    PTH vias: 0.30-0.40 mm drill, 0.60-0.80 mm pad
+    Component holes: per footprint specification
+    NPTH mounting: 3.20 mm drill
+    Back-drill: All high-speed through-vias
+      - Target layers: PCIe Gen6, SerDes 100G, TFLN RF
+      - Residual stub: <= 0.127 mm (5 mil)
+
+11. COPPER-FREE KEEPOUT ZONES
+    TFLN edge coupler keepout: 2.54 mm (100 mil) on all copper layers
+    Photonic bridge region: zero copper (optical datapath)
+    MPO-24 front-panel exit: 2.54 mm clearance
+
+12. IMPEDANCE CONTROL (see Stackup_Impedance report for details)
+    All controlled-impedance traces on signal layers must meet
+    specified targets within +/- 10% tolerance.
+    Manufacturer must provide impedance test coupons.
+
+13. PANELIZATION
+    Single board per panel recommended due to board size.
+    If panelized: V-score or routed tab with 3 mm rail.
+
+14. TESTING
+    100% bare-board electrical test required per IPC-D-356 netlist.
+    Flying probe or bed-of-nails per manufacturer capability.
+
+15. QUALITY
+    IPC-6012 Class 3 workmanship standard
+    IPC-A-600 Class 3 acceptance criteria
+    Cross-section required for first article (2 coupons minimum)
+
+========================================================================
+END OF FABRICATION NOTES
+========================================================================
