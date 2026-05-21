@@ -536,14 +536,21 @@ def generate_block_diagram():
             ha='center', va='center', fontsize=8, fontweight='bold',
             color='#B71C1C', alpha=0.85, zorder=10)
 
-    # Save
-    output_path = 'docs/LR_P3A_QPA_Block_Diagram.png'
+    # Save PNG
+    output_png = 'docs/LR_P3A_QPA_Block_Diagram.png'
     plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches='tight',
+    plt.savefig(output_png, dpi=300, bbox_inches='tight',
                 facecolor='white', edgecolor='none')
+    print(f"Block diagram saved to: {output_png}")
+
+    # Save PDF
+    output_pdf = 'docs/LR_P3A_QPA_Block_Diagram.pdf'
+    plt.savefig(output_pdf, dpi=300, bbox_inches='tight',
+                facecolor='white', edgecolor='none', format='pdf')
+    print(f"Block diagram saved to: {output_pdf}")
+
     plt.close()
-    print(f"Block diagram saved to: {output_path}")
-    return output_path
+    return output_png, output_pdf
 
 
 if __name__ == '__main__':
