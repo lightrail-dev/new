@@ -525,6 +525,16 @@ def generate_block_diagram():
     ax.text(0.92, 0.005, '→ Signal  ═ Bus', fontsize=5, color='#666666',
             ha='center')
 
+    # Confidential / Proprietary notice
+    ax.text(0.5, 0.990, 'CONFIDENTIAL — Property of LightRail AI Labs',
+            ha='center', va='center', fontsize=8, fontweight='bold',
+            color='#B71C1C', zorder=10,
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='#FFEBEE',
+                      edgecolor='#B71C1C', alpha=0.95, linewidth=1.2))
+    ax.text(0.5, -0.005, 'CONFIDENTIAL — Property of LightRail AI Labs  |  Unauthorized distribution prohibited',
+            ha='center', va='center', fontsize=6, fontweight='bold',
+            color='#B71C1C', alpha=0.7, zorder=10)
+
     # Save
     output_path = 'docs/LR_P3A_QPA_Block_Diagram.png'
     plt.tight_layout()
