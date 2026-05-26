@@ -21,10 +21,10 @@ link_design $DESIGN_NAME
 read_sdc $SDC
 
 # ---- Floorplan ----
-# Die area: 800um x 800um (ample room for ~3600 cells at 130nm)
+# Rectangular die: 1400um x 800um (landscape, matching PCB aspect ratio)
 # Core margin 50um each side
-initialize_floorplan -die_area "0 0 800 800" \
-    -core_area "50 50 750 750" \
+initialize_floorplan -die_area "0 0 1400 800" \
+    -core_area "50 50 1350 750" \
     -site unithd
 
 # ---- Make Tracks ----
