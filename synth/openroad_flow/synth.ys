@@ -1,0 +1,39 @@
+# Yosys synthesis script for NCE top targeting SkyWater 130nm HD
+# Produces gate-level Verilog netlist for OpenROAD P&R
+
+# Read RTL sources
+read_verilog -sv ../../rtl/common/crc32_engine.sv
+read_verilog -sv ../../rtl/common/async_fifo.sv
+read_verilog -sv ../../rtl/bridge/credit_manager.sv
+read_verilog -sv ../../rtl/bridge/retry_buffer.sv
+read_verilog -sv ../../rtl/bridge/bridge_tx.sv
+read_verilog -sv ../../rtl/bridge/bridge_rx.sv
+read_verilog -sv ../../rtl/bridge/chip_to_chip_bridge.sv
+read_verilog -sv ../../rtl/host/axi4lite_target.sv
+read_verilog -sv ../../rtl/host/interrupt_controller.sv
+read_verilog -sv ../../rtl/host/dma_engine.sv
+read_verilog -sv ../../rtl/host/host_interface.sv
+read_verilog -sv ../../rtl/pwr/i2c_master.sv
+read_verilog -sv ../../rtl/pwr/dvfs_fsm.sv
+read_verilog -sv ../../rtl/pwr/pwr_mgt_controller.sv
+read_verilog -sv ../../rtl/top/nce_top.sv
+
+# Synthesize
+synth -top nce_top -flatten
+
+# Technology mapping
+dfflibmap -liberty /home/ubuntu/orfs/flow/platforms/sky130hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+abc -liberty /home/ubuntu/orfs/flow/platforms/sky130hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+
+# Map tie-hi/tie-lo to sky130 conb cell (avoids zero_/one_ nets in P&R)
+hilomap -hicell sky130_fd_sc_hd__conb_1 HI -locell sky130_fd_sc_hd__conb_1 LO
+
+# Cleanup
+clean -purge
+opt_clean
+
+# Statistics
+stat -liberty /home/ubuntu/orfs/flow/platforms/sky130hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+
+# Write gate-level netlist
+write_verilog -noattr -noexpr -nohex -nodec nce_top_netlist.v
