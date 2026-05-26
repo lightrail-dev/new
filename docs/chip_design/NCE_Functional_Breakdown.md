@@ -234,7 +234,7 @@ Ball pitch: 0.8 mm. Package: 40 x 40 mm. Collapse height: 0.45 mm.
 | Standard cells | 12T library |
 | SRAM density | ~0.8 Mb/mm2 (6T) |
 | I/O library | 1.8V / 3.3V tolerant |
-| MPW availability | Broader availability, lower cost |
+| MPW availability | Broader availability |
 
 ### 5.3 Die Area Estimate
 

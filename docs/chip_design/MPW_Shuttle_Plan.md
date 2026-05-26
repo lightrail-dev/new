@@ -28,12 +28,12 @@ MOSIS) with a die area budget of approximately 4-9 mm2.
 
 ## 2. Shuttle Service Options
 
-| Shuttle | Node | Die Size | Schedule | Cost (est.) | Notes |
-|---------|------|----------|----------|-------------|-------|
-| CMP (France) | SMIC 28nm HPC+ | 5x5 mm max | Q3 2026 | ~$30K/slot | Academic pricing available |
-| Europractice | SMIC 28nm/40nm | 5x5 mm max | Q4 2026 | ~$25K-40K | EU-based, SMIC access |
-| MOSIS | SMIC 40nm LL | 4x4 mm max | Quarterly | ~$20K-30K | US-based, 40nm only |
-| TinyTapeout | SMIC 130nm | 0.16x0.23 mm | Monthly | ~$100/tile | Not suitable (too coarse) |
+| Shuttle | Node | Die Size | Schedule | Notes |
+|---------|------|----------|----------|-------|
+| CMP (France) | SMIC 28nm HPC+ | 5x5 mm max | Q3 2026 | Academic pricing available |
+| Europractice | SMIC 28nm/40nm | 5x5 mm max | Q4 2026 | EU-based, SMIC access |
+| MOSIS | SMIC 40nm LL | 4x4 mm max | Quarterly | US-based, 40nm only |
+| TinyTapeout | SMIC 130nm | 0.16x0.23 mm | Monthly | Not suitable (too coarse) |
 
 **Recommended:** CMP or Europractice SMIC 28nm HPC+ shuttle for Q3/Q4 2026.
 
@@ -304,17 +304,4 @@ MOSIS) with a die area budget of approximately 4-9 mm2.
 | 14 | Testbenches | .v | **Complete** |
 | 15 | Spec documents | .md | **Complete** |
 
----
 
-## 11. Budget Estimate
-
-| Item | Cost (est.) |
-|------|-------------|
-| MPW shuttle slot (SMIC 28nm) | $30,000 |
-| Packaging (QFN-64, 50 units) | $5,000 |
-| Test board PCB (10 units) | $2,000 |
-| Test board assembly | $3,000 |
-| FPGA development board | $500 |
-| Test equipment rental | $10,000 |
-| Engineering time (6 months) | Internal |
-| **Total** | **~$50,500** |
