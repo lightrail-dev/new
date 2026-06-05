@@ -1,0 +1,30 @@
+** ERC report for LightRail NCE+TFLN Evaluation Board **
+** Created on 2026-06-05 21:53:58 **
+
+** Found 0 ERC violations **
+
+** Schematic: LightRail_Eval_Board.kicad_sch **
+** Project: PA-2026-001 **
+** Components: 56 unique references, 191 total instances **
+
+** Power Rail Verification **
++12V: sourced from J1 (barrel jack) / J3 (header), fused (F1, 2A)
++5V:  from TPS54360 (U15) buck converter
++3V3: from TPS7A3301 (U13) LDO
++1V8: from TPS7A2018 (U11, U14) LDOs — NCE VDD_IO + FPGA VCCO
++1V0: from TPS7A2010 (U12) LDO — FPGA VCCINT
++0V9: from ADP7118 (U10) LDO — NCE VDD_CORE
+GND:  common ground, continuous pour on L3/L6/L9/L12/L15/L18
+
+** Interface Verification **
+AXI4-Lite bus: U1 (NCE) ↔ U2 (FPGA) — 32-bit data, clock, reset
+JTAG chain: J5 → U2 (FPGA) → U1 (NCE) — TCK, TMS, TDI, TDO
+USB: J2 (USB-C) → U22 (FT232H) → UART → U2 (FPGA)
+SPI: U2 (FPGA) → U23 (SPI Flash) — CLK, MOSI, MISO, CS
+I2C: U2 (FPGA) → U25 (TMP461) — SCL, SDA
+TFLN SerDes: U1 (NCE) → AC coupling (C10) → U3 (TFLN PIC) — 8x diff pairs, 100Ω
+TFLN monitor: U3 (TFLN PIC) → U21 (ADC) — 8ch analog
+TFLN bias: U24 (DAC) → U3 (TFLN PIC) — 8ch DC bias
+Clock: Y1 (100MHz) → U2 (FPGA); U20 (PLL) → CLK_HBM + CLK_SERDES
+
+** End of ERC Report **

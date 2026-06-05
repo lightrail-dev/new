@@ -1,0 +1,218 @@
+(kicad_sch (version 20231120) (generator eeschema) (generator_version "8.0")
+  (uuid "f0000004-0004-0000-0000-000000000001")
+  (paper "A4")
+
+  (title_block
+    (title "Clock & Test Interface — LightRail Eval Board")
+    (date "2026-05-26")
+    (rev "1.0")
+    (company "LightRail AI")
+    (comment 1 "Clock: Y1 TCXO + U20 PLL, Interface: USB-C, JTAG, GPIO, SMA, LEDs")
+    (comment 2 "U22: FT232H USB-UART, U23: SPI Flash, J7-J10: SMA RF probes")
+  )
+
+  ;; ========================================================================
+  ;; CLOCK GENERATION
+  ;; ========================================================================
+  ;; Y1: 100MHz TCXO (SiT5356AI) → FPGA reference clock input
+  ;; U20: Si5395A PLL synthesizer (QFN-28)
+  ;;   Input: 100MHz from Y1
+  ;;   Output 0: 2.0 GHz → CLK_HBM (NCE HBM5 controller)
+  ;;   Output 1: 156.25 MHz → CLK_SERDES (TFLN SerDes reference)
+  ;;   Output 2: 200 MHz → spare
+  ;; ========================================================================
+
+  (symbol (lib_id "Oscillator:SiT5356") (at 50 30 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000001-0004-0000-0000-000000000001")
+    (property "Reference" "Y1" (at 50 22 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "100MHz_TCXO" (at 50 24 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Oscillator:Oscillator_SMD_3225-4Pin_3.2x2.5mm" (at 50 30 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "SiT5356AI-33-25E-100.000000" (at 50 30 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  (symbol (lib_id "Clock:Si5395A") (at 100 30 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000002-0004-0000-0000-000000000001")
+    (property "Reference" "U20" (at 100 18 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "Si5395A" (at 100 20 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "LightRail:QFN-28_5x5mm" (at 100 30 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "Si5395A-A-GM" (at 100 30 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  (global_label "CLK_100M" (shape output) (at 65 30 0) (effects (font (size 1.27 1.27)))
+    (uuid "g4001") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "CLK_HBM" (shape output) (at 120 25 0) (effects (font (size 1.27 1.27)))
+    (uuid "g4002") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "CLK_SERDES" (shape output) (at 120 30 0) (effects (font (size 1.27 1.27)))
+    (uuid "g4003") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+
+  ;; ========================================================================
+  ;; USB-C INTERFACE
+  ;; ========================================================================
+  ;; J2 USB-C connector → U22 FT232H USB-to-UART bridge → FPGA UART
+  ;; ESD protection: D5 PRTR5V0U2X on USB data lines
+  ;; ========================================================================
+
+  (symbol (lib_id "Connector:USB_C_Receptacle_USB2.0") (at 30 70 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000003-0004-0000-0000-000000000001")
+    (property "Reference" "J2" (at 30 58 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "USB-C" (at 30 60 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Connector_USB:USB_C_Receptacle_GCT_USB4110-GF-A" (at 30 70 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "USB4110-GF-A" (at 30 70 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  (symbol (lib_id "Interface_USB:FT232H") (at 80 70 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000004-0004-0000-0000-000000000001")
+    (property "Reference" "U22" (at 80 56 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "FT232H" (at 80 58 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Package_DFN_QFN:QFN-48-1EP_7x7mm_P0.5mm_EP5.15x5.15mm" (at 80 70 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "FT232HQ" (at 80 70 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  ;; ESD protection
+  (symbol (lib_id "Diode:PRTR5V0U2X") (at 55 65 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000005-0004-0000-0000-000000000001")
+    (property "Reference" "D5" (at 55 59 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "PRTR5V0U2X" (at 55 61 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Package_TO_SOT_SMD:SOD-323" (at 55 65 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "PRTR5V0U2X" (at 55 65 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  (global_label "USB_DP" (shape bidirectional) (at 45 67 0) (effects (font (size 1.27 1.27)))
+    (uuid "g4010") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "USB_DN" (shape bidirectional) (at 45 69 0) (effects (font (size 1.27 1.27)))
+    (uuid "g4011") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "UART_TX" (shape output) (at 100 67 0) (effects (font (size 1.27 1.27)))
+    (uuid "g4012") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "UART_RX" (shape input) (at 100 69 0) (effects (font (size 1.27 1.27)))
+    (uuid "g4013") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+
+  ;; ========================================================================
+  ;; SPI FLASH
+  ;; ========================================================================
+
+  (symbol (lib_id "Memory_Flash:W25Q128JVS") (at 150 70 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000006-0004-0000-0000-000000000001")
+    (property "Reference" "U23" (at 150 62 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "W25Q128JVS" (at 150 64 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Package_SON:WSON-8-1EP_2x3mm_P0.5mm" (at 150 70 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "W25Q128JVSIQ" (at 150 70 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  (global_label "SPI_CLK" (shape input) (at 140 67 0) (effects (font (size 1.27 1.27)))
+    (uuid "g4020") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "SPI_MOSI" (shape input) (at 140 69 0) (effects (font (size 1.27 1.27)))
+    (uuid "g4021") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "SPI_MISO" (shape output) (at 140 71 0) (effects (font (size 1.27 1.27)))
+    (uuid "g4022") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "SPI_CS" (shape input) (at 140 73 0) (effects (font (size 1.27 1.27)))
+    (uuid "g4023") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+
+  ;; ========================================================================
+  ;; TEST HEADERS & RF PROBES
+  ;; ========================================================================
+
+  ;; JTAG Header
+  (symbol (lib_id "Connector:Conn_ARM_JTAG_SWD_10") (at 30 110 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000007-0004-0000-0000-000000000001")
+    (property "Reference" "J5" (at 30 98 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "JTAG_2x5" (at 30 100 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Connector_PinHeader_1.27mm:PinHeader_2x05_P1.27mm_Vertical" (at 30 110 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  ;; GPIO Header
+  (symbol (lib_id "Connector_Generic:Conn_02x07_Odd_Even") (at 80 110 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000008-0004-0000-0000-000000000001")
+    (property "Reference" "J6" (at 80 98 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "GPIO_2x7" (at 80 100 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Connector_PinHeader_1.27mm:PinHeader_2x07_P1.27mm_Vertical" (at 80 110 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  ;; SMA RF probe connectors
+  (symbol (lib_id "Connector:Conn_Coaxial") (at 130 105 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000009-0004-0000-0000-000000000001")
+    (property "Reference" "J7" (at 130 99 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "SMA_RF1" (at 130 101 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Connector_Coaxial:SMA_Amphenol_132134-11_Vertical" (at 130 105 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "142-0701-851" (at 130 105 0) (effects (font (size 1.27 1.27)) hide))
+  )
+  (symbol (lib_id "Connector:Conn_Coaxial") (at 145 105 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000010-0004-0000-0000-000000000001")
+    (property "Reference" "J8" (at 145 99 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "SMA_RF2" (at 145 101 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Connector_Coaxial:SMA_Amphenol_132134-11_Vertical" (at 145 105 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "142-0701-851" (at 145 105 0) (effects (font (size 1.27 1.27)) hide))
+  )
+  (symbol (lib_id "Connector:Conn_Coaxial") (at 160 105 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000011-0004-0000-0000-000000000001")
+    (property "Reference" "J9" (at 160 99 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "SMA_RF3" (at 160 101 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Connector_Coaxial:SMA_Amphenol_132134-11_Vertical" (at 160 105 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "142-0701-851" (at 160 105 0) (effects (font (size 1.27 1.27)) hide))
+  )
+  (symbol (lib_id "Connector:Conn_Coaxial") (at 175 105 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000012-0004-0000-0000-000000000001")
+    (property "Reference" "J10" (at 175 99 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "SMA_RF4" (at 175 101 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Connector_Coaxial:SMA_Amphenol_132134-11_Vertical" (at 175 105 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "142-0701-851" (at 175 105 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  ;; LEDs
+  (symbol (lib_id "Device:LED") (at 30 140 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000013-0004-0000-0000-000000000001")
+    (property "Reference" "D1" (at 30 134 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "LED_Green_PWR" (at 30 136 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "LED_SMD:LED_0603_1608Metric" (at 30 140 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "150060GS75000" (at 30 140 0) (effects (font (size 1.27 1.27)) hide))
+  )
+  (symbol (lib_id "Device:LED") (at 45 140 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000014-0004-0000-0000-000000000001")
+    (property "Reference" "D2" (at 45 134 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "LED_Blue_ACT" (at 45 136 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "LED_SMD:LED_0603_1608Metric" (at 45 140 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "150060BS75000" (at 45 140 0) (effects (font (size 1.27 1.27)) hide))
+  )
+  (symbol (lib_id "Device:LED") (at 60 140 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000015-0004-0000-0000-000000000001")
+    (property "Reference" "D3" (at 60 134 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "LED_Red_FAULT" (at 60 136 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "LED_SMD:LED_0603_1608Metric" (at 60 140 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "150060RS75000" (at 60 140 0) (effects (font (size 1.27 1.27)) hide))
+  )
+  (symbol (lib_id "Device:LED") (at 75 140 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000016-0004-0000-0000-000000000001")
+    (property "Reference" "D4" (at 75 134 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "LED_Yellow_LINK" (at 75 136 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "LED_SMD:LED_0603_1608Metric" (at 75 140 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "150060YS75000" (at 75 140 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  ;; Reset button
+  (symbol (lib_id "Switch:SW_Push") (at 120 140 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f4000017-0004-0000-0000-000000000001")
+    (property "Reference" "SW1" (at 120 134 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "RESET" (at 120 136 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Button_Switch_SMD:SW_Push_1P1T_NO_CK_KSC701J" (at 120 140 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "B3F-1000" (at 120 140 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  (global_label "RESET_N" (shape output) (at 130 140 0) (effects (font (size 1.27 1.27)))
+    (uuid "g4030") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+)

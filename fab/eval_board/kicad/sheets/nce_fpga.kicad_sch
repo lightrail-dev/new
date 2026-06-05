@@ -1,0 +1,129 @@
+(kicad_sch (version 20231120) (generator eeschema) (generator_version "8.0")
+  (uuid "f0000002-0002-0000-0000-000000000001")
+  (paper "A3")
+
+  (title_block
+    (title "NCE Test Chip + FPGA Controller — LightRail Eval Board")
+    (date "2026-05-26")
+    (rev "1.0")
+    (company "LightRail AI")
+    (comment 1 "U1: NCE QFN-64 (SMIC 28nm) + U2: Artix-7 FPGA")
+    (comment 2 "AXI4-Lite bus, JTAG chain, HBM5 I/O, TFLN SerDes")
+  )
+
+  ;; ========================================================================
+  ;; NCE TEST CHIP (U1) — QFN-64, 8x8mm, 0.4mm pitch
+  ;; ========================================================================
+  ;; Power: VDD_CORE=0.9V (pins 1-4, 33-36, EP), VDD_IO=1.8V (pins 5-8, 37-40)
+  ;; AXI4-Lite slave: ACLK, ARESETN, AWADDR[15:0], AWVALID, AWREADY,
+  ;;   WDATA[31:0], WSTRB[3:0], WVALID, WREADY, BRESP[1:0], BVALID, BREADY,
+  ;;   ARADDR[15:0], ARVALID, ARREADY, RDATA[31:0], RRESP[1:0], RVALID, RREADY
+  ;; HBM5 I/O: HBM_DQ[31:0], HBM_CMD[7:0] (emulation via FPGA)
+  ;; TFLN SerDes: TX_P/N[7:0], RX_P/N[7:0] (100Ω diff, AC-coupled)
+  ;; JTAG: TCK, TMS, TDI (from FPGA TDO), TDO
+  ;; Misc: DVFS_SEL[1:0], TEMP_ALERT_N, CLK_HBM
+  ;; ========================================================================
+
+  (symbol (lib_id "LightRail:NCE_TEST_CHIP") (at 80 60 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f2000001-0002-0000-0000-000000000001")
+    (property "Reference" "U1" (at 80 40 0) (effects (font (size 1.5 1.5))))
+    (property "Value" "NCE_TEST_CHIP" (at 80 43 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "LightRail:QFN-64_8x8mm_P0.4mm" (at 80 60 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "LR-NCE-MPW-001" (at 80 60 0) (effects (font (size 1.27 1.27)) hide))
+    ;; Pin assignments (64 pins + EP)
+    ;; Bottom side (pins 1-16): VDD_CORE×4, VDD_IO×4, AXI_ACLK, AXI_ARESETN, AXI_AWADDR[3:0], AXI_AWVALID, AXI_AWREADY
+    ;; Right side (pins 17-32): AXI_WDATA[7:0], AXI_WSTRB[3:0], AXI_WVALID, AXI_WREADY, AXI_BRESP[1:0]
+    ;; Top side (pins 33-48): VDD_CORE×4, VDD_IO×4, TFLN_TX_P[3:0], TFLN_TX_N[3:0]
+    ;; Left side (pins 49-64): TFLN_TX_P[7:4], TFLN_TX_N[7:4], JTAG_TCK, JTAG_TMS, JTAG_TDI, JTAG_TDO, DVFS[1:0], TEMP_ALERT_N, CLK_HBM
+    (pin "1" (uuid "u1p01")) (pin "2" (uuid "u1p02")) (pin "3" (uuid "u1p03")) (pin "4" (uuid "u1p04"))
+    (pin "5" (uuid "u1p05")) (pin "6" (uuid "u1p06")) (pin "7" (uuid "u1p07")) (pin "8" (uuid "u1p08"))
+    (pin "9" (uuid "u1p09")) (pin "10" (uuid "u1p10")) (pin "11" (uuid "u1p11")) (pin "12" (uuid "u1p12"))
+    (pin "13" (uuid "u1p13")) (pin "14" (uuid "u1p14")) (pin "15" (uuid "u1p15")) (pin "16" (uuid "u1p16"))
+    (pin "17" (uuid "u1p17")) (pin "18" (uuid "u1p18")) (pin "19" (uuid "u1p19")) (pin "20" (uuid "u1p20"))
+    (pin "21" (uuid "u1p21")) (pin "22" (uuid "u1p22")) (pin "23" (uuid "u1p23")) (pin "24" (uuid "u1p24"))
+    (pin "25" (uuid "u1p25")) (pin "26" (uuid "u1p26")) (pin "27" (uuid "u1p27")) (pin "28" (uuid "u1p28"))
+    (pin "29" (uuid "u1p29")) (pin "30" (uuid "u1p30")) (pin "31" (uuid "u1p31")) (pin "32" (uuid "u1p32"))
+    (pin "33" (uuid "u1p33")) (pin "34" (uuid "u1p34")) (pin "35" (uuid "u1p35")) (pin "36" (uuid "u1p36"))
+    (pin "37" (uuid "u1p37")) (pin "38" (uuid "u1p38")) (pin "39" (uuid "u1p39")) (pin "40" (uuid "u1p40"))
+    (pin "41" (uuid "u1p41")) (pin "42" (uuid "u1p42")) (pin "43" (uuid "u1p43")) (pin "44" (uuid "u1p44"))
+    (pin "45" (uuid "u1p45")) (pin "46" (uuid "u1p46")) (pin "47" (uuid "u1p47")) (pin "48" (uuid "u1p48"))
+    (pin "49" (uuid "u1p49")) (pin "50" (uuid "u1p50")) (pin "51" (uuid "u1p51")) (pin "52" (uuid "u1p52"))
+    (pin "53" (uuid "u1p53")) (pin "54" (uuid "u1p54")) (pin "55" (uuid "u1p55")) (pin "56" (uuid "u1p56"))
+    (pin "57" (uuid "u1p57")) (pin "58" (uuid "u1p58")) (pin "59" (uuid "u1p59")) (pin "60" (uuid "u1p60"))
+    (pin "61" (uuid "u1p61")) (pin "62" (uuid "u1p62")) (pin "63" (uuid "u1p63")) (pin "64" (uuid "u1p64"))
+    (pin "65" (uuid "u1p65"))
+  )
+
+  ;; ========================================================================
+  ;; FPGA (U2) — Xilinx Artix-7 XC7A100T-1FTG256C, BGA-256
+  ;; ========================================================================
+  ;; Power: VCCINT=1.0V, VCCAUX=3.3V, VCCO_B0=1.8V
+  ;; AXI4-Lite master → NCE (U1)
+  ;; SPI master → Flash (U23)
+  ;; UART → FT232H (U22) via FPGA fabric
+  ;; HBM5 emulation I/O (directly to NCE)
+  ;; GPIO expansion (J6)
+  ;; JTAG: first in chain (J5 → U2 → U1)
+  ;; ========================================================================
+
+  (symbol (lib_id "FPGA_Xilinx_Artix7:XC7A100T-FTG256") (at 200 60 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f2000002-0002-0000-0000-000000000001")
+    (property "Reference" "U2" (at 200 40 0) (effects (font (size 1.5 1.5))))
+    (property "Value" "XC7A100T" (at 200 43 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "LightRail:BGA-256_14x14mm_P0.8mm" (at 200 60 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "XC7A100T-1FTG256C" (at 200 60 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  ;; AXI4-Lite bus labels (FPGA master → NCE slave)
+  (global_label "AXI_ACLK" (shape bidirectional) (at 140 50 0) (effects (font (size 1.27 1.27)))
+    (uuid "g1001") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "AXI_ARESETN" (shape bidirectional) (at 140 52 0) (effects (font (size 1.27 1.27)))
+    (uuid "g1002") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+
+  ;; AXI data bus
+  (bus "AXI_DATA[0..31]" (uuid "bus001"))
+  (bus "AXI_ADDR[0..15]" (uuid "bus002"))
+
+  ;; JTAG chain labels
+  (global_label "JTAG_TCK" (shape input) (at 140 70 0) (effects (font (size 1.27 1.27)))
+    (uuid "g1010") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "JTAG_TMS" (shape input) (at 140 72 0) (effects (font (size 1.27 1.27)))
+    (uuid "g1011") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "JTAG_TDI" (shape input) (at 140 74 0) (effects (font (size 1.27 1.27)))
+    (uuid "g1012") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "JTAG_TDO" (shape output) (at 140 76 0) (effects (font (size 1.27 1.27)))
+    (uuid "g1013") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+
+  ;; TFLN SerDes outputs (from NCE)
+  (global_label "TFLN_TX0_P" (shape output) (at 60 85 0) (effects (font (size 1.27 1.27)))
+    (uuid "g1020") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "TFLN_TX0_N" (shape output) (at 60 87 0) (effects (font (size 1.27 1.27)))
+    (uuid "g1021") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+
+  ;; HBM data bus
+  (bus "HBM_DQ[0..31]" (uuid "bus003"))
+
+  ;; Power connections
+  (global_label "+0V9" (shape input) (at 70 45 0) (effects (font (size 1.27 1.27)))
+    (uuid "g1030") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "+1V8_NCE" (shape input) (at 70 47 0) (effects (font (size 1.27 1.27)))
+    (uuid "g1031") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "+1V0" (shape input) (at 190 45 0) (effects (font (size 1.27 1.27)))
+    (uuid "g1032") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "+3V3" (shape input) (at 190 47 0) (effects (font (size 1.27 1.27)))
+    (uuid "g1033") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "+1V8_FPGA" (shape input) (at 190 49 0) (effects (font (size 1.27 1.27)))
+    (uuid "g1034") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+
+  ;; Decoupling — representative
+  (text "NCE Decoupling (near U1):\n  4x 100nF (0402) on VDD_CORE\n  4x 100nF (0402) on VDD_IO\n  2x 4.7uF (0402) bulk\n\nFPGA Decoupling (near U2):\n  8x 100nF (0402) VCCINT\n  4x 100nF (0402) VCCAUX\n  4x 4.7uF (0402) bulk\n  2x 10uF (0603) VCCO"
+    (at 20 110 0) (effects (font (size 1.27 1.27)))
+    (uuid "t1001")
+  )
+
+  ;; AXI bus wiring (simplified — represents 32-bit data + 16-bit addr)
+  (wire (pts (xy 100 50) (xy 140 50)) (uuid "w1001"))
+  (wire (pts (xy 100 52) (xy 140 52)) (uuid "w1002"))
+)

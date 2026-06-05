@@ -1,0 +1,251 @@
+{
+  "Header": {
+    "GenerationSoftware": {
+      "Vendor": "KiCad",
+      "Application": "Pcbnew",
+      "Version": "8.0"
+    },
+    "CreationDate": "2026-06-05T21:56:07.451422",
+    "ProjectId": {
+      "Name": "LightRail_Eval_Board",
+      "GUID": "PA-2026-001",
+      "Revision": "1.0"
+    },
+    "Size": {
+      "X": 100.0,
+      "Y": 100.0
+    }
+  },
+  "FilesAttributes": [
+    {
+      "Path": "LightRail_Eval_Board-F_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In1_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In2_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In3_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In4_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In5_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In6_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In7_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In8_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In9_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In10_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In11_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In12_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In13_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In14_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In15_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In16_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In17_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In18_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In19_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-In20_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-B_Cu.gbr",
+      "FileFunction": "Copper"
+    },
+    {
+      "Path": "LightRail_Eval_Board-F_Mask.gbr",
+      "FileFunction": "Front Solder Mask"
+    },
+    {
+      "Path": "LightRail_Eval_Board-B_Mask.gbr",
+      "FileFunction": "Back Solder Mask"
+    },
+    {
+      "Path": "LightRail_Eval_Board-F_Paste.gbr",
+      "FileFunction": "Front Solder Paste"
+    },
+    {
+      "Path": "LightRail_Eval_Board-B_Paste.gbr",
+      "FileFunction": "Back Solder Paste"
+    },
+    {
+      "Path": "LightRail_Eval_Board-F_SilkS.gbr",
+      "FileFunction": "Front Silkscreen"
+    },
+    {
+      "Path": "LightRail_Eval_Board-B_SilkS.gbr",
+      "FileFunction": "Back Silkscreen"
+    },
+    {
+      "Path": "LightRail_Eval_Board-Edge_Cuts.gbr",
+      "FileFunction": "Board Outline"
+    }
+  ],
+  "MaterialStackup": [
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L1_PHYSICAL_FABRIC"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L2_TFLN_INTERCONNECT"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L3_GND_REF_1"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L4_LASER_WDM"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L5_ANALOG_WAVE"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L6_GND_REF_2"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L7_SYNAPTIC_GRID"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L8_SIGNAL_RESTORE"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L9_GND_REF_3"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L10_LOGIC_CORE"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L11_PWR_CORE_0V9"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L12_GND_REF_4"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L13_COMM_PRIMS"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L14_KERNEL_INTEG"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L15_GND_REF_5"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L16_FABRIC_OS"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L17_PWR_1V0_1V8"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L18_GND_REF_6"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L19_SCHEDULER"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L20_FRAMEWORK"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L21_PWR_3V3_5V"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.035,
+      "Name": "L22_AI_WORKLOAD"
+    }
+  ],
+  "BoardThickness": 2.4,
+  "Layers": 22
+}

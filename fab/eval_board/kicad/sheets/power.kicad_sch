@@ -1,0 +1,176 @@
+(kicad_sch (version 20231120) (generator eeschema) (generator_version "8.0")
+  (uuid "f0000001-0001-0000-0000-000000000001")
+  (paper "A4")
+
+  (title_block
+    (title "Power Supply — LightRail Eval Board")
+    (date "2026-05-26")
+    (rev "1.0")
+    (company "LightRail AI")
+    (comment 1 "12V→5V→3.3V→1.8V→1.0V→0.9V power tree")
+    (comment 2 "22-Layer Intelligence Stack — Power planes L11/L17/L21")
+  )
+
+  ;; ========================================================================
+  ;; POWER SUPPLY SCHEMATIC — 6-stage power tree
+  ;; ========================================================================
+  ;; Input:  12V DC via J1 (barrel jack) or J3 (2-pin header)
+  ;; Fuse:   F1 PTC 2A resettable
+  ;; Stage 1: U15 TPS54360 Buck 12V → 5V (3.5A)
+  ;; Stage 2: U13 TPS7A3301 LDO 5V → 3.3V (300mA)
+  ;; Stage 3: U11 TPS7A2018 LDO 3.3V → 1.8V (300mA) — NCE VDD_IO
+  ;; Stage 4: U14 TPS7A2018 LDO 3.3V → 1.8V (300mA) — FPGA VCCO
+  ;; Stage 5: U12 TPS7A2010 LDO 1.8V → 1.0V (300mA) — FPGA VCCINT
+  ;; Stage 6: U10 ADP7118 LDO 5V → 0.9V (150mA) — NCE VDD_CORE
+  ;; ========================================================================
+
+  ;; Input connectors
+  (symbol (lib_id "Connector:Barrel_Jack") (at 20 40 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f1000001-0001-0000-0000-000000000001")
+    (property "Reference" "J1" (at 20 32 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "Barrel_Jack_12V" (at 20 34 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Connector_BarrelJack:BarrelJack_CUI_PJ-002AH" (at 20 40 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "PJ-002AH" (at 20 40 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "p0001")) (pin "2" (uuid "p0002"))
+  )
+
+  ;; PTC Fuse
+  (symbol (lib_id "Device:Fuse") (at 40 40 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f1000002-0001-0000-0000-000000000001")
+    (property "Reference" "F1" (at 40 36 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "2A_PTC" (at 40 38 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Fuse:Fuse_0805_2012Metric" (at 40 40 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "0805L200SLYR" (at 40 40 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "p0003")) (pin "2" (uuid "p0004"))
+  )
+
+  ;; U15 TPS54360 Buck Converter 12V→5V
+  (symbol (lib_id "Regulator_Switching:TPS54360") (at 70 40 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f1000003-0001-0000-0000-000000000001")
+    (property "Reference" "U15" (at 70 30 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "TPS54360" (at 70 32 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Package_SO:HSOP-8-1EP_3.9x4.9mm_P1.27mm_EP2.41x3.1mm" (at 70 40 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "TPS54360DDAR" (at 70 40 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "p0010") (name "BOOT")) (pin "2" (uuid "p0011") (name "VIN"))
+    (pin "3" (uuid "p0012") (name "EN")) (pin "4" (uuid "p0013") (name "SS/TR"))
+    (pin "5" (uuid "p0014") (name "VSENSE")) (pin "6" (uuid "p0015") (name "COMP"))
+    (pin "7" (uuid "p0016") (name "GND")) (pin "8" (uuid "p0017") (name "PH"))
+    (pin "9" (uuid "p0018") (name "EP"))
+  )
+
+  ;; L1 Power inductor
+  (symbol (lib_id "Device:L") (at 90 35 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f1000004-0001-0000-0000-000000000001")
+    (property "Reference" "L1" (at 90 31 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "4.7uH" (at 90 33 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Inductor_SMD:L_5x5mm" (at 90 35 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "744043004R7" (at 90 35 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "p0020")) (pin "2" (uuid "p0021"))
+  )
+
+  ;; U13 TPS7A3301 LDO 5V→3.3V
+  (symbol (lib_id "Regulator_Linear:TPS7A3301") (at 120 40 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f1000005-0001-0000-0000-000000000001")
+    (property "Reference" "U13" (at 120 32 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "TPS7A3301_3.3V" (at 120 34 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23-5" (at 120 40 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "TPS7A3301DBVR" (at 120 40 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "p0030") (name "IN")) (pin "2" (uuid "p0031") (name "GND"))
+    (pin "3" (uuid "p0032") (name "EN")) (pin "4" (uuid "p0033") (name "NR"))
+    (pin "5" (uuid "p0034") (name "OUT"))
+  )
+
+  ;; U11 TPS7A2018 LDO 3.3V→1.8V (NCE VDD_IO)
+  (symbol (lib_id "Regulator_Linear:TPS7A20xx") (at 150 35 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f1000006-0001-0000-0000-000000000001")
+    (property "Reference" "U11" (at 150 27 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "TPS7A2018_1.8V_NCE" (at 150 29 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23-5" (at 150 35 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "TPS7A2018DBVR" (at 150 35 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "p0040") (name "IN")) (pin "2" (uuid "p0041") (name "GND"))
+    (pin "3" (uuid "p0042") (name "EN")) (pin "5" (uuid "p0044") (name "OUT"))
+  )
+
+  ;; U14 TPS7A2018 LDO 3.3V→1.8V (FPGA VCCO)
+  (symbol (lib_id "Regulator_Linear:TPS7A20xx") (at 150 55 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f1000007-0001-0000-0000-000000000001")
+    (property "Reference" "U14" (at 150 47 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "TPS7A2018_1.8V_FPGA" (at 150 49 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23-5" (at 150 55 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "TPS7A2018DBVR" (at 150 55 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "p0050") (name "IN")) (pin "2" (uuid "p0051") (name "GND"))
+    (pin "3" (uuid "p0052") (name "EN")) (pin "5" (uuid "p0054") (name "OUT"))
+  )
+
+  ;; U12 TPS7A2010 LDO 1.8V→1.0V (FPGA VCCINT)
+  (symbol (lib_id "Regulator_Linear:TPS7A20xx") (at 180 55 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f1000008-0001-0000-0000-000000000001")
+    (property "Reference" "U12" (at 180 47 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "TPS7A2010_1.0V" (at 180 49 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Package_TO_SOT_SMD:SOT-23-5" (at 180 55 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "TPS7A2010DBVR" (at 180 55 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "p0060") (name "IN")) (pin "2" (uuid "p0061") (name "GND"))
+    (pin "3" (uuid "p0062") (name "EN")) (pin "5" (uuid "p0064") (name "OUT"))
+  )
+
+  ;; U10 ADP7118 LDO 5V→0.9V (NCE VDD_CORE)
+  (symbol (lib_id "Regulator_Linear:ADP7118") (at 120 70 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f1000009-0001-0000-0000-000000000001")
+    (property "Reference" "U10" (at 120 62 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "ADP7118_0.9V" (at 120 64 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Package_TO_SOT_SMD:TSOT-23-5" (at 120 70 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "ADP7118AUJZ-0.9-R7" (at 120 70 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "p0070") (name "VIN")) (pin "2" (uuid "p0071") (name "GND"))
+    (pin "3" (uuid "p0072") (name "EN")) (pin "5" (uuid "p0074") (name "VOUT"))
+  )
+
+  ;; Power net labels
+  (global_label "+12V" (shape input) (at 30 40 0) (effects (font (size 1.27 1.27)))
+    (uuid "g0001") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "+5V" (shape output) (at 100 35 0) (effects (font (size 1.27 1.27)))
+    (uuid "g0002") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "+3V3" (shape output) (at 130 40 0) (effects (font (size 1.27 1.27)))
+    (uuid "g0003") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "+1V8_NCE" (shape output) (at 160 35 0) (effects (font (size 1.27 1.27)))
+    (uuid "g0004") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "+1V8_FPGA" (shape output) (at 160 55 0) (effects (font (size 1.27 1.27)))
+    (uuid "g0005") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "+1V0" (shape output) (at 190 55 0) (effects (font (size 1.27 1.27)))
+    (uuid "g0006") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "+0V9" (shape output) (at 130 70 0) (effects (font (size 1.27 1.27)))
+    (uuid "g0007") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "GND" (shape input) (at 70 55 0) (effects (font (size 1.27 1.27)))
+    (uuid "g0008") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+
+  ;; Power wiring
+  (wire (pts (xy 25 40) (xy 35 40)) (uuid "w0001"))
+  (wire (pts (xy 45 40) (xy 60 40)) (uuid "w0002"))
+  (wire (pts (xy 80 35) (xy 85 35)) (uuid "w0003"))
+  (wire (pts (xy 95 35) (xy 110 35)) (uuid "w0004"))
+  (wire (pts (xy 110 40) (xy 110 35)) (uuid "w0005"))
+  (wire (pts (xy 130 40) (xy 140 35)) (uuid "w0006"))
+  (wire (pts (xy 130 40) (xy 140 55)) (uuid "w0007"))
+  (wire (pts (xy 100 35) (xy 110 70)) (uuid "w0008"))
+  (wire (pts (xy 160 55) (xy 170 55)) (uuid "w0009"))
+
+  ;; Decoupling capacitors (representative)
+  (text "See BOM for complete capacitor placement.\nDecoupling: 100nF + 10uF per rail.\nPlacement: Within 3mm of regulator output pin."
+    (at 20 90 0) (effects (font (size 1.27 1.27)))
+    (uuid "t0001")
+  )
+
+  ;; Power sequencing annotation
+  (text "POWER SEQUENCING:\n12V → 5V (U15 buck, <1ms)\n5V → 3.3V (U13 LDO, <0.5ms)\n3.3V → 1.8V (U11/U14, <0.5ms)\n1.8V → 1.0V (U12, <0.5ms)\n5V → 0.9V (U10, <0.5ms)\n\nEN pins: tied to upstream rail for natural sequencing"
+    (at 20 105 0) (effects (font (size 1.27 1.27)))
+    (uuid "t0002")
+  )
+)

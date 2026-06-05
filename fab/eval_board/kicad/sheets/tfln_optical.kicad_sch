@@ -1,0 +1,100 @@
+(kicad_sch (version 20231120) (generator eeschema) (generator_version "8.0")
+  (uuid "f0000003-0003-0000-0000-000000000001")
+  (paper "A4")
+
+  (title_block
+    (title "TFLN Optical Engine + Monitor/Bias — LightRail Eval Board")
+    (date "2026-05-26")
+    (rev "1.0")
+    (company "LightRail AI")
+    (comment 1 "U3: TFLN PIC, U21: ADC monitor, U24: DAC bias, U25: Temp sensor")
+    (comment 2 "8-ch 200G PAM4 TX/RX, edge-coupled fiber interface")
+  )
+
+  ;; ========================================================================
+  ;; TFLN PHOTONIC INTEGRATED CIRCUIT (U3)
+  ;; ========================================================================
+  ;; Module: Custom edge-coupler, 25x8mm
+  ;; 8x TX RF drive inputs (from NCE SerDes, 100Ω differential, AC-coupled via C10)
+  ;; 8x RX photodetector monitor outputs (analog → U21 ADC)
+  ;; 8x DC bias inputs (from U24 DAC)
+  ;; TEC thermal control interface
+  ;; MPO-24 fiber connector (J11) at board edge
+  ;; ========================================================================
+
+  (symbol (lib_id "LightRail:TFLN_PIC") (at 100 50 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f3000001-0003-0000-0000-000000000001")
+    (property "Reference" "U3" (at 100 35 0) (effects (font (size 1.5 1.5))))
+    (property "Value" "TFLN_PIC" (at 100 38 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "LightRail:Custom_Optical_Module" (at 100 50 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "LR-TFLN-PIC-001" (at 100 50 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  ;; AC coupling capacitors for TFLN RF (16x 100nF 0201)
+  (text "AC Coupling — TFLN TX Drive:\n  C10_1 through C10_16: 100nF 0201 (GRM033R71A104KA01D)\n  Placed within 1mm of TFLN RF input pads\n  100Ω differential impedance maintained through coupling"
+    (at 20 75 0) (effects (font (size 1.27 1.27)))
+    (uuid "t3001")
+  )
+
+  ;; U21 AD7928 ADC — TFLN photodetector monitor
+  (symbol (lib_id "Analog_ADC:AD7928") (at 180 45 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f3000002-0003-0000-0000-000000000001")
+    (property "Reference" "U21" (at 180 33 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "AD7928" (at 180 35 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" (at 180 45 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "AD7928BRUZ" (at 180 45 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  ;; U24 AD5684R DAC — TFLN bias voltage
+  (symbol (lib_id "Analog_DAC:AD5684R") (at 30 45 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f3000003-0003-0000-0000-000000000001")
+    (property "Reference" "U24" (at 30 33 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "AD5684R" (at 30 35 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Package_SO:TSSOP-16_4.4x5mm_P0.65mm" (at 30 45 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "AD5684RBRUZ" (at 30 45 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  ;; U25 TMP461 Temperature Sensor
+  (symbol (lib_id "Sensor_Temperature:TMP461") (at 180 75 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f3000004-0003-0000-0000-000000000001")
+    (property "Reference" "U25" (at 180 67 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "TMP461" (at 180 69 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "Package_SON:WSON-8-1EP_2x2mm_P0.5mm" (at 180 75 0) (effects (font (size 1.27 1.27)) hide))
+    (property "MPN" "TMP461AIDR" (at 180 75 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  ;; MPO-24 Fiber Connector
+  (symbol (lib_id "Connector:MPO-24") (at 100 20 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "f3000005-0003-0000-0000-000000000001")
+    (property "Reference" "J11" (at 100 12 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "MPO-24" (at 100 14 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "LightRail:MPO-24" (at 100 20 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  ;; Signal flow labels
+  (global_label "TFLN_TX0_P" (shape input) (at 80 42 180) (effects (font (size 1.27 1.27)))
+    (uuid "g3001") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "TFLN_TX0_N" (shape input) (at 80 44 180) (effects (font (size 1.27 1.27)))
+    (uuid "g3002") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "SPI_CLK" (shape input) (at 20 42 0) (effects (font (size 1.27 1.27)))
+    (uuid "g3010") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "SPI_MOSI" (shape input) (at 20 44 0) (effects (font (size 1.27 1.27)))
+    (uuid "g3011") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "SPI_MISO" (shape output) (at 20 46 0) (effects (font (size 1.27 1.27)))
+    (uuid "g3012") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "I2C_SCL" (shape bidirectional) (at 170 72 0) (effects (font (size 1.27 1.27)))
+    (uuid "g3020") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+  (global_label "I2C_SDA" (shape bidirectional) (at 170 74 0) (effects (font (size 1.27 1.27)))
+    (uuid "g3021") (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide)))
+
+  ;; Optical keep-out annotation
+  (text "OPTICAL KEEP-OUT ZONE:\n  40mm x 15mm centered on TFLN PIC\n  No copper pour, no vias, no traces\n  within ±50µm alignment tolerance\n  Edge-coupler fiber interface at top edge"
+    (at 20 100 0) (effects (font (size 1.27 1.27)))
+    (uuid "t3010")
+  )
+)
