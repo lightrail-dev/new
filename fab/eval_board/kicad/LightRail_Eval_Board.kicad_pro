@@ -1,0 +1,308 @@
+{
+  "meta": {
+    "filename": "LightRail_Eval_Board.kicad_pro",
+    "version": 1
+  },
+  "board": {
+    "3dviewports": [],
+    "design_settings": {
+      "defaults": {
+        "board_outline_line_width": 0.05,
+        "copper_line_width": 0.2,
+        "copper_text_italic": false,
+        "copper_text_size_h": 1.5,
+        "copper_text_size_v": 1.5,
+        "copper_text_thickness": 0.3,
+        "copper_text_upright": false,
+        "courtyard_line_width": 0.05,
+        "dimension_precision": 4,
+        "dimension_units": 3,
+        "fab_line_width": 0.1,
+        "fab_text_italic": false,
+        "fab_text_size_h": 1.0,
+        "fab_text_size_v": 1.0,
+        "fab_text_thickness": 0.15,
+        "fab_text_upright": false,
+        "other_line_width": 0.1,
+        "silk_line_width": 0.12,
+        "silk_text_italic": false,
+        "silk_text_size_h": 1.0,
+        "silk_text_size_v": 1.0,
+        "silk_text_thickness": 0.15,
+        "silk_text_upright": false,
+        "zones": {
+          "45_degree_only": false,
+          "min_clearance": 0.1
+        }
+      },
+      "diff_pair_dimensions": [
+        { "gap": 0.12, "via_gap": 0.25, "width": 0.09 },
+        { "gap": 0.15, "via_gap": 0.25, "width": 0.10 },
+        { "gap": 0.15, "via_gap": 0.25, "width": 0.11 }
+      ],
+      "drc_exclusions": [],
+      "meta": { "version": 2 },
+      "rule_severities": {
+        "annular_width": "error",
+        "clearance": "error",
+        "copper_edge_clearance": "error",
+        "courtyards_overlap": "error",
+        "diff_pair_gap_out_of_range": "error",
+        "diff_pair_uncoupled_length_too_long": "error",
+        "drill_out_of_range": "error",
+        "duplicate_footprints": "warning",
+        "extra_footprint": "warning",
+        "footprint": "error",
+        "hole_clearance": "error",
+        "hole_near_hole": "error",
+        "invalid_outline": "error",
+        "item_on_disabled_layer": "error",
+        "items_not_allowed": "error",
+        "length_out_of_range": "error",
+        "malformed_courtyard": "error",
+        "microvia_drill_too_small": "error",
+        "missing_courtyard": "ignore",
+        "missing_footprint": "warning",
+        "net_conflict": "warning",
+        "npth_inside_courtyard": "ignore",
+        "padstack": "error",
+        "pth_inside_courtyard": "ignore",
+        "shorting_items": "error",
+        "silk_over_copper": "warning",
+        "silk_overlap": "warning",
+        "skew_out_of_range": "error",
+        "through_hole_pad_without_hole": "error",
+        "too_many_vias": "warning",
+        "track_dangling": "warning",
+        "track_width": "error",
+        "tracks_crossing": "error",
+        "unconnected_items": "error",
+        "unresolved_variable": "error",
+        "via_dangling": "warning",
+        "zone_fill_version": "error",
+        "zones_intersect": "error"
+      },
+      "rules": {
+        "allow_blind_buried_vias": false,
+        "allow_microvias": false,
+        "max_error": 0.005,
+        "min_clearance": 0.10,
+        "min_conn_width": 0.10,
+        "min_copper_edge_clearance": 0.25,
+        "min_hole_clearance": 0.125,
+        "min_hole_to_hole": 0.15,
+        "min_microvia_diameter": 0.20,
+        "min_microvia_drill": 0.10,
+        "min_resolved_spokes": 2,
+        "min_silk_clearance": 0.0,
+        "min_text_height": 0.8,
+        "min_text_thickness": 0.08,
+        "min_through_hole_diameter": 0.25,
+        "min_track_width": 0.10,
+        "min_via_annular_width": 0.125,
+        "min_via_diameter": 0.50,
+        "use_height_for_length_calcs": true
+      },
+      "teardrop_options": [
+        { "td_onpadsmd": true, "td_onroundshapesonly": false, "td_ontrackend": false, "td_onviapad": true }
+      ],
+      "teardrop_parameters": [
+        {
+          "td_allow_use_two_tracks": true,
+          "td_curve_segcount": 0,
+          "td_height_ratio": 1.0,
+          "td_length_ratio": 0.5,
+          "td_maxheight": 2.0,
+          "td_maxlen": 1.0,
+          "td_on_pad_in_zone": false,
+          "td_target_name": "td_round_shape",
+          "td_width_to_size_filter_ratio": 0.9
+        },
+        {
+          "td_allow_use_two_tracks": true,
+          "td_curve_segcount": 0,
+          "td_height_ratio": 1.0,
+          "td_length_ratio": 0.5,
+          "td_maxheight": 2.0,
+          "td_maxlen": 1.0,
+          "td_on_pad_in_zone": false,
+          "td_target_name": "td_rect_shape",
+          "td_width_to_size_filter_ratio": 0.9
+        },
+        {
+          "td_allow_use_two_tracks": true,
+          "td_curve_segcount": 0,
+          "td_height_ratio": 1.0,
+          "td_length_ratio": 0.5,
+          "td_maxheight": 2.0,
+          "td_maxlen": 1.0,
+          "td_on_pad_in_zone": false,
+          "td_target_name": "td_track_end",
+          "td_width_to_size_filter_ratio": 0.9
+        }
+      ],
+      "track_widths": [
+        0.0,
+        0.10,
+        0.12,
+        0.15,
+        0.20,
+        0.25,
+        0.30,
+        0.50,
+        1.00,
+        2.00
+      ],
+      "via_dimensions": [
+        { "diameter": 0.0, "drill": 0.0 },
+        { "diameter": 0.50, "drill": 0.25 },
+        { "diameter": 0.60, "drill": 0.30 },
+        { "diameter": 0.80, "drill": 0.40 }
+      ],
+      "zones_allow_external_fillets": false,
+      "zones_use_no_outline": true
+    },
+    "ipc2581": {
+      "dist": "",
+      "distpn": "",
+      "internal_id": "",
+      "mfg": "LightRail AI",
+      "mpn": "LR-EVAL-001",
+      "pin_programme": "",
+      "pin_programmer_type": "",
+      "ref_name_other": "",
+      "ref_name_value": ""
+    },
+    "layer_presets": [],
+    "layers": {
+      "0":  { "color": "", "name": "F.Cu",     "user_name": "" },
+      "1":  { "color": "", "name": "In1.Cu",   "user_name": "GND_REF_1" },
+      "2":  { "color": "", "name": "In2.Cu",   "user_name": "HS_SIGNAL" },
+      "3":  { "color": "", "name": "In3.Cu",   "user_name": "PWR_CORE" },
+      "4":  { "color": "", "name": "In4.Cu",   "user_name": "PWR_AUX" },
+      "5":  { "color": "", "name": "In5.Cu",   "user_name": "HS_SIGNAL_2" },
+      "6":  { "color": "", "name": "In6.Cu",   "user_name": "GND_REF_2" },
+      "31": { "color": "", "name": "B.Cu",     "user_name": "" }
+    }
+  },
+  "net_settings": {
+    "classes": [
+      {
+        "bus_width": 12,
+        "clearance": 0.15,
+        "diff_pair_gap": 0.15,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.10,
+        "line_style": 0,
+        "microvia_diameter": 0.30,
+        "microvia_drill": 0.10,
+        "name": "Default",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.15,
+        "via_diameter": 0.60,
+        "via_drill": 0.30,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.12,
+        "diff_pair_gap": 0.15,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.10,
+        "line_style": 0,
+        "name": "AXI_BUS",
+        "track_width": 0.12,
+        "via_diameter": 0.50,
+        "via_drill": 0.25
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.15,
+        "diff_pair_gap": 0.15,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.10,
+        "line_style": 0,
+        "name": "CLK_2GHZ",
+        "track_width": 0.10,
+        "via_diameter": 0.50,
+        "via_drill": 0.25
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.15,
+        "diff_pair_gap": 0.15,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.10,
+        "line_style": 0,
+        "name": "TFLN_RF",
+        "track_width": 0.10,
+        "via_diameter": 0.50,
+        "via_drill": 0.25
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.15,
+        "diff_pair_gap": 0.15,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.11,
+        "line_style": 0,
+        "name": "USB_HS",
+        "track_width": 0.11,
+        "via_diameter": 0.50,
+        "via_drill": 0.25
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.20,
+        "line_style": 0,
+        "name": "PWR_5V",
+        "track_width": 1.00,
+        "via_diameter": 0.80,
+        "via_drill": 0.40
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.15,
+        "line_style": 0,
+        "name": "PWR_CORE",
+        "track_width": 0.50,
+        "via_diameter": 0.80,
+        "via_drill": 0.40
+      }
+    ],
+    "meta": { "version": 3 },
+    "net_colors": null
+  },
+  "schematic": {
+    "annotate_start_num": 1,
+    "drawing": {
+      "default_line_thickness": 6.0,
+      "default_text_size": 50.0,
+      "field_names": [],
+      "intersheets_ref_prefix": "",
+      "intersheets_ref_short": false,
+      "intersheets_ref_show": false,
+      "intersheets_ref_suffix": "",
+      "junction_size_choice": 3,
+      "label_size_ratio": 0.375,
+      "pin_symbol_size": 25.0,
+      "text_offset_ratio": 0.15
+    },
+    "legacy_lib_dir": "",
+    "legacy_lib_list": [],
+    "meta": { "version": 1 },
+    "net_format_name": "",
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [ "e63e39d7-6ac0-4ffd-8aa3-1841a4541b55", "" ]
+  ],
+  "text_variables": {
+    "PROJECT": "LightRail NCE+TFLN Eval Board",
+    "REVISION": "1.0",
+    "DATE": "2026-05-26",
+    "COMPANY": "LightRail AI",
+    "PROJECT_CODE": "PA-2026-001"
+  }
+}

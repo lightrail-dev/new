@@ -1,0 +1,150 @@
+(kicad_sch (version 20231120) (generator eeschema) (generator_version "8.0")
+  (uuid "e63e39d7-6ac0-4ffd-8aa3-1841a4541b55")
+  (paper "A3")
+
+  (title_block
+    (title "LightRail NCE+TFLN Evaluation Board")
+    (date "2026-05-26")
+    (rev "1.0")
+    (company "LightRail AI")
+    (comment 1 "Project: PA-2026-001")
+    (comment 2 "100x100mm 8-Layer Eval Board")
+    (comment 3 "NCE QFN-64 + Artix-7 FPGA + TFLN PIC")
+    (comment 4 "SMIC 28nm HPC+ MPW Test Chip Characterization")
+  )
+
+  ;; ========================================================================
+  ;; HIERARCHICAL SHEET STRUCTURE
+  ;; This is the top-level schematic for the eval board.
+  ;; Sub-sheets are defined below for each functional block.
+  ;; ========================================================================
+
+  ;; ---- Power Section ----
+  ;; 12V Input (J1 barrel jack, J3 2-pin header)
+  ;; F1 PTC fuse 2A
+  ;; U15 TPS54360 Buck 12V→5V
+  ;; U13 TPS7A3301 LDO 5V→3.3V
+  ;; U11 TPS7A2018 LDO 3.3V→1.8V (NCE VDD_IO)
+  ;; U14 TPS7A2018 LDO 3.3V→1.8V (FPGA VCCO)
+  ;; U12 TPS7A2010 LDO 1.8V→1.0V (FPGA VCCINT)
+  ;; U10 ADP7118 LDO 5V→0.9V (NCE VDD_CORE)
+  ;; Power sequencing: 12V→5V→3.3V→1.8V→1.0V→0.9V
+
+  ;; ---- NCE Test Chip (U1) ----
+  ;; QFN-64, 8x8mm, 0.4mm pitch
+  ;; VDD_CORE=0.9V, VDD_IO=1.8V
+  ;; AXI4-Lite slave interface to FPGA
+  ;; HBM5 emulation I/O
+  ;; TFLN SerDes outputs
+  ;; JTAG chain (TDI from FPGA TDO)
+
+  ;; ---- FPGA (U2) ----
+  ;; Xilinx Artix-7 XC7A100T-1FTG256C, BGA-256
+  ;; VCCINT=1.0V, VCCAUX=3.3V, VCCO=1.8V
+  ;; AXI4-Lite master to NCE
+  ;; SPI master to Flash (U23)
+  ;; UART to FT232H (U22)
+  ;; GPIO expansion (J6)
+  ;; JTAG chain (first in chain)
+
+  ;; ---- TFLN PIC (U3) ----
+  ;; Custom edge-coupler module
+  ;; 8x TX RF drive from NCE SerDes (100Ω diff, AC-coupled)
+  ;; 8x RX photodetector monitor to ADC (U21)
+  ;; 8x DC bias from DAC (U24)
+  ;; TEC control (TMP461 U25 + FPGA PWM)
+
+  ;; ---- Clock Generation ----
+  ;; Y1 100MHz TCXO → FPGA reference
+  ;; U20 Si5395A PLL → 2.0GHz (CLK_HBM), 156.25MHz (TFLN SerDes ref)
+
+  ;; ---- Test Interface ----
+  ;; J2 USB-C → U22 FT232H → UART to FPGA
+  ;; J5 JTAG 2x5 header → daisy chain: FPGA → NCE
+  ;; J6 GPIO 2x7 header → FPGA I/O
+  ;; J7-J10 SMA RF probe connectors
+  ;; J11 MPO-24 fiber connector
+  ;; SW1 Reset button
+  ;; TP1-TP16 Test points
+
+  ;; ---- Support ICs ----
+  ;; U21 AD7928 ADC (TFLN PD monitor)
+  ;; U22 FT232H USB-UART bridge
+  ;; U23 W25Q128JVS SPI Flash (FPGA config)
+  ;; U24 AD5684R DAC (TFLN bias)
+  ;; U25 TMP461 Temp sensor (NCE die temp via I2C)
+
+  ;; ========================================================================
+  ;; NET CLASSES (defined in .kicad_pro, referenced here for documentation)
+  ;; ========================================================================
+  ;; Default:    0.15mm trace, 0.15mm clearance
+  ;; AXI_BUS:    0.12mm trace, 0.12mm clearance, 50Ω SE
+  ;; CLK_2GHZ:   0.10mm trace, 0.15mm clearance, 50Ω SE stripline
+  ;; TFLN_RF:    0.10mm trace, 100Ω diff, 0.15mm gap
+  ;; USB_HS:     0.11mm trace, 90Ω diff, 0.15mm gap
+  ;; PWR_5V:     1.00mm trace, 0.20mm clearance
+  ;; PWR_CORE:   0.50mm trace, 0.15mm clearance
+  ;; ========================================================================
+
+  ;; Power symbols
+  (symbol (lib_id "power:+12V") (at 20 30 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "a1000001-0000-0000-0000-000000000001")
+    (property "Reference" "#PWR01" (at 20 26 0) (effects (font (size 1.27 1.27)) hide))
+    (property "Value" "+12V" (at 20 26 0) (effects (font (size 1.27 1.27))))
+  )
+  (symbol (lib_id "power:+5V") (at 40 30 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "a1000002-0000-0000-0000-000000000002")
+    (property "Reference" "#PWR02" (at 40 26 0) (effects (font (size 1.27 1.27)) hide))
+    (property "Value" "+5V" (at 40 26 0) (effects (font (size 1.27 1.27))))
+  )
+  (symbol (lib_id "power:+3V3") (at 60 30 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "a1000003-0000-0000-0000-000000000003")
+    (property "Reference" "#PWR03" (at 60 26 0) (effects (font (size 1.27 1.27)) hide))
+    (property "Value" "+3V3" (at 60 26 0) (effects (font (size 1.27 1.27))))
+  )
+  (symbol (lib_id "power:GND") (at 80 50 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid "a1000004-0000-0000-0000-000000000004")
+    (property "Reference" "#PWR04" (at 80 56 0) (effects (font (size 1.27 1.27)) hide))
+    (property "Value" "GND" (at 80 54 0) (effects (font (size 1.27 1.27))))
+  )
+
+  ;; Global labels for hierarchical connectivity
+  (global_label "AXI_ACLK" (shape input) (at 100 40 0) (effects (font (size 1.27 1.27)))
+    (uuid "b1000001-0000-0000-0000-000000000001")
+    (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+  )
+  (global_label "AXI_ARESETN" (shape input) (at 100 45 0) (effects (font (size 1.27 1.27)))
+    (uuid "b1000002-0000-0000-0000-000000000002")
+    (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+  )
+  (global_label "CLK_HBM" (shape input) (at 100 50 0) (effects (font (size 1.27 1.27)))
+    (uuid "b1000003-0000-0000-0000-000000000003")
+    (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+  )
+  (global_label "JTAG_TCK" (shape input) (at 100 55 0) (effects (font (size 1.27 1.27)))
+    (uuid "b1000004-0000-0000-0000-000000000004")
+    (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+  )
+  (global_label "JTAG_TMS" (shape input) (at 100 60 0) (effects (font (size 1.27 1.27)))
+    (uuid "b1000005-0000-0000-0000-000000000005")
+    (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+  )
+  (global_label "JTAG_TDI" (shape input) (at 100 65 0) (effects (font (size 1.27 1.27)))
+    (uuid "b1000006-0000-0000-0000-000000000006")
+    (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+  )
+  (global_label "JTAG_TDO" (shape output) (at 100 70 0) (effects (font (size 1.27 1.27)))
+    (uuid "b1000007-0000-0000-0000-000000000007")
+    (property "Intersheets" "" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+  )
+
+  ;; Text annotation block
+  (text "LightRail NCE+TFLN Evaluation Board\nPA-2026-001 Rev 1.0\n\nThis schematic defines the 100x100mm 8-layer eval board\nfor characterizing the SMIC 28nm NCE test chip (QFN-64)\nwith Artix-7 FPGA test controller and TFLN optical module.\n\nSee sub-sheets for detailed circuit implementation.\nSee fab/eval_board/ for complete 12-step design process docs."
+    (at 20 80 0) (effects (font (size 2.54 2.54)))
+    (uuid "c1000001-0000-0000-0000-000000000001")
+  )
+)
