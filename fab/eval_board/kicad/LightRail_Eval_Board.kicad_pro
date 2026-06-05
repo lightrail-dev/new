@@ -83,8 +83,8 @@
         "zones_intersect": "error"
       },
       "rules": {
-        "allow_blind_buried_vias": false,
-        "allow_microvias": false,
+        "allow_blind_buried_vias": true,
+        "allow_microvias": true,
         "max_error": 0.005,
         "min_clearance": 0.10,
         "min_conn_width": 0.10,
@@ -175,14 +175,28 @@
     },
     "layer_presets": [],
     "layers": {
-      "0":  { "color": "", "name": "F.Cu",     "user_name": "" },
-      "1":  { "color": "", "name": "In1.Cu",   "user_name": "GND_REF_1" },
-      "2":  { "color": "", "name": "In2.Cu",   "user_name": "HS_SIGNAL" },
-      "3":  { "color": "", "name": "In3.Cu",   "user_name": "PWR_CORE" },
-      "4":  { "color": "", "name": "In4.Cu",   "user_name": "PWR_AUX" },
-      "5":  { "color": "", "name": "In5.Cu",   "user_name": "HS_SIGNAL_2" },
-      "6":  { "color": "", "name": "In6.Cu",   "user_name": "GND_REF_2" },
-      "31": { "color": "", "name": "B.Cu",     "user_name": "" }
+      "0":  { "color": "", "name": "F.Cu",      "user_name": "L1_PHYSICAL_FABRIC" },
+      "1":  { "color": "", "name": "In1.Cu",    "user_name": "L2_TFLN_INTERCONNECT" },
+      "2":  { "color": "", "name": "In2.Cu",    "user_name": "L3_GND_REF_1" },
+      "3":  { "color": "", "name": "In3.Cu",    "user_name": "L4_LASER_WDM" },
+      "4":  { "color": "", "name": "In4.Cu",    "user_name": "L5_ANALOG_WAVE" },
+      "5":  { "color": "", "name": "In5.Cu",    "user_name": "L6_GND_REF_2" },
+      "6":  { "color": "", "name": "In6.Cu",    "user_name": "L7_SYNAPTIC_GRID" },
+      "7":  { "color": "", "name": "In7.Cu",    "user_name": "L8_SIGNAL_RESTORE" },
+      "8":  { "color": "", "name": "In8.Cu",    "user_name": "L9_GND_REF_3" },
+      "9":  { "color": "", "name": "In9.Cu",    "user_name": "L10_LOGIC_CORE" },
+      "10": { "color": "", "name": "In10.Cu",   "user_name": "L11_PWR_CORE_0V9" },
+      "11": { "color": "", "name": "In11.Cu",   "user_name": "L12_GND_REF_4" },
+      "12": { "color": "", "name": "In12.Cu",   "user_name": "L13_COMM_PRIMS" },
+      "13": { "color": "", "name": "In13.Cu",   "user_name": "L14_KERNEL_INTEG" },
+      "14": { "color": "", "name": "In14.Cu",   "user_name": "L15_GND_REF_5" },
+      "15": { "color": "", "name": "In15.Cu",   "user_name": "L16_FABRIC_OS" },
+      "16": { "color": "", "name": "In16.Cu",   "user_name": "L17_PWR_1V0_1V8" },
+      "17": { "color": "", "name": "In17.Cu",   "user_name": "L18_GND_REF_6" },
+      "18": { "color": "", "name": "In18.Cu",   "user_name": "L19_SCHEDULER" },
+      "19": { "color": "", "name": "In19.Cu",   "user_name": "L20_FRAMEWORK" },
+      "20": { "color": "", "name": "In20.Cu",   "user_name": "L21_PWR_3V3_5V" },
+      "31": { "color": "", "name": "B.Cu",      "user_name": "L22_AI_WORKLOAD" }
     }
   },
   "net_settings": {

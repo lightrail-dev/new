@@ -2,7 +2,7 @@
 ## LightRail NCE + TFLN Test Chip & Evaluation Board
 
 **Project Code:** PA-2026-001 (LightRail MPW Shuttle & Eval Board)
-**Revision:** 1.0
+**Revision:** 2.0 (22-Layer Intelligence Stack)
 **Date:** 2026-05-26
 **Prepared by:** LightRail AI Hardware Engineering Team
 
@@ -85,7 +85,7 @@ The test chip validates the NCE compute cluster (with HBM5 memory controller), T
 | `Memory.kicad_sch` | Memory sub-schematic |
 | `QPA.kicad_sch` | QPA trigger sub-schematic |
 | `VRM.kicad_sch` | VRM sub-schematic |
-| `fab/eval_board/kicad/LightRail_Eval_Board.kicad_pro` | Eval board project (100×100 mm, 8-layer) |
+| `fab/eval_board/kicad/LightRail_Eval_Board.kicad_pro` | Eval board project (100×100 mm, 22-layer Intelligence Stack) |
 | `fab/eval_board/kicad/LightRail_Eval_Board.kicad_sch` | Eval board schematic |
 
 ### 4.4 Specification Documents
@@ -124,7 +124,7 @@ The eval board follows LightRail's 12-step hardware engineering flow. Each step 
 
 ## 6. Quality Requirements
 
-- IPC-6012 Class 2 (eval board) / Class 3 (production)
+- IPC-6012 Class 3 (22-layer HDI eval board) / Class 3 (production)
 - 100% bare-board electrical test (IPC-D-356)
 - Impedance test coupons required
 - Cross-section for first article (2 coupons minimum)

@@ -8,7 +8,7 @@
     (rev "1.0")
     (company "LightRail AI")
     (comment 1 "Project: PA-2026-001")
-    (comment 2 "100x100mm 8-Layer Eval Board")
+    (comment 2 "100x100mm 22-Layer Intelligence Stack Eval Board")
     (comment 3 "NCE QFN-64 + Artix-7 FPGA + TFLN PIC")
     (comment 4 "SMIC 28nm HPC+ MPW Test Chip Characterization")
   )
@@ -75,15 +75,20 @@
   ;; U25 TMP461 Temp sensor (NCE die temp via I2C)
 
   ;; ========================================================================
-  ;; NET CLASSES (defined in .kicad_pro, referenced here for documentation)
+  ;; NET CLASSES — 22-Layer Intelligence Stack (see .kicad_pro)
   ;; ========================================================================
   ;; Default:    0.15mm trace, 0.15mm clearance
-  ;; AXI_BUS:    0.12mm trace, 0.12mm clearance, 50Ω SE
-  ;; CLK_2GHZ:   0.10mm trace, 0.15mm clearance, 50Ω SE stripline
-  ;; TFLN_RF:    0.10mm trace, 100Ω diff, 0.15mm gap
-  ;; USB_HS:     0.11mm trace, 90Ω diff, 0.15mm gap
-  ;; PWR_5V:     1.00mm trace, 0.20mm clearance
-  ;; PWR_CORE:   0.50mm trace, 0.15mm clearance
+  ;; AXI_BUS:    0.12mm trace, 0.12mm clearance, 50Ω SE — L10/L13
+  ;; CLK_2GHZ:   0.08mm trace, 0.15mm clearance, 50Ω SE stripline — L4
+  ;; TFLN_RF:    0.08mm trace, 100Ω diff, 0.10mm gap — L2 (TFLN Interconnect)
+  ;; USB_HS:     0.09mm trace, 90Ω diff, 0.12mm gap — L20 (Framework)
+  ;; PWR_5V:     1.00mm trace, 0.20mm clearance — L21 (PWR 3.3V/5V)
+  ;; PWR_CORE:   0.50mm trace, 0.15mm clearance — L11/L17 (PWR 0.9V/1.0V/1.8V)
+  ;; ========================================================================
+  ;; GND Ref planes: L3, L6, L9, L12, L15, L18 (6 solid GND)
+  ;; Power planes:   L11 (+0.9V), L17 (+1.0V/+1.8V), L21 (+3.3V/+5V)
+  ;; Blind vias:     L1–L6 (top), L18–L22 (bottom)
+  ;; Buried vias:    L6–L18 (core)
   ;; ========================================================================
 
   ;; Power symbols
@@ -143,7 +148,7 @@
   )
 
   ;; Text annotation block
-  (text "LightRail NCE+TFLN Evaluation Board\nPA-2026-001 Rev 1.0\n\nThis schematic defines the 100x100mm 8-layer eval board\nfor characterizing the SMIC 28nm NCE test chip (QFN-64)\nwith Artix-7 FPGA test controller and TFLN optical module.\n\nSee sub-sheets for detailed circuit implementation.\nSee fab/eval_board/ for complete 12-step design process docs."
+  (text "LightRail NCE+TFLN Evaluation Board\nPA-2026-001 Rev 1.0\n\nThis schematic defines the 100x100mm 22-layer eval board\nfor characterizing the SMIC 28nm NCE test chip (QFN-64)\nwith Artix-7 FPGA test controller and TFLN optical module.\n\nSee sub-sheets for detailed circuit implementation.\nSee fab/eval_board/ for complete 12-step design process docs."
     (at 20 80 0) (effects (font (size 2.54 2.54)))
     (uuid "c1000001-0000-0000-0000-000000000001")
   )

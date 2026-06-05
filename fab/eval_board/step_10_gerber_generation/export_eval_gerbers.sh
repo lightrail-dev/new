@@ -2,7 +2,7 @@
 # ============================================================================
 # Gerber & Drill Export Script — LightRail NCE+TFLN Evaluation Board
 # Project: PA-2026-001
-# Board: 100x100mm, 8-layer, Megtron-7 + FR-4 High-Tg
+# Board: 100x100mm, 22-layer Intelligence Stack, Megtron-7 + FR-4 High-Tg
 # ============================================================================
 
 set -euo pipefail
@@ -38,7 +38,8 @@ echo "=========================================="
 echo "[1/6] Exporting Gerber layers (X2 format)..."
 kicad-cli pcb export gerbers \
     --output "$OUTPUT_DIR/gerbers/" \
-    --layers "F.Cu,In1.Cu,In2.Cu,In3.Cu,In4.Cu,In5.Cu,In6.Cu,B.Cu,\
+    --layers "F.Cu,In1.Cu,In2.Cu,In3.Cu,In4.Cu,In5.Cu,In6.Cu,In7.Cu,In8.Cu,In9.Cu,\
+In10.Cu,In11.Cu,In12.Cu,In13.Cu,In14.Cu,In15.Cu,In16.Cu,In17.Cu,In18.Cu,In19.Cu,In20.Cu,B.Cu,\
 F.Mask,B.Mask,F.Paste,B.Paste,F.Silkscreen,B.Silkscreen,Edge.Cuts,F.Fab" \
     --subtract-soldermask \
     --use-drill-file-origin \

@@ -2,7 +2,7 @@
 ## LightRail NCE+TFLN Evaluation Board
 
 **Date:** 2026-05-26
-**Revision:** 1.0
+**Revision:** 2.0 (22-Layer Intelligence Stack)
 
 ---
 
@@ -12,7 +12,7 @@
 |-----------|-------|
 | **Length** | 100.0 mm (3.937 in) |
 | **Width** | 100.0 mm (3.937 in) |
-| **Thickness** | 1.6 mm ± 10% |
+| **Thickness** | 2.4 mm ± 10% (22-layer) |
 | **Corner radius** | 2.0 mm (all 4 corners) |
 | **Board outline tolerance** | ± 0.15 mm |
 | **Form factor** | Custom square eval board |
@@ -100,7 +100,7 @@ J11 │  │ TFLN │    │ NCE  │   │ FPGA   │      │ │
 |------------|-------|-----------|
 | Max component height (top) | 10 mm | Heatsink clearance |
 | Max component height (bottom) | 3 mm | PCB standoff height |
-| Board warp/twist | ≤ 0.75% | IPC-6012 Class 2 |
+| Board warp/twist | ≤ 0.75% | IPC-6012 Class 3 |
 | V-score / panelization | Not required (single board) | — |
 | Fiducial marks | 3× (top side) | 1.0 mm dia, 2.0 mm clearance |
 | Tooling holes | 2× (panel corners, if panelized) | 2.4 mm NPTH |

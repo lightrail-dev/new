@@ -2,7 +2,7 @@
 ## LightRail NCE+TFLN Evaluation Board
 
 **Date:** 2026-05-26
-**Revision:** 1.0
+**Revision:** 2.0 (22-Layer Intelligence Stack)
 
 ---
 
@@ -106,10 +106,10 @@
   (severity error)
 )
 
-# No signal routing on GND plane layers
+# No signal routing on GND plane layers (6 GND reference planes)
 (rule "gnd_plane_no_signals"
   (constraint disallow track)
-  (condition "A.Layer == 'In1.Cu' || A.Layer == 'In6.Cu'")
+  (condition "A.Layer == 'In2.Cu' || A.Layer == 'In5.Cu' || A.Layer == 'In8.Cu' || A.Layer == 'In11.Cu' || A.Layer == 'In14.Cu' || A.Layer == 'In17.Cu'")
   (severity error)
 )
 ```
@@ -121,8 +121,8 @@
 | Parameter | Value |
 |-----------|-------|
 | Board dimensions | 100.0 × 100.0 mm |
-| Layer count | 8 |
-| Board thickness | 1.6 mm ±10% |
+| Layer count | 22 |
+| Board thickness | 2.4 mm ±10% |
 | Surface finish | ENIG (IPC-4552 Class 2) |
 | Solder mask | Matte green LPI (both sides) |
 | Silkscreen | White epoxy ink (both sides) |
@@ -130,7 +130,7 @@
 | Copper weights | See Stackup_Constraints.md |
 | Min trace/space | 0.10/0.10 mm (4/4 mil) |
 | Min drill | 0.25 mm |
-| Aspect ratio | ≤ 6.4:1 (1.6mm / 0.25mm) |
+| Aspect ratio | ≤ 12:1 (2.4mm / 0.20mm) |
 | Controlled impedance | Yes — see impedance targets in Stackup_Constraints.md |
 
 ### 3.2 Special Fabrication Instructions
@@ -176,7 +176,7 @@
 | Surface finish callout | Y | ENIG IPC-4552 |
 | Solder mask specification | Y | PSR-4000 AUS703 |
 | Special instructions | Y | Via-in-pad, fiducials, test |
-| IPC class callout | Y | IPC-6012 Class 2 |
+| IPC class callout | Y | IPC-6012 Class 3 |
 | Acceptance criteria | Y | IPC-A-600 Class 2 |
 
 **DRC / FAB Notes Status: COMPLETE**

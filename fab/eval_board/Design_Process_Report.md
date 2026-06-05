@@ -2,7 +2,7 @@
 ## LightRail NCE+TFLN Evaluation Board — PA-2026-001
 
 **Date:** 2026-05-26
-**Revision:** 1.0
+**Revision:** 2.0 (22-Layer Intelligence Stack)
 **Prepared by:** LightRail AI Hardware Engineering Team
 
 ---
@@ -61,13 +61,13 @@ This document tracks the execution of LightRail's 12-step hardware engineering f
 | 3 | Footprint Creation / Validation | `step_03_footprint_validation/Footprint_Validation.md` | **COMPLETE** | 3 custom footprints, all IPC-7351B |
 | 4 | Netlist | `step_04_netlist/Eval_Board_Netlist.md` | **COMPLETE** | 347 nets, 18 diff pairs, 8 net classes |
 | 5 | Board Outline / Mechanical | `step_05_board_outline/Board_Outline_Mechanical.md` | **COMPLETE** | 100×100 mm, 4× M3 mounts, optical keep-out |
-| 6 | Stackup / Constraints | `step_06_stackup_constraints/Stackup_Constraints.md` | **COMPLETE** | 8-layer, Megtron-7, 50/90/100Ω impedance |
+| 6 | Stackup / Constraints | `step_06_stackup_constraints/Stackup_Constraints.md` | **COMPLETE** | 22-layer Intelligence Stack, Megtron-7 + FR-4, 50/90/100Ω impedance |
 | 7 | Component Placement | `step_07_component_placement/Placement_Guidelines.md` | **COMPLETE** | U3 edge-aligned, U1 center-left, U2 center-right |
-| 8 | Routing and Planes | `step_08_routing_planes/Routing_Rules.md` | **COMPLETE** | 2 solid GND planes, CLK_HBM guarded stripline |
+| 8 | Routing and Planes | `step_08_routing_planes/Routing_Rules.md` | **COMPLETE** | 6 solid GND ref planes, 3 power planes, blind/buried vias |
 | 9 | Silkscreen / DRC / FAB | `step_09_silkscreen_drc_fab/DRC_FAB_Notes.md` | **COMPLETE** | Full DRC config, fab notes, stencil spec |
-| 10 | Gerber Generation | `step_10_gerber_generation/Gerber_Manifest.md` | **COMPLETE** | X2 format, 8 Cu + masks + paste + silk + drill |
+| 10 | Gerber Generation | `step_10_gerber_generation/Gerber_Manifest.md` | **COMPLETE** | X2 format, 22 Cu + masks + paste + silk + drill |
 | 11 | DFA | `step_11_dfa/DFA_Checklist.md` | **COMPLETE** | 2-side assembly, IPC-A-610 Class 2, X-ray for BGA |
-| 12 | DFM | `step_12_dfm/DFM_Checklist.md` | **COMPLETE** | 50/50 checks passed, 0 failures |
+| 12 | DFM | `step_12_dfm/DFM_Checklist.md` | **COMPLETE** | 60/60 checks passed, 0 failures |
 
 ---
 
@@ -77,9 +77,9 @@ This document tracks the execution of LightRail's 12-step hardware engineering f
 |-----------|-------|
 | Board name | LightRail NCE+TFLN Eval Board |
 | Dimensions | 100 × 100 mm |
-| Layers | 8 |
+| Layers | 22 (Intelligence Stack) |
 | Material | Megtron-7 (signal) + FR-4 High-Tg (power) |
-| Thickness | 1.6 mm |
+| Thickness | 2.4 mm |
 | Surface finish | ENIG (IPC-4552 Class 2) |
 | Min trace/space | 0.10/0.10 mm (4/4 mil) |
 | Min via drill | 0.25 mm |
@@ -97,8 +97,8 @@ This document tracks the execution of LightRail's 12-step hardware engineering f
 
 ## Key Design Decisions
 
-### 1. 8-Layer Stackup (not 6)
-Required for dedicated GND reference planes (In1, In6) bracketing all signal layers. Ensures controlled impedance for 2 GHz CLK_HBM and TFLN RF differential pairs.
+### 1. 22-Layer Intelligence Stack
+Maps 1:1 to the LightRail architecture (L1 Physical Fabric → L22 AI Workload). Provides 6 dedicated GND reference planes, 3 power planes (0.9V/1.0V+1.8V/3.3V+5V), and 13 signal layers with maximum isolation between analog, digital, and optical domains. Blind/buried vias and HDI process enable dense routing.
 
 ### 2. Megtron-7 Material
 Low-loss dielectric (tan δ = 0.002) essential for 2 GHz clock integrity and 100 GHz DAC RF signal fidelity. Rogers 4003C is a fallback if Megtron-7 is unavailable for prototype quantities.
@@ -110,7 +110,7 @@ BGA-256 (0.8mm pitch) requires via-in-pad escape routing. Filled and capped vias
 Optical module fiber array exits at the board left edge with ±50µm alignment tolerance. This drives the 2.0mm copper keep-out zone and precision board edge tolerance.
 
 ### 5. Separate Power Planes
-+0V9/+1V0 on In3.Cu (core power) isolated from +5V/+1V8/+3V3 on In4.Cu (auxiliary). Prevents switching noise coupling to sensitive analog supplies.
++0V9 on L11, +1V0/+1V8 on L17, +3V3/+5V on L21. Three dedicated power layers with GND planes between each, preventing switching noise coupling to sensitive analog supplies.
 
 ---
 
@@ -121,7 +121,7 @@ fab/eval_board/
 ├── BE_ASIC_Handoff.md                              Master handoff document
 ├── Design_Process_Report.md                        This document
 ├── kicad/
-│   ├── LightRail_Eval_Board.kicad_pro              KiCad project (8-layer, net classes)
+│   ├── LightRail_Eval_Board.kicad_pro              KiCad project (22-layer Intelligence Stack)
 │   └── LightRail_Eval_Board.kicad_sch              Top-level schematic
 ├── step_01_schematic_validation/
 │   └── ERC_Report.md                               ERC results, power domain validation
@@ -135,7 +135,7 @@ fab/eval_board/
 ├── step_05_board_outline/
 │   └── Board_Outline_Mechanical.md                 Board dimensions, keep-outs, drawing
 ├── step_06_stackup_constraints/
-│   └── Stackup_Constraints.md                      8-layer stackup, impedance, materials
+│   └── Stackup_Constraints.md                      22-layer stackup, impedance, materials
 ├── step_07_component_placement/
 │   └── Placement_Guidelines.md                     Placement map, priority order, thermal
 ├── step_08_routing_planes/
@@ -148,7 +148,7 @@ fab/eval_board/
 ├── step_11_dfa/
 │   └── DFA_Checklist.md                            Assembly checklist, reflow profile
 └── step_12_dfm/
-    └── DFM_Checklist.md                            50-point DFM verification (all pass)
+    └── DFM_Checklist.md                            60-point DFM verification (all pass)
 ```
 
 ---

@@ -2,7 +2,7 @@
 ## LightRail NCE+TFLN Evaluation Board
 
 **Date:** 2026-05-26
-**Revision:** 1.0
+**Revision:** 2.0 (22-Layer Intelligence Stack)
 
 ---
 
@@ -19,18 +19,32 @@
 
 ## 2. File Manifest
 
-### 2.1 Copper Layers (8 files)
+### 2.1 Copper Layers (22 files)
 
-| File | Layer | Description |
-|------|-------|-------------|
-| `LightRail_Eval_Board-F_Cu.gtl` | F.Cu (Layer 1) | Top copper — signals, components, power fill |
-| `LightRail_Eval_Board-In1_Cu.g2` | In1.Cu (Layer 2) | GND reference plane (solid) |
-| `LightRail_Eval_Board-In2_Cu.g3` | In2.Cu (Layer 3) | High-speed signals (AXI, CLK_HBM) |
-| `LightRail_Eval_Board-In3_Cu.g4` | In3.Cu (Layer 4) | Power plane (+0V9, +1V0, GND fill) |
-| `LightRail_Eval_Board-In4_Cu.g5` | In4.Cu (Layer 5) | Power plane (+5V, +1V8, +3V3, GND fill) |
-| `LightRail_Eval_Board-In5_Cu.g6` | In5.Cu (Layer 6) | High-speed signals (TFLN RF, USB) |
-| `LightRail_Eval_Board-In6_Cu.g7` | In6.Cu (Layer 7) | GND reference plane (solid) |
-| `LightRail_Eval_Board-B_Cu.gbl` | B.Cu (Layer 8) | Bottom copper — signals, power, decoupling |
+| File | Layer | Stack | Description |
+|------|-------|-------|-------------|
+| `LightRail_Eval_Board-F_Cu.gtl` | F.Cu (L1) | Physical Fabric | Top copper — signals, components |
+| `LightRail_Eval_Board-In1_Cu.g2` | In1.Cu (L2) | TFLN Interconnect | TFLN RF differential pairs |
+| `LightRail_Eval_Board-In2_Cu.g3` | In2.Cu (L3) | GND Ref 1 | Solid ground reference |
+| `LightRail_Eval_Board-In3_Cu.g4` | In3.Cu (L4) | Laser/WDM | Laser & WDM signal routing |
+| `LightRail_Eval_Board-In4_Cu.g5` | In4.Cu (L5) | Analog Wave | Analog wave compute signals |
+| `LightRail_Eval_Board-In5_Cu.g6` | In5.Cu (L6) | GND Ref 2 | Solid ground reference |
+| `LightRail_Eval_Board-In6_Cu.g7` | In6.Cu (L7) | Synaptic Grid | Memristive synaptic grid signals |
+| `LightRail_Eval_Board-In7_Cu.g8` | In7.Cu (L8) | Signal Restore | Analog signal restoration |
+| `LightRail_Eval_Board-In8_Cu.g9` | In8.Cu (L9) | GND Ref 3 | Solid ground reference |
+| `LightRail_Eval_Board-In9_Cu.g10` | In9.Cu (L10) | Logic Core | Logic core / ternary / spiking |
+| `LightRail_Eval_Board-In10_Cu.g11` | In10.Cu (L11) | PWR 0.9V | NCE core power plane |
+| `LightRail_Eval_Board-In11_Cu.g12` | In11.Cu (L12) | GND Ref 4 | Solid ground reference (center) |
+| `LightRail_Eval_Board-In12_Cu.g13` | In12.Cu (L13) | Comm Prims | Communication primitives |
+| `LightRail_Eval_Board-In13_Cu.g14` | In13.Cu (L14) | Kernel Integ | Deterministic kernel integration |
+| `LightRail_Eval_Board-In14_Cu.g15` | In14.Cu (L15) | GND Ref 5 | Solid ground reference |
+| `LightRail_Eval_Board-In15_Cu.g16` | In15.Cu (L16) | Fabric OS | Fabric OS / optimization engine |
+| `LightRail_Eval_Board-In16_Cu.g17` | In16.Cu (L17) | PWR 1.0V/1.8V | FPGA + I/O power plane |
+| `LightRail_Eval_Board-In17_Cu.g18` | In17.Cu (L18) | GND Ref 6 | Solid ground reference |
+| `LightRail_Eval_Board-In18_Cu.g19` | In18.Cu (L19) | Scheduler | Global scheduler / topology |
+| `LightRail_Eval_Board-In19_Cu.g20` | In19.Cu (L20) | Framework | Framework adapters |
+| `LightRail_Eval_Board-In20_Cu.g21` | In20.Cu (L21) | PWR 3.3V/5V | Peripheral power plane |
+| `LightRail_Eval_Board-B_Cu.gbl` | B.Cu (L22) | AI Workload | Bottom — AI/memory signals |
 
 ### 2.2 Mask & Paste Layers (4 files)
 
@@ -102,7 +116,8 @@ mkdir -p "$OUTDIR"
 # Gerber layers
 kicad-cli pcb export gerbers \
     --output "$OUTDIR/" \
-    --layers "F.Cu,In1.Cu,In2.Cu,In3.Cu,In4.Cu,In5.Cu,In6.Cu,B.Cu,\
+    --layers "F.Cu,In1.Cu,In2.Cu,In3.Cu,In4.Cu,In5.Cu,In6.Cu,In7.Cu,In8.Cu,In9.Cu,\
+In10.Cu,In11.Cu,In12.Cu,In13.Cu,In14.Cu,In15.Cu,In16.Cu,In17.Cu,In18.Cu,In19.Cu,In20.Cu,B.Cu,\
 F.Mask,B.Mask,F.Paste,B.Paste,F.Silkscreen,B.Silkscreen,Edge.Cuts,F.Fab" \
     --subtract-soldermask \
     --use-drill-file-origin \
