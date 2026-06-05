@@ -50,8 +50,8 @@ MOSIS) with a die area budget of approximately 4-9 mm2.
 |   | PAD   |  |                  |  |                  |  |
 |   | RING  |  |  NCE Compute     |  |  TFLN Optical    |  |
 |   |       |  |  Core (8-lane)   |  |  Engine (2-ch)   |  |
-|   | QFN-64|  |                  |  |                  |  |
-|   | or    |  |  0.92 mm2        |  |  0.82 mm2        |  |
+|   | QFN-64|  |  + HBM5 Ctrl     |  |                  |  |
+|   | or    |  |  1.14 mm2        |  |  0.82 mm2        |  |
 |   | wire  |  |                  |  |                  |  |
 |   | bond  |  +------------------+  +------------------+  |
 |   |       |                                              |
@@ -78,13 +78,13 @@ MOSIS) with a die area budget of approximately 4-9 mm2.
 
 | Block | Area (28nm) | Area (40nm) | % of Die |
 |-------|------------|------------|----------|
-| NCE Compute Core (8-lane) | 0.92 mm2 | 1.50 mm2 | 14.7% |
+| NCE Compute Core (8-lane + HBM5 ctrl) | 1.14 mm2 | 1.80 mm2 | 17.0% |
 | TFLN Optical Engine (2-ch) | 0.82 mm2 | 1.30 mm2 | 13.1% |
 | QPA Trigger Matrix + LVDS | 0.35 mm2 | 0.60 mm2 | 5.6% |
 | Test Infrastructure | 0.50 mm2 | 0.80 mm2 | 8.0% |
 | Power / Clock / Reset | 0.30 mm2 | 0.45 mm2 | 4.8% |
 | Pad Ring (QFN-64) | 2.50 mm2 | 3.00 mm2 | 40.0% |
-| Routing overhead | 0.86 mm2 | 1.10 mm2 | 13.8% |
+| Routing overhead | 0.64 mm2 | 0.80 mm2 | 9.6% |
 | **Total** | **6.25 mm2** | **8.75 mm2** | **100%** |
 
 ---
@@ -101,7 +101,9 @@ MOSIS) with a die area budget of approximately 4-9 mm2.
 | L3 cache | 64 MB | Omitted | Not on shuttle |
 | Optical channels | 8 TX + 8 RX | 1 TX + 1 RX | Link training, CDR, DSP |
 | MZI mesh | 8x8 | 4x4 | Mesh compiler, phase LUT |
-| HBM4 PHY | 4-stack, 4096 lanes | Pattern gen/check | PHY validation stub |
+| HBM5 PHY | 4-stack (16-Hi, 16PC) | Emulation SRAM + ctrl | HBM5 data store/retrieve |
+| HBM5 ECC | SECDED per 64-bit | Full inline ECC | CE/UE detect + correct |
+| HBM5 Refresh | Per-bank, temp-comp | Full controller | Refresh scheduling |
 | PCIe PHY | x32 Gen 6 | AXI4-Lite port | Host interface logic |
 | CXL controller | Type 2 | Register-only stub | Register map validation |
 | PRBS engine | 8-channel | 2-channel | BER testing |
@@ -223,6 +225,11 @@ MOSIS) with a die area budget of approximately 4-9 mm2.
 | F5 | SIMD MMA | AXI + verify | Correct MAC result |
 | F6 | SIMD RELU | AXI + verify | Negative values zeroed |
 | F7 | DMA transfer | FPGA pattern gen | Data integrity check |
+|| F16 | HBM5 write (storage) | AXI MMIO write | Data stored in emul SRAM |
+|| F17 | HBM5 read (retrieval) | AXI MMIO read | Data matches written |
+|| F18 | HBM5 ECC inject | Write + corrupt + read | SECDED correction |
+|| F19 | HBM5 multi-address | Write N addr, read all | All match |
+|| F20 | HBM5 refresh config | AXI register + verify | Refresh interval set |
 | F8 | QPA phase set | AXI + LVDS capture | Correct phase on LVDS |
 | F9 | QPA trigger | AXI + LVDS capture | Sync pulse + data |
 | F10 | SNSPD fault inject | External signal | Fault latch + interrupt |
@@ -274,6 +281,7 @@ MOSIS) with a die area budget of approximately 4-9 mm2.
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|-----------|------------|
 | SMIC 28nm shuttle unavailable | High | Medium | Fallback to SMIC 40nm LL |
+| HBM5 ctrl area exceeds budget | Medium | Low | Reduce SRAM emulation depth |
 | Die area exceeds reticle | Medium | Low | Reduce L1/L2 cache further |
 | PLL fails to lock | High | Low | Include ring oscillator backup |
 | LVDS eye closure | Medium | Medium | Include adjustable pre-emphasis |

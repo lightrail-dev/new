@@ -105,17 +105,17 @@
 
 **Function:** Executes AI/ML tensor operations (matrix multiply, convolution,
 activation) on streaming data. The 128-way SIMD array processes 128 bfloat16
-multiply-accumulate operations per cycle. Data flows from HBM4 through the
+multiply-accumulate operations per cycle. Data flows from HBM5 through the
 cache hierarchy into the register file, and results can be sent to the TFLN
 photonic I/O for distributed all-reduce.
 
 ---
 
-## 3. Memory Subsystem Block Diagram
+## 3. Memory Subsystem Block Diagram (HBM5)
 
 ```
 +=========================================================================+
-|                      MEMORY SUBSYSTEM                                   |
+|                      MEMORY SUBSYSTEM (HBM5)                            |
 |                                                                         |
 |  +------------------------------------------------------------------+  |
 |  |                 L3 / Last-Level Cache                             |  |
@@ -125,37 +125,57 @@ photonic I/O for distributed all-reduce.
 |  +---+------------------------------------------+-------------------+  |
 |      |                                          |                      |
 |      v                                          v                      |
-|  +---+------------------+   +-------------------+-------------------+  |
-|  | Memory Scheduler     |   | HBM4 Side-Channel Controller         |  |
-|  | & Arbiter            |   |                                       |  |
-|  | - Request queue      |   | - REFCK_P/N generation                |  |
-|  | - Bank interleaving  |   | - CATTRIP / PWR_GOOD monitoring      |  |
-|  | - Refresh management |   | - IEEE 1500 JTAG (TCK/TMS/TDI/TDO)  |  |
-|  | - ECC encode/decode  |   | - Temperature readout                 |  |
-|  +---+------------------+   +---+-----------------------------------+  |
-|      |                          |                                      |
-|      v                          v                                      |
-|  +---+-------------------------------------------------+              |
-|  |           HBM4 PHY Controller                       |              |
-|  |                                                     |              |
-|  |  Stack 0     Stack 1     Stack 2     Stack 3        |              |
-|  |  +--------+  +--------+  +--------+  +--------+    |              |
-|  |  |1024 ln |  |1024 ln |  |1024 ln |  |1024 ln |    |              |
-|  |  |8Gbps/  |  |8Gbps/  |  |8Gbps/  |  |8Gbps/  |    |              |
-|  |  |pin     |  |pin     |  |pin     |  |pin     |    |              |
-|  |  |1 TB/s  |  |1 TB/s  |  |1 TB/s  |  |1 TB/s  |    |              |
-|  |  +--------+  +--------+  +--------+  +--------+    |              |
-|  |                                                     |              |
-|  |  Total: 4096 lanes, 4.0 TB/s aggregate              |              |
-|  |  (All lanes routed on silicon interposer)           |              |
-|  +-----------------------------------------------------+              |
-|                                                                        |
-+========================================================================+
+|  +---+------------------------+  +--------------+-------------------+  |
+|  | HBM5 Memory Scheduler      |  | HBM5 Side-Channel Controller    |  |
+|  | & Request Queue             |  |                                  |  |
+|  | - 4-entry queue per PC      |  | - REFCK_P/N generation           |  |
+|  | - Age-based priority        |  | - CATTRIP / PWR_GOOD monitoring  |  |
+|  | - Bank interleaving (32 bk) |  | - IEEE 1500 JTAG                 |  |
+|  | - Per-bank refresh w/ temp  |  | - Temperature readout            |  |
+|  |   compensation (1x/2x/4x)  |  | - Stack power management         |  |
+|  | - R/W turnaround (tWTR/tRTW)|  |                                  |  |
+|  +---+------------------------+  +---+------------------------------+  |
+|      |                               |                                 |
+|      v                               |                                 |
+|  +---+-----------------------------+ |                                 |
+|  | HBM5 Inline ECC Engine          | |                                 |
+|  | - SECDED per 64-bit granule     | |                                 |
+|  | - CE/UE counters & interrupt    | |                                 |
+|  | - Background scrub (optional)   | |                                 |
+|  +---+-----------------------------+ |                                 |
+|      |                               |                                 |
+|      v                               v                                 |
+|  +---+-------------------------------------------------+               |
+|  |           HBM5 PHY Controller                       |               |
+|  |                                                     |               |
+|  |  Stack 0         Stack 1         Stack 2         Stack 3            |
+|  |  +------------+  +------------+  +------------+  +------------+    |
+|  |  |16-Hi, 16PC |  |16-Hi, 16PC |  |16-Hi, 16PC |  |16-Hi, 16PC |    |
+|  |  |1024b/PC    |  |1024b/PC    |  |1024b/PC    |  |1024b/PC    |    |
+|  |  |8 Gbps/pin  |  |8 Gbps/pin  |  |8 Gbps/pin  |  |8 Gbps/pin  |    |
+|  |  |1.28 TB/s   |  |1.28 TB/s   |  |1.28 TB/s   |  |1.28 TB/s   |    |
+|  |  |64 GB       |  |64 GB       |  |64 GB       |  |64 GB       |    |
+|  |  +------------+  +------------+  +------------+  +------------+    |
+|  |                                                     |               |
+|  |  Total: 64 PCs, 5.12 TB/s aggregate, 256 GB         |               |
+|  |  (All lanes routed on silicon interposer)            |               |
+|  +-----------------------------------------------------+               |
+|                                                                         |
+|  Data Storage Path:                                                     |
+|    CXL -> AXI -> Scheduler -> ACT -> tRCD -> WR -> DQ+ECC -> DRAM      |
+|                                                                         |
+|  Data Retrieval Path:                                                   |
+|    DRAM -> DQ -> ECC Check -> Scheduler -> L1/L2/RegFile/CXL Read       |
+|                                                                         |
++=========================================================================+
 ```
 
-**Function:** Provides 4.0 TB/s memory bandwidth to the compute cluster via
-four HBM4 12-Hi stacks. The L3 cache serves as a victim cache for L2 misses.
-The memory scheduler implements bank-level parallelism and ECC for data integrity.
+**Function:** Provides 5.12 TB/s memory bandwidth to the compute cluster via
+four HBM5 16-Hi stacks (64 pseudo-channels total, 256 GB capacity). The L3
+cache serves as a victim cache for L2 misses. The memory scheduler implements
+per-PC request queuing with age-based priority, bank-level parallelism,
+read/write turnaround optimization, inline SECDED ECC, and temperature-
+compensated per-bank refresh for data integrity and retention.
 
 ---
 

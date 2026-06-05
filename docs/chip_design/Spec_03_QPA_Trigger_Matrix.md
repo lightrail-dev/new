@@ -161,8 +161,8 @@ document also covers system-level integration of all NCE subsystems.
 |-----------|----------|------------|-------------|
 | PCIe Gen 6 | x32 (split x16+x16) | Edge connector + retimer | 144 balls |
 | TFLN RF Drive | 16 diff pairs | TFLN PIC A/B electrodes | 96 balls |
-| HBM4 Side-Channel | REFCK, JTAG, status | HBM4 module BGA | 32 balls |
-| HBM4 Data Bus | 4096 lanes | Silicon interposer (internal) | — |
+| HBM5 Side-Channel | REFCK, JTAG, status, temp | HBM5 module BGA | 40 balls |
+| HBM5 Data Bus | 4096 lanes (64 PC x 1024b) | Silicon interposer (internal) | — |
 | V_CORE | 0.8V supply | 24-phase DrMOS array | 612 balls |
 | GND | Ground reference | Board planes | 624 balls |
 | Management | I2C, SPI, JTAG, PMBus | BMC / flash | 32 balls |
@@ -185,7 +185,8 @@ document also covers system-level integration of all NCE subsystems.
 |-------|--------|-----------|-------------|
 | REFCLK | Si5395A | 100 MHz | PCIe PHY, PLL input |
 | SerDes REF | Si5395A | 156.25 MHz | TFLN SerDes PHY |
-| HBM4 REFCK | Si5395A | 200 MHz | HBM4 stacks (per stack) |
+| HBM5 REFCK | Si5395A | 200 MHz | HBM5 stacks (per stack) |
+| HBM5 PHY | PLL4 (on-die) | 2.0 GHz | HBM5 memory controller |
 | DAC Trigger | Si5395A | 10 MHz | QPA trigger sync |
 | Compute | PLL2 (on-die) | 1.0-2.0 GHz | SIMD array |
 | System | PLL0 (on-die) | 250 MHz | AXI fabric |
@@ -200,10 +201,10 @@ document also covers system-level integration of all NCE subsystems.
 | NCE Compute (per die) | 400 W | 800 W |
 | TFLN Optical Engine (per die) | 0.3 W | 0.5 W |
 | QPA Controller (per die) | 0.1 W | 0.2 W |
-| HBM4 (4 stacks per module) | 60 W | 100 W |
+| HBM5 (4 stacks x 16-Hi per module) | 70 W | 120 W |
 | I/O + Management | 40 W | 70 W |
-| **Per NCE Module** | **~500 W** | **~971 W** |
-| **Board Total (2 modules)** | **~1040 W** | **~2000 W** |
+| **Per NCE Module** | **~510 W** | **~991 W** |
+| **Board Total (2 modules)** | **~1060 W** | **~2040 W** |
 
 ---
 
@@ -218,7 +219,9 @@ document also covers system-level integration of all NCE subsystems.
 | CXL register map | Formal + directed | All addresses, R/W permissions |
 | Thermal throttle chain | Directed | Sensor -> throttle -> VRM -> PLL |
 | Power gate sequence | Directed | Gate on/off per cluster |
-| DMA HBM4 -> compute -> TFLN | End-to-end | Data integrity check |
+| DMA HBM5 -> compute -> TFLN | End-to-end | Data integrity check |
+| HBM5 direct store/retrieve | Directed | Multi-address, ECC verify |
+| HBM5 refresh under load | Directed | Per-bank, temp-compensated |
 | SNSPD fault -> reroute | Directed | All 8 channels |
 | MZI compile -> verify | Directed | Fidelity > 97% |
 
@@ -239,7 +242,7 @@ constraints (~4-9 mm2 reticle).
 | L1 cache | 128 KB | 4 KB |
 | L2 cache | 16 MB | 16 KB |
 | L3 cache | 64 MB | None |
-| HBM4 PHY | 4-stack | Test pattern gen |
+| HBM5 PHY | 4-stack (16-Hi, 16PC) | Emulation SRAM + ctrl |
 | PCIe PHY | x32 Gen 6 | AXI4-Lite test port |
 | Die size | ~10.5 x 10.5 mm | ~2.5 x 2.5 mm |
 | Package | BGA-2500 | QFN-64 or wire-bond |

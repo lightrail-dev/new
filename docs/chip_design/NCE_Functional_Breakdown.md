@@ -12,7 +12,7 @@
 
 The Neural Compute Engine (NCE) is a proprietary AI SoC at the heart of the
 LightRail LR-P3A photonic AI compute node. Each LR-P3A board hosts two NCE
-dice, each co-packaged with four HBM4 12-Hi stacks on a silicon interposer
+dice, each co-packaged with four HBM5 16-Hi stacks on a silicon interposer
 (BGA-2500 composite module). The NCE provides 128-way SIMD streaming compute,
 direct-drive TFLN photonic I/O at 1.6 Tbps aggregate bandwidth, PCIe Gen 6
 host connectivity, and CXL 2.0 memory-mapped control of the Quantum Photonic
@@ -34,10 +34,13 @@ NCE SoC Die (40 x 40 mm BGA-2500 composite)
 |   +-- DMA Engine (4-channel)
 |
 +-- Memory Subsystem
-|   +-- HBM4 PHY Controller (4-stack, 1024 lanes/stack)
-|   +-- HBM4 Side-Channel Controller (REFCK, JTAG, PWR_GOOD)
+|   +-- HBM5 PHY Controller (4-stack, 16 PCs/stack, 1024-bit/PC)
+|   +-- HBM5 Side-Channel Controller (REFCK, JTAG, PWR_GOOD)
+|   +-- HBM5 Memory Scheduler & Request Queue (per-PC, age-based)
+|   +-- HBM5 Refresh Controller (per-bank, temperature-compensated)
+|   +-- HBM5 Inline ECC Engine (SECDED per 64-bit granule)
 |   +-- L3 Cache / Last-Level Cache (64 MB, 16-way)
-|   +-- Memory Scheduler & Arbiter
+|   +-- Data Storage/Retrieval Pipeline (DMA-to-HBM5 direct path)
 |
 +-- Photonic I/O Subsystem
 |   +-- TFLN SerDes TX (8 channels x 200G PAM4)
@@ -87,30 +90,54 @@ NCE SoC Die (40 x 40 mm BGA-2500 composite)
 | L2 Cache | 16 MB shared, 8-way, inclusive |
 | Peak throughput | 128 bfloat16 MACs/cycle @ 1.5 GHz = 384 TOPS (BF16) |
 | Pipeline | 12-stage in-order for SIMD, 6-stage for scalar |
-| DMA | 4-channel, scatter-gather, HBM4-to-L2 direct path |
+| DMA | 4-channel, scatter-gather, HBM5-to-L2 direct path |
 
 The compute cluster is the primary tensor processing engine. It executes
-matrix-multiply-accumulate (MMA) operations on streaming data from HBM4,
+matrix-multiply-accumulate (MMA) operations on streaming data from HBM5,
 with results optionally routed directly to the TFLN photonic I/O for
 distributed all-reduce operations.
 
-### 3.2 Memory Subsystem
+### 3.2 Memory Subsystem (HBM5)
 
 | Parameter | Value |
 |-----------|-------|
-| HBM4 stacks | 4 per NCE module |
-| Bandwidth per stack | 1.0 TB/s (1024 lanes x 8 Gbps/pin) |
-| Aggregate BW | 4.0 TB/s per NCE module |
-| PHY lanes | 4096 total (interposer-internal) |
+| HBM5 stacks | 4 per NCE module (16-Hi per stack) |
+| Pseudo-channels (PC) | 16 per stack, 64 total |
+| Data bus width | 1024 bits per pseudo-channel |
+| Pin speed | 8.0 Gbps per pin |
+| Bandwidth per stack | 1.28 TB/s |
+| Aggregate BW | 5.12 TB/s per NCE module |
+| Burst length | BL8 (8-beat burst) |
+| Banks per PC | 32 |
 | Side-channel (PCB) | REFCK_P/N, CATTRIP, PWR_GOOD, IEEE 1500 |
 | L3 / LLC | 64 MB, 16-way, exclusive of L2 |
-| ECC | SECDED on all data paths |
-| Capacity | 4 x 48 GB = 192 GB per NCE module |
+| ECC | Inline SECDED per 64-bit granule |
+| Capacity | 4 x 64 GB = 256 GB per NCE module |
+| Refresh | Per-bank, temperature-compensated intervals |
+| Request queue | 4-entry per PC, age-based priority |
+| Data storage path | CXL -> AXI -> HBM5 controller -> scheduler -> PHY -> DRAM |
+| Data retrieval path | DRAM -> PHY -> ECC check -> scheduler -> L1/L2/register file |
 
-The HBM4 data bus (1024 lanes per stack) is routed entirely within the
-vendor-supplied silicon interposer. The NCE die communicates with HBM4
-through micro-bump connections on the interposer. Only side-channel
-signals and power rails escape to the PCB.
+The HBM5 data bus (1024-bit per pseudo-channel, 16 PCs per stack) is routed
+entirely within the vendor-supplied silicon interposer. The NCE die
+communicates with HBM5 through micro-bump connections on the interposer.
+Only side-channel signals and power rails escape to the PCB.
+
+**Data Storage Flow:** Host writes data via CXL MMIO registers (HBM5_ADDR,
+HBM5_WDATA). The HBM5 memory controller sequences row activation (ACT),
+waits tRCD, issues the write command (WR), drives data with ECC onto the
+DQ bus, and manages bank precharge and refresh scheduling.
+
+**Data Retrieval Flow:** Host or DMA engine requests data by writing the
+target address to HBM5_ADDR and triggering a read via HBM5_RDATA register.
+The controller activates the target row, issues a read command (RD), captures
+return data after CAS latency (tCL), verifies ECC, and presents corrected
+data to the requesting block (L1 cache, register file, or CXL read port).
+
+**Refresh Management:** The HBM5 controller implements per-bank refresh
+with configurable intervals. Temperature compensation automatically
+increases refresh frequency at higher die temperatures (1x/2x/4x scaling)
+to prevent data retention failures.
 
 ### 3.3 Photonic I/O Subsystem
 
@@ -176,7 +203,7 @@ feedback for fault detection and automatic rerouting.
 | DDR (LVDS serializer) | 500 MHz | PLL1 from 100 MHz REFCLK |
 | Compute (SIMD array) | 1.0 - 2.0 GHz | PLL2, DVFS-controlled |
 | SerDes reference | 156.25 MHz | PLL3 from 100 MHz REFCLK |
-| HBM4 REFCK | 200 MHz | External Si5395A |
+| HBM5 PHY | 2.0 GHz | PLL4, dedicated HBM5 interface |
 | DAC trigger | 10 MHz | External Si5395A sync |
 
 ---
@@ -188,11 +215,11 @@ feedback for fault detection and automatic rerouting.
 | V_CORE | 612 | Central core (cols N-AK, rows 10-38) |
 | GND | 624 | Distributed |
 | VDD_IO (1.05 V) | 96 | Peripheral rings |
-| VDDC_HBM4 (0.7 V) | 40 | Interposer face (east) |
-| VDDQL_HBM4 (0.4 V) | 40 | Interposer face (east) |
-| VDDQ_HBM4 (1.1 V) | 40 | Interposer face (east) |
-| VPP_HBM4 (1.8 V) | 16 | Interposer face (east) |
-| HBM4 side-channel | 32 | Interposer face (4 stacks) |
+| VDDC_HBM5 (0.75 V) | 40 | Interposer face (east) |
+| VDDQL_HBM5 (0.4 V) | 40 | Interposer face (east) |
+| VDDQ_HBM5 (1.05 V) | 40 | Interposer face (east) |
+| VPP_HBM5 (1.8 V) | 16 | Interposer face (east) |
+| HBM5 side-channel | 32 | Interposer face (4 stacks) |
 | PCIe Gen 6 x32 | 144 | South edge |
 | TFLN SerDes 16 ch | 96 | North edge |
 | Mgmt I2C/SPI/JTAG | 32 | Corner (NW) |
@@ -243,14 +270,14 @@ Ball pitch: 0.8 mm. Package: 40 x 40 mm. Collapse height: 0.45 mm.
 | Compute Cluster (128-way SIMD) | ~12 mm2 | ~25 mm2 |
 | L2 Cache (16 MB) | ~14 mm2 | ~20 mm2 |
 | L3 Cache (64 MB) | ~54 mm2 | ~80 mm2 |
-| HBM4 PHY (4-stack) | ~8 mm2 | ~14 mm2 |
+| HBM5 PHY (4-stack, 64 PC) | ~10 mm2 | ~16 mm2 |
 | PCIe Gen 6 PHY (x32) | ~6 mm2 | ~10 mm2 |
 | TFLN SerDes (16 lanes) | ~4 mm2 | ~7 mm2 |
 | QPA Controller | ~1 mm2 | ~2 mm2 |
 | PLL + Clock tree | ~1 mm2 | ~1.5 mm2 |
 | Power management | ~0.5 mm2 | ~1 mm2 |
 | Pad ring + ESD | ~8 mm2 | ~12 mm2 |
-| **Total (est.)** | **~109 mm2** | **~173 mm2** |
+| **Total (est.)** | **~111 mm2** | **~175 mm2** |
 
 **Note:** For the MPW shuttle test chip, a reduced-functionality die will
 be taped out (see `MPW_Shuttle_Plan.md`), targeting ~4-9 mm2 to fit within
@@ -278,7 +305,7 @@ shuttle reticle constraints.
 +------+------+ +-----+-------+ +----+----------+
 | Compute     | | QPA Control | | Memory        |
 | Cluster     | | (Trigger    | | Subsystem     |
-| 128-way SIMD| | Matrix +    | | HBM4 PHY +   |
+| 128-way SIMD| | Matrix +    | | HBM5 PHY +   |
 |             | | DAC + SNSPD)| | L3 Cache      |
 +------+------+ +-----+-------+ +-------+-------+
        |               |                 |
@@ -303,7 +330,7 @@ shuttle reticle constraints.
 | Feature | Implementation |
 |---------|---------------|
 | Scan chains | Full-scan insertion, compression ratio 64:1 |
-| BIST | Memory BIST for all SRAM arrays (L1/L2/L3) |
+| BIST | Memory BIST for all SRAM arrays (L1/L2/L3/HBM5 emul) |
 | JTAG | IEEE 1149.1 boundary scan + IEEE 1500 wrapper |
 | At-speed test | Launch-on-capture for compute cluster |
 | Analog test | Loopback mode on all SerDes channels |

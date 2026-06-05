@@ -22,6 +22,7 @@ workloads, with direct photonic I/O integration and CXL 2.0 host connectivity.
 |--------|-------|-----------|-------------|
 | `clk_compute` | 1 | Input | DVFS-controlled compute clock (1.0-2.0 GHz) |
 | `clk_sys` | 1 | Input | System AXI clock (250 MHz) |
+| `clk_hbm` | 1 | Input | HBM5 PHY clock (2.0 GHz) |
 | `rst_n` | 1 | Input | Active-low synchronous reset |
 | `axi_awvalid` | 1 | Input | AXI write address valid |
 | `axi_awaddr` | 32 | Input | AXI write address |
@@ -39,6 +40,10 @@ workloads, with direct photonic I/O integration and CXL 2.0 host connectivity.
 | `qpa_fault_status` | 8 | Input | QPA per-channel fault status |
 | `thermal_adc_data` | 48 | Input | 4x 12-bit thermal diode ADC readings |
 | `thermal_adc_valid` | 1 | Input | Thermal ADC data valid strobe |
+| `hbm5_dq_in` | 1024 | Input | HBM5 data bus input (from DRAM) |
+| `hbm5_ecc_in` | 8 | Input | HBM5 ECC syndrome input |
+| `hbm5_init_done` | 1 | Input | HBM5 PHY initialization complete |
+| `hbm5_temp_sensor` | 8 | Input | HBM5 on-stack temperature (degrees C) |
 
 ---
 
@@ -66,6 +71,18 @@ workloads, with direct photonic I/O integration and CXL 2.0 host connectivity.
 | `thermal_throttle` | 1 | Output | Soft thermal throttle request to VRM |
 | `thermal_shutdown` | 1 | Output | Emergency thermal shutdown |
 | `irq_out` | 1 | Output | Interrupt output (OR of all masked sources) |
+| `hbm5_ck_p` | 1 | Output | HBM5 differential clock positive |
+| `hbm5_ck_n` | 1 | Output | HBM5 differential clock negative |
+| `hbm5_cke` | 1 | Output | HBM5 clock enable |
+| `hbm5_cmd` | 7 | Output | HBM5 command bus (ACT/RD/WR/PRE/REF) |
+| `hbm5_addr` | 34 | Output | HBM5 row/column address |
+| `hbm5_bank` | 5 | Output | HBM5 bank address (0-31) |
+| `hbm5_stack_sel` | 2 | Output | HBM5 stack select (0-3) |
+| `hbm5_pc_sel` | 4 | Output | HBM5 pseudo-channel select (0-15) |
+| `hbm5_dq_out` | 1024 | Output | HBM5 data bus output (to DRAM) |
+| `hbm5_dq_oe` | 1 | Output | HBM5 data output enable |
+| `hbm5_dm` | 128 | Output | HBM5 data mask |
+| `hbm5_ecc_out` | 8 | Output | HBM5 ECC check bits output |
 
 ---
 
@@ -80,7 +97,7 @@ workloads, with direct photonic I/O integration and CXL 2.0 host connectivity.
 | Data types | bfloat16, bfloat24, INT8 (4x packed), FP32 (accumulate) |
 | Register file | 16 matrix (256-bit) + 16 vector (256-bit) |
 | Pipeline stages | 3 (decode -> execute -> writeback) |
-| Operations | MMA, VADD, VMUL, RELU, GELU, SOFTMAX, LOAD, STORE, QPA_TX |
+| Operations | MMA, VADD, VMUL, RELU, GELU, SOFTMAX, LOAD, STORE, QPA_TX, HBM_LOAD, HBM_STORE |
 | Peak throughput | 384 TOPS (BF16, production @ 1.5 GHz) |
 | Clock frequency | 1.0-2.0 GHz (DVFS, 8 states) |
 
@@ -91,7 +108,7 @@ workloads, with direct photonic I/O integration and CXL 2.0 host connectivity.
 | Channels | 4 |
 | Address width | 32 bits |
 | Max transfer | 65,535 bytes |
-| Interface | AXI4 to HBM4 / Host memory |
+| Interface | AXI4 to HBM5 / Host memory |
 | States | IDLE -> READ -> WRITE -> DONE |
 
 ### 4.3 Thermal Management
@@ -131,6 +148,14 @@ workloads, with direct photonic I/O integration and CXL 2.0 host connectivity.
 | 0x0024 | THERMAL | R | 0x0 | 4x 12-bit thermal readings, 16-bit packed |
 | 0x0028 | POWER_GATE | R/W | 0xFF | [7:0] per-cluster enable (1=powered) |
 | 0x002C | INTERRUPT | R/W | 0x0 | [7:0] pending (R), [15:8] mask (R/W) |
+| 0x0030 | HBM5_CTRL | R/W | 0x10 | [0] enable, [1] init, [3:2] mode, [4] ecc_en, [5] scrub_en |
+| 0x0034 | HBM5_STATUS | R | 0x0 | [0] init_done, [1] ready, [2] ecc_ce, [3] ecc_ue, [11:4] temp, [15:12] active_pcs |
+| 0x0038 | HBM5_ADDR | R/W | 0x0 | [33:0] HBM5 direct access address |
+| 0x003C | HBM5_WDATA | W | 0x0 | HBM5 direct write data (triggers write to DRAM) |
+| 0x0040 | HBM5_RDATA | R/W | 0x0 | R: last read data; W: trigger read from DRAM |
+| 0x0044 | HBM5_ECC | R/W | 0x0 | R: [15:0] CE count, [31:16] UE count, [36:32] bank, [50:37] row; W: clear |
+| 0x0048 | HBM5_REFRESH | R/W | 0x10F3C | [15:0] interval, [16] per_bank, [18:17] temp_comp |
+| 0x004C | HBM5_PERF | R/W | 0x0 | R: rd/wr/refresh/latency counters; W: clear all |
 
 ---
 
@@ -148,6 +173,8 @@ workloads, with direct photonic I/O integration and CXL 2.0 host connectivity.
 | 0x7 | QPA_TX | Send register data to QPA photonic output |
 | 0x8 | SOFTMAX | Softmax activation (piecewise linear) |
 | 0x9 | GELU | GELU activation |
+| 0xA | HBM_LOAD | Direct HBM5 burst read to register |
+| 0xB | HBM_STORE | Direct HBM5 burst write from register |
 
 ---
 
@@ -157,13 +184,22 @@ workloads, with direct photonic I/O integration and CXL 2.0 host connectivity.
 |------|-----------|
 | clk_compute period (min) | 0.5 ns (2.0 GHz max) |
 | clk_sys period | 4.0 ns (250 MHz) |
+| clk_hbm period | 0.5 ns (2.0 GHz) |
 | Setup (compute domain) | 0.15 ns |
 | Hold (compute domain) | 0.05 ns |
 | AXI write latency | 2 clk_sys cycles |
 | AXI read latency | 2 clk_sys cycles |
 | SIMD pipeline latency | 3 clk_compute cycles |
 | DMA start-to-first-data | 4 clk_sys cycles |
+| HBM5 row activate (tRCD) | 7 clk_hbm cycles (3.5 ns) |
+| HBM5 CAS latency (tCL) | 8 clk_hbm cycles (4.0 ns) |
+| HBM5 write recovery (tWR) | 8 clk_hbm cycles |
+| HBM5 row precharge (tRP) | 7 clk_hbm cycles |
+| HBM5 refresh cycle (tRFC) | 15 clk_hbm cycles |
+| HBM5 write-to-read (tWTR) | 4 clk_hbm cycles |
+| HBM5 read-to-write (tRTW) | 3 clk_hbm cycles |
 | Cross-domain (sys -> compute) | 2-stage synchronizer |
+| Cross-domain (sys -> hbm) | 2-stage synchronizer |
 
 ---
 
@@ -176,9 +212,11 @@ workloads, with direct photonic I/O integration and CXL 2.0 host connectivity.
 | L1 Cache (4 KB MPW) | 5 mW | 1 mW | 6 mW |
 | AXI Interface | 10 mW | 1 mW | 11 mW |
 | DMA Controller | 8 mW | 1 mW | 9 mW |
+| HBM5 Controller | 25 mW | 3 mW | 28 mW |
+| HBM5 ECC Engine | 5 mW | 0.5 mW | 5.5 mW |
 | Thermal Monitor | 2 mW | 0.5 mW | 2.5 mW |
 | Clock Tree | 15 mW | 0 mW | 15 mW |
-| **Total (MPW)** | **175 mW** | **13.5 mW** | **188.5 mW** |
+| **Total (MPW)** | **205 mW** | **17 mW** | **222 mW** |
 
 Note: Production die with 128 lanes and full caches will consume ~800 W at
 peak (0.85V, 2.0 GHz, all clusters active).
@@ -194,10 +232,12 @@ peak (0.85V, 2.0 GHz, all clusters active).
 | L1 Cache (4 KB) | ~30K | 0.10 |
 | AXI Interface | ~15K | 0.05 |
 | DMA Controller | ~10K | 0.03 |
+| HBM5 Controller | ~45K | 0.14 |
+| HBM5 ECC + SRAM emul | ~25K | 0.08 |
 | Thermal + PMU | ~5K | 0.02 |
 | Clock + Reset | ~3K | 0.01 |
 | Pad Ring (MPW) | — | 0.50 |
-| **Total (MPW)** | **~133K** | **~0.92 mm2** |
+| **Total (MPW)** | **~203K** | **~1.14 mm2** |
 
 ---
 
@@ -205,9 +245,14 @@ peak (0.85V, 2.0 GHz, all clusters active).
 
 | Test | Method | Coverage Target |
 |------|--------|----------------|
-| SIMD operations (all opcodes) | Directed + random | 100% opcode |
+| SIMD operations (all opcodes incl. HBM_LOAD/STORE) | Directed + random | 100% opcode |
 | AXI protocol compliance | Formal (AMBA VIP) | Protocol rules |
-| DMA transfers | Directed | All states |
+| DMA transfers (via HBM5) | Directed | All states |
+| HBM5 direct write (storage) | Directed | Multi-address |
+| HBM5 direct read (retrieval) | Directed | Data match |
+| HBM5 ECC inject/detect | Directed | CE + UE |
+| HBM5 refresh scheduling | Directed | Per-bank, temp-comp |
+| HBM5 perf counter accuracy | Directed | Read/write/refresh |
 | Thermal throttle response | Directed | All thresholds |
 | Power gate sequence | Directed | All clusters |
 | QPA trigger path | Directed | Valid/ready |
