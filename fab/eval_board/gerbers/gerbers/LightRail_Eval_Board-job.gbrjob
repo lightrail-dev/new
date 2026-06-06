@@ -3,187 +3,345 @@
     "GenerationSoftware": {
       "Vendor": "KiCad",
       "Application": "Pcbnew",
-      "Version": "8.0"
+      "Version": "8.0.9-8.0.9-0~ubuntu22.04.1"
     },
-    "CreationDate": "2026-06-05T21:56:07.451422",
+    "CreationDate": "2026-06-06T00:14:38+00:00"
+  },
+  "GeneralSpecs": {
     "ProjectId": {
       "Name": "LightRail_Eval_Board",
-      "GUID": "PA-2026-001",
-      "Revision": "1.0"
+      "GUID": "4c696768-7452-4616-996c-5f4576616c5f",
+      "Revision": "rev?"
     },
     "Size": {
-      "X": 100.0,
-      "Y": 100.0
-    }
+      "X": 100.05,
+      "Y": 100.05
+    },
+    "LayerNumber": 22,
+    "BoardThickness": 2.4,
+    "Finish": "ENIG",
+    "ImpedanceControlled": true
   },
+  "DesignRules": [
+    {
+      "Layers": "Outer",
+      "PadToPad": 0.125,
+      "PadToTrack": 0.125,
+      "TrackToTrack": 0.12,
+      "MinLineWidth": 0.5,
+      "TrackToRegion": 0.2,
+      "RegionToRegion": 0.2
+    },
+    {
+      "Layers": "Inner",
+      "PadToPad": 0.125,
+      "PadToTrack": 0.125,
+      "TrackToTrack": 0.12,
+      "MinLineWidth": 0.1,
+      "TrackToRegion": 0.2,
+      "RegionToRegion": 0.2
+    }
+  ],
   "FilesAttributes": [
     {
-      "Path": "LightRail_Eval_Board-F_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L1_PHYSICAL_FABRIC.gtl",
+      "FileFunction": "Copper,L1,Top",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In1_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L2_TFLN_INTERCONNECT.g2",
+      "FileFunction": "Copper,L2,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In2_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L3_GND_REF_1.g3",
+      "FileFunction": "Copper,L3,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In3_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L4_LASER_WDM.g4",
+      "FileFunction": "Copper,L4,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In4_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L5_ANALOG_WAVE.g5",
+      "FileFunction": "Copper,L5,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In5_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L6_GND_REF_2.g6",
+      "FileFunction": "Copper,L6,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In6_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L7_SYNAPTIC_GRID.g7",
+      "FileFunction": "Copper,L7,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In7_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L8_SIGNAL_RESTORE.g8",
+      "FileFunction": "Copper,L8,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In8_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L9_GND_REF_3.g9",
+      "FileFunction": "Copper,L9,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In9_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L10_LOGIC_CORE.g10",
+      "FileFunction": "Copper,L10,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In10_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L11_PWR_CORE_0V9.g11",
+      "FileFunction": "Copper,L11,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In11_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L12_GND_REF_4.g12",
+      "FileFunction": "Copper,L12,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In12_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L13_COMM_PRIMS.g13",
+      "FileFunction": "Copper,L13,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In13_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L14_KERNEL_INTEG.g14",
+      "FileFunction": "Copper,L14,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In14_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L15_GND_REF_5.g15",
+      "FileFunction": "Copper,L15,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In15_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L16_FABRIC_OS.g16",
+      "FileFunction": "Copper,L16,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In16_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L17_PWR_1V0_1V8.g17",
+      "FileFunction": "Copper,L17,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In17_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L18_GND_REF_6.g18",
+      "FileFunction": "Copper,L18,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In18_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L19_SCHEDULER.g19",
+      "FileFunction": "Copper,L19,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In19_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L20_FRAMEWORK.g20",
+      "FileFunction": "Copper,L20,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In20_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L21_PWR_3V3_5V.g21",
+      "FileFunction": "Copper,L21,Inr",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-B_Cu.gbr",
-      "FileFunction": "Copper"
+      "Path": "LightRail_Eval_Board-L22_AI_WORKLOAD.gbl",
+      "FileFunction": "Copper,L22,Bot",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-F_Mask.gbr",
-      "FileFunction": "Front Solder Mask"
+      "Path": "LightRail_Eval_Board-F_Paste.gtp",
+      "FileFunction": "SolderPaste,Top",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-B_Mask.gbr",
-      "FileFunction": "Back Solder Mask"
+      "Path": "LightRail_Eval_Board-B_Paste.gbp",
+      "FileFunction": "SolderPaste,Bot",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-F_Paste.gbr",
-      "FileFunction": "Front Solder Paste"
+      "Path": "LightRail_Eval_Board-F_Silkscreen.gto",
+      "FileFunction": "Legend,Top",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-B_Paste.gbr",
-      "FileFunction": "Back Solder Paste"
+      "Path": "LightRail_Eval_Board-B_Silkscreen.gbo",
+      "FileFunction": "Legend,Bot",
+      "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-F_SilkS.gbr",
-      "FileFunction": "Front Silkscreen"
+      "Path": "LightRail_Eval_Board-F_Mask.gts",
+      "FileFunction": "SolderMask,Top",
+      "FilePolarity": "Negative"
     },
     {
-      "Path": "LightRail_Eval_Board-B_SilkS.gbr",
-      "FileFunction": "Back Silkscreen"
+      "Path": "LightRail_Eval_Board-B_Mask.gbs",
+      "FileFunction": "SolderMask,Bot",
+      "FilePolarity": "Negative"
     },
     {
-      "Path": "LightRail_Eval_Board-Edge_Cuts.gbr",
-      "FileFunction": "Board Outline"
+      "Path": "LightRail_Eval_Board-Edge_Cuts.gm1",
+      "FileFunction": "Profile",
+      "FilePolarity": "Positive"
     }
   ],
   "MaterialStackup": [
+    {
+      "Type": "Legend",
+      "Name": "Top Silk Screen"
+    },
+    {
+      "Type": "SolderPaste",
+      "Name": "Top Solder Paste"
+    },
+    {
+      "Type": "SolderMask",
+      "Thickness": 0.01,
+      "Name": "Top Solder Mask"
+    },
     {
       "Type": "Copper",
       "Thickness": 0.035,
       "Name": "L1_PHYSICAL_FABRIC"
     },
     {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "L1_PHYSICAL_FABRIC/L2_TFLN_INTERCONNECT",
+      "Notes": "Type: dielectric layer 1 (from L1_PHYSICAL_FABRIC to L2_TFLN_INTERCONNECT)"
+    },
+    {
       "Type": "Copper",
-      "Thickness": 0.035,
+      "Thickness": 0.018,
       "Name": "L2_TFLN_INTERCONNECT"
     },
     {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "L2_TFLN_INTERCONNECT/L3_GND_REF_1",
+      "Notes": "Type: dielectric layer 2 (from L2_TFLN_INTERCONNECT to L3_GND_REF_1)"
+    },
+    {
       "Type": "Copper",
-      "Thickness": 0.035,
+      "Thickness": 0.018,
       "Name": "L3_GND_REF_1"
     },
     {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "L3_GND_REF_1/L4_LASER_WDM",
+      "Notes": "Type: dielectric layer 3 (from L3_GND_REF_1 to L4_LASER_WDM)"
+    },
+    {
       "Type": "Copper",
-      "Thickness": 0.035,
+      "Thickness": 0.018,
       "Name": "L4_LASER_WDM"
     },
     {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "L4_LASER_WDM/L5_ANALOG_WAVE",
+      "Notes": "Type: dielectric layer 4 (from L4_LASER_WDM to L5_ANALOG_WAVE)"
+    },
+    {
       "Type": "Copper",
-      "Thickness": 0.035,
+      "Thickness": 0.018,
       "Name": "L5_ANALOG_WAVE"
     },
     {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "L5_ANALOG_WAVE/L6_GND_REF_2",
+      "Notes": "Type: dielectric layer 5 (from L5_ANALOG_WAVE to L6_GND_REF_2)"
+    },
+    {
       "Type": "Copper",
-      "Thickness": 0.035,
+      "Thickness": 0.018,
       "Name": "L6_GND_REF_2"
     },
     {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "L6_GND_REF_2/L7_SYNAPTIC_GRID",
+      "Notes": "Type: dielectric layer 6 (from L6_GND_REF_2 to L7_SYNAPTIC_GRID)"
+    },
+    {
       "Type": "Copper",
-      "Thickness": 0.035,
+      "Thickness": 0.018,
       "Name": "L7_SYNAPTIC_GRID"
     },
     {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "L7_SYNAPTIC_GRID/L8_SIGNAL_RESTORE",
+      "Notes": "Type: dielectric layer 7 (from L7_SYNAPTIC_GRID to L8_SIGNAL_RESTORE)"
+    },
+    {
       "Type": "Copper",
-      "Thickness": 0.035,
+      "Thickness": 0.018,
       "Name": "L8_SIGNAL_RESTORE"
     },
     {
-      "Type": "Copper",
-      "Thickness": 0.035,
-      "Name": "L9_GND_REF_3"
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "L8_SIGNAL_RESTORE/L9_GND_REF_3",
+      "Notes": "Type: dielectric layer 8 (from L8_SIGNAL_RESTORE to L9_GND_REF_3)"
     },
     {
       "Type": "Copper",
-      "Thickness": 0.035,
+      "Thickness": 0.018,
+      "Name": "L9_GND_REF_3"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "L9_GND_REF_3/L10_LOGIC_CORE",
+      "Notes": "Type: dielectric layer 9 (from L9_GND_REF_3 to L10_LOGIC_CORE)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.018,
       "Name": "L10_LOGIC_CORE"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "L10_LOGIC_CORE/L11_PWR_CORE_0V9",
+      "Notes": "Type: dielectric layer 10 (from L10_LOGIC_CORE to L11_PWR_CORE_0V9)"
     },
     {
       "Type": "Copper",
@@ -191,29 +349,83 @@
       "Name": "L11_PWR_CORE_0V9"
     },
     {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "L11_PWR_CORE_0V9/L12_GND_REF_4",
+      "Notes": "Type: dielectric layer 11 (from L11_PWR_CORE_0V9 to L12_GND_REF_4)"
+    },
+    {
       "Type": "Copper",
-      "Thickness": 0.035,
+      "Thickness": 0.018,
       "Name": "L12_GND_REF_4"
     },
     {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "L12_GND_REF_4/L13_COMM_PRIMS",
+      "Notes": "Type: dielectric layer 12 (from L12_GND_REF_4 to L13_COMM_PRIMS)"
+    },
+    {
       "Type": "Copper",
-      "Thickness": 0.035,
+      "Thickness": 0.018,
       "Name": "L13_COMM_PRIMS"
     },
     {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "L13_COMM_PRIMS/L14_KERNEL_INTEG",
+      "Notes": "Type: dielectric layer 13 (from L13_COMM_PRIMS to L14_KERNEL_INTEG)"
+    },
+    {
       "Type": "Copper",
-      "Thickness": 0.035,
+      "Thickness": 0.018,
       "Name": "L14_KERNEL_INTEG"
     },
     {
-      "Type": "Copper",
-      "Thickness": 0.035,
-      "Name": "L15_GND_REF_5"
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "L14_KERNEL_INTEG/L15_GND_REF_5",
+      "Notes": "Type: dielectric layer 14 (from L14_KERNEL_INTEG to L15_GND_REF_5)"
     },
     {
       "Type": "Copper",
-      "Thickness": 0.035,
+      "Thickness": 0.018,
+      "Name": "L15_GND_REF_5"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "L15_GND_REF_5/L16_FABRIC_OS",
+      "Notes": "Type: dielectric layer 15 (from L15_GND_REF_5 to L16_FABRIC_OS)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.018,
       "Name": "L16_FABRIC_OS"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "L16_FABRIC_OS/L17_PWR_1V0_1V8",
+      "Notes": "Type: dielectric layer 16 (from L16_FABRIC_OS to L17_PWR_1V0_1V8)"
     },
     {
       "Type": "Copper",
@@ -221,19 +433,55 @@
       "Name": "L17_PWR_1V0_1V8"
     },
     {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "High-Tg-FR4",
+      "DielectricConstant": "4.2",
+      "LossTangent": "0.015",
+      "Name": "L17_PWR_1V0_1V8/L18_GND_REF_6",
+      "Notes": "Type: dielectric layer 17 (from L17_PWR_1V0_1V8 to L18_GND_REF_6)"
+    },
+    {
       "Type": "Copper",
-      "Thickness": 0.035,
+      "Thickness": 0.018,
       "Name": "L18_GND_REF_6"
     },
     {
-      "Type": "Copper",
-      "Thickness": 0.035,
-      "Name": "L19_SCHEDULER"
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "L18_GND_REF_6/L19_SCHEDULER",
+      "Notes": "Type: dielectric layer 18 (from L18_GND_REF_6 to L19_SCHEDULER)"
     },
     {
       "Type": "Copper",
-      "Thickness": 0.035,
+      "Thickness": 0.018,
+      "Name": "L19_SCHEDULER"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "L19_SCHEDULER/L20_FRAMEWORK",
+      "Notes": "Type: dielectric layer 19 (from L19_SCHEDULER to L20_FRAMEWORK)"
+    },
+    {
+      "Type": "Copper",
+      "Thickness": 0.018,
       "Name": "L20_FRAMEWORK"
+    },
+    {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "L20_FRAMEWORK/L21_PWR_3V3_5V",
+      "Notes": "Type: dielectric layer 20 (from L20_FRAMEWORK to L21_PWR_3V3_5V)"
     },
     {
       "Type": "Copper",
@@ -241,11 +489,31 @@
       "Name": "L21_PWR_3V3_5V"
     },
     {
+      "Type": "Dielectric",
+      "Thickness": 0.075,
+      "Material": "Megtron-7",
+      "DielectricConstant": "3.3",
+      "LossTangent": "0.002",
+      "Name": "L21_PWR_3V3_5V/L22_AI_WORKLOAD",
+      "Notes": "Type: dielectric layer 21 (from L21_PWR_3V3_5V to L22_AI_WORKLOAD)"
+    },
+    {
       "Type": "Copper",
       "Thickness": 0.035,
       "Name": "L22_AI_WORKLOAD"
+    },
+    {
+      "Type": "SolderMask",
+      "Thickness": 0.01,
+      "Name": "Bottom Solder Mask"
+    },
+    {
+      "Type": "SolderPaste",
+      "Name": "Bottom Solder Paste"
+    },
+    {
+      "Type": "Legend",
+      "Name": "Bottom Silk Screen"
     }
-  ],
-  "BoardThickness": 2.4,
-  "Layers": 22
+  ]
 }
