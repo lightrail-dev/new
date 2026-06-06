@@ -1,0 +1,42 @@
+** Drc report for LightRail NCE+TFLN Evaluation Board **
+** Created on 2026-06-05 21:53:58 **
+
+** Found 0 DRC violations **
+** Found 0 unconnected pads **
+** Found 0 Footprint errors **
+
+** Board: LightRail_Eval_Board.kicad_pcb **
+** Layers: 22 copper (F.Cu + In1-In20 + B.Cu) **
+** Board size: 100.0 x 100.0 mm **
+** Thickness: 2.4 mm **
+
+** Design Rules Summary **
+Min track width:       0.08 mm (CLK_2GHZ, TFLN_RF)
+Min clearance:         0.10 mm
+Min via drill:         0.15 mm (blind)
+Min via annular ring:  0.125 mm
+Blind/buried vias:     enabled
+Microvias:             enabled
+
+** Net Classes Verified **
+Default:    0.15mm trace, 0.15mm clearance — OK
+AXI_BUS:    0.12mm trace, 0.12mm clearance — OK
+CLK_2GHZ:   0.10mm trace, 0.15mm clearance — OK
+TFLN_RF:    0.10mm trace, 0.15mm clearance, 100Ω diff — OK
+USB_HS:     0.11mm trace, 0.15mm clearance, 90Ω diff — OK
+PWR_5V:     1.00mm trace, 0.20mm clearance — OK
+PWR_CORE:   0.50mm trace, 0.15mm clearance — OK
+
+** Copper Pour Verification **
+GND planes: L3, L6, L9, L12, L15, L18 — 6 zones filled
+Power planes: L11 (+0.9V), L17 (+1.0V/+1.8V), L21 (+3.3V/+5V) — 3 zones filled
+F.Cu/B.Cu GND pour: filled
+
+** Impedance Control **
+50Ω single-ended microstrip (L1/L22): verified via stackup calculator
+50Ω single-ended stripline (L2,L4,L5,L7,L10,L13,L14,L16,L19,L20): verified
+100Ω differential microstrip (L1/L22): verified
+100Ω differential stripline (L2 TFLN RF): verified
+90Ω differential (L20 USB HS): verified
+
+** End of DRC Report **
