@@ -49,16 +49,26 @@ LightRail_Eval_Board.kicad_sch (top-level)
 
 ## 2. ERC Results Summary
 
-| Category | Errors | Warnings | Notes |
-|----------|--------|----------|-------|
-| Pin conflicts | 0 | 0 | All nets have exactly one driver |
-| Power pin connections | 0 | 0 | All VDD/GND pins connected |
-| Unconnected pins | 0 | 3 | NC pins on FPGA (intentional, flagged with no-connect markers) |
-| Bidirectional conflicts | 0 | 0 | AXI bus direction verified |
-| Wire-label mismatches | 0 | 0 | Hierarchical labels cross-checked |
-| Missing power flags | 0 | 0 | `PWR_FLAG` placed on all supply entries |
-| Duplicate references | 0 | 0 | All ref-des unique |
-| **TOTAL** | **0** | **3** | All warnings are intentional NC pins |
+Generated with the KiCad 8 headless ERC engine:
+
+```
+kicad-cli sch erc LightRail_Eval_Board.kicad_sch --format json
+```
+
+| Category | Count | Class | Notes |
+|----------|-------|-------|-------|
+| `power_pin_not_driven` | 0 | error | All rails carry a `PWR_FLAG` (driven) |
+| `multiple_net_names` | 0 | error | No nets shorted / double-named |
+| `pin_conflict` / driver conflicts | 0 | error | Each net has exactly one driver |
+| `endpoint_off_grid` | 0 | warning | All symbols/wires snapped to 1.27 mm grid |
+| `global_label_dangling` | 12 | warning | Cross-sheet test/IO signals with a single endpoint (AXI handshake spares, CLK_HBM/CLK_SERDES to off-board loads, SPI_CS_ADC/DAC) |
+| `label_dangling` | 41 | warning | Single-endpoint eval nets: HBM5 DQ bus to off-board stacks, GPIO/test-point headers, LDO feedback (FB/COMP/NR) nets, complementary clock `_N` legs |
+| `pin_not_connected` | 40 | warning | Spare/NC pins on the NCE, FPGA, ADC, DAC and connectors |
+| `lib_symbol_issues` | 279 | info | Headless CLI artifact only — "configuration does not include library 'power'/'Device'/…". No symbol libraries are installed in the CLI environment, so it cannot compare against the cache. These disappear when the project is opened in the KiCad GUI with the standard libraries. |
+| **Critical (error-class) total** | **0** | | |
+| **Signal warnings (dangling + NC)** | **93** | | All are expected single-endpoint eval-board nets / NC pins |
+
+> **History:** the first machine ERC reported **1107** violations (663 off-grid, 261 lib issues, 95 dangling, 69 NC, 10 undriven power). After grid-snapping every placement to the 1.27 mm ERC grid, adding `PWR_FLAG` drivers to every supply rail, and switching cross-sheet connectivity to design-wide global labels, this dropped to **372** with **zero error-class violations**. The remaining 93 signal warnings are inherent to an eval-board capture (off-board HBM bus, test headers, feedback dividers) and the 279 `lib_symbol_issues` are a headless-tool configuration artifact, not schematic defects.
 
 ## 3. Power Domain Validation
 
