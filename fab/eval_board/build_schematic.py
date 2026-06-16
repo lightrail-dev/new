@@ -10,10 +10,15 @@ Produces 5 hierarchical .kicad_sch files with:
 
 Author: LightRail AI Hardware Engineering
 """
-import os, uuid, math
+import os, uuid, math, json
 
 KICAD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kicad")
 SHEETS_DIR = os.path.join(KICAD_DIR, "sheets")
+
+# Connectivity registry: ref -> {value, lib_id, footprint, pins:{pad:net}}
+# Captured by place_instance() so the PCB builder shares the schematic's
+# single source of truth for net membership (keeps schematic and layout LVS-consistent).
+NETLIST = {}
 
 # Deterministic UUIDs for reproducibility
 _uuid_counter = 0
@@ -244,6 +249,16 @@ def place_instance(lib_id, ref, value, ix, iy, pin_geom, pin_nets, footprint="",
     """
     base = lib_id.split(":")[-1]
     ix = snap(ix); iy = snap(iy)
+    # Record connectivity for the PCB builder (single source of truth)
+    NETLIST[ref] = {
+        "value": value,
+        "lib_id": lib_id,
+        "footprint": footprint,
+        "mpn": mpn,
+        "sch_x": ix,
+        "sch_y": iy,
+        "pins": dict(pin_nets),
+    }
     inst_lines = []
     inst_lines.append(f'\t(symbol (lib_id "{lib_id}") (at {ix:.2f} {iy:.2f} 0) (unit 1)')
     inst_lines.append(f'\t\t(in_bom yes) (on_board yes) (dnp no)')
@@ -1152,6 +1167,12 @@ def main():
     with open(os.path.join(SHEETS_DIR, "clock_interface.kicad_sch"), 'w') as f:
         f.write(generate_clock_interface())
     
+    # Dump the captured connectivity so the PCB builder can consume it.
+    netlist_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "netlist.json")
+    with open(netlist_path, 'w') as f:
+        json.dump(NETLIST, f, indent=1, sort_keys=True)
+    n_nodes = sum(len(c["pins"]) for c in NETLIST.values())
+    print(f"Wrote netlist.json: {len(NETLIST)} components, {n_nodes} pin-nodes.")
     print("Done! All 5 schematic files generated.")
 
 
