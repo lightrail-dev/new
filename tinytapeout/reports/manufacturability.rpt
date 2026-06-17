@@ -1,0 +1,19 @@
+Design Name: tt_um_lightrail_nce
+Run Directory: /openlane/designs/tt_um_lightrail_nce/runs/run1
+----------------------------------------
+
+Magic DRC Summary:
+Source: /openlane/designs/tt_um_lightrail_nce/runs/run1/reports/signoff/drc.rpt
+Total Magic DRC violations is 0
+----------------------------------------
+
+LVS Summary:
+Source: /openlane/designs/tt_um_lightrail_nce/runs/run1/logs/signoff/40-tt_um_lightrail_nce.lef.lvs.log
+Number of nets: 723                        |Number of nets: 723                        
+Design is LVS clean.
+----------------------------------------
+
+Antenna Summary:
+Source: /openlane/designs/tt_um_lightrail_nce/runs/run1/logs/signoff/42-arc.log
+Pin violations: 0
+Net violations: 0
