@@ -5,7 +5,7 @@
       "Application": "Pcbnew",
       "Version": "8.0.9-8.0.9-0~ubuntu22.04.1"
     },
-    "CreationDate": "2026-06-16T06:33:08+00:00"
+    "CreationDate": "2026-06-20T21:10:25+00:00"
   },
   "GeneralSpecs": {
     "ProjectId": {
@@ -14,8 +14,8 @@
       "Revision": "rev?"
     },
     "Size": {
-      "X": 100.05,
-      "Y": 100.05
+      "X": 200.1,
+      "Y": 150.1
     },
     "LayerNumber": 22,
     "BoardThickness": 2.4,
@@ -24,10 +24,9 @@
   "DesignRules": [
     {
       "Layers": "Outer",
-      "PadToPad": 0.2,
-      "PadToTrack": 0.2,
-      "TrackToTrack": 0.2,
-      "MinLineWidth": 0.15,
+      "PadToPad": 0.15,
+      "PadToTrack": 0.15,
+      "TrackToTrack": 0.15,
       "TrackToRegion": 0.5,
       "RegionToRegion": 0.5
     },
@@ -35,8 +34,7 @@
       "Layers": "Inner",
       "PadToPad": 0.0,
       "PadToTrack": 0.0,
-      "TrackToTrack": 0.2,
-      "MinLineWidth": 0.15,
+      "TrackToTrack": 0.15,
       "TrackToRegion": 0.5,
       "RegionToRegion": 0.5
     }
@@ -58,12 +56,12 @@
       "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In3_Cu (L4 Sig).g4",
+      "Path": "LightRail_Eval_Board-In3_Cu (L4 AXI).g4",
       "FileFunction": "Copper,L4,Inr",
       "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In4_Cu (L5 Sig).g5",
+      "Path": "LightRail_Eval_Board-In4_Cu (L5 AXI_B).g5",
       "FileFunction": "Copper,L5,Inr",
       "FilePolarity": "Positive"
     },
@@ -73,12 +71,12 @@
       "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In6_Cu (L7 Sig).g7",
+      "Path": "LightRail_Eval_Board-In6_Cu (L7 TFLN_HBM).g7",
       "FileFunction": "Copper,L7,Inr",
       "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In7_Cu (L8 Sig).g8",
+      "Path": "LightRail_Eval_Board-In7_Cu (L8 TFLN_B_HBM_B).g8",
       "FileFunction": "Copper,L8,Inr",
       "FilePolarity": "Positive"
     },
@@ -88,7 +86,7 @@
       "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In9_Cu (L10 Sig).g10",
+      "Path": "LightRail_Eval_Board-In9_Cu (L10 CLK).g10",
       "FileFunction": "Copper,L10,Inr",
       "FilePolarity": "Positive"
     },
@@ -103,12 +101,12 @@
       "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In12_Cu (L13 Sig).g13",
+      "Path": "LightRail_Eval_Board-In12_Cu (L13 PWR 1V8).g13",
       "FileFunction": "Copper,L13,Inr",
       "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In13_Cu (L14 Sig).g14",
+      "Path": "LightRail_Eval_Board-In13_Cu (L14 PWR 3V3).g14",
       "FileFunction": "Copper,L14,Inr",
       "FilePolarity": "Positive"
     },
@@ -123,12 +121,12 @@
       "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In16_Cu (L17 PWR 1V8).g17",
+      "Path": "LightRail_Eval_Board-In16_Cu (L17 Sig).g17",
       "FileFunction": "Copper,L17,Inr",
       "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In17_Cu (L18 GND).g18",
+      "Path": "LightRail_Eval_Board-In17_Cu (L18 Sig).g18",
       "FileFunction": "Copper,L18,Inr",
       "FilePolarity": "Positive"
     },
@@ -143,7 +141,7 @@
       "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_Eval_Board-In20_Cu (L21 PWR 3V3).g21",
+      "Path": "LightRail_Eval_Board-In20_Cu (L21 GND).g21",
       "FileFunction": "Copper,L21,Inr",
       "FilePolarity": "Positive"
     },
@@ -245,32 +243,32 @@
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In2.Cu (L3 GND)/In3.Cu (L4 Sig)",
-      "Notes": "Type: dielectric layer 3 (from In2.Cu (L3 GND) to In3.Cu (L4 Sig))"
+      "Name": "In2.Cu (L3 GND)/In3.Cu (L4 AXI)",
+      "Notes": "Type: dielectric layer 3 (from In2.Cu (L3 GND) to In3.Cu (L4 AXI))"
     },
     {
       "Type": "Copper",
       "Thickness": 0.035,
-      "Name": "In3.Cu (L4 Sig)"
+      "Name": "In3.Cu (L4 AXI)"
     },
     {
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In3.Cu (L4 Sig)/In4.Cu (L5 Sig)",
-      "Notes": "Type: dielectric layer 4 (from In3.Cu (L4 Sig) to In4.Cu (L5 Sig))"
+      "Name": "In3.Cu (L4 AXI)/In4.Cu (L5 AXI_B)",
+      "Notes": "Type: dielectric layer 4 (from In3.Cu (L4 AXI) to In4.Cu (L5 AXI_B))"
     },
     {
       "Type": "Copper",
       "Thickness": 0.035,
-      "Name": "In4.Cu (L5 Sig)"
+      "Name": "In4.Cu (L5 AXI_B)"
     },
     {
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In4.Cu (L5 Sig)/In5.Cu (L6 GND)",
-      "Notes": "Type: dielectric layer 5 (from In4.Cu (L5 Sig) to In5.Cu (L6 GND))"
+      "Name": "In4.Cu (L5 AXI_B)/In5.Cu (L6 GND)",
+      "Notes": "Type: dielectric layer 5 (from In4.Cu (L5 AXI_B) to In5.Cu (L6 GND))"
     },
     {
       "Type": "Copper",
@@ -281,32 +279,32 @@
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In5.Cu (L6 GND)/In6.Cu (L7 Sig)",
-      "Notes": "Type: dielectric layer 6 (from In5.Cu (L6 GND) to In6.Cu (L7 Sig))"
+      "Name": "In5.Cu (L6 GND)/In6.Cu (L7 TFLN/HBM)",
+      "Notes": "Type: dielectric layer 6 (from In5.Cu (L6 GND) to In6.Cu (L7 TFLN/HBM))"
     },
     {
       "Type": "Copper",
       "Thickness": 0.035,
-      "Name": "In6.Cu (L7 Sig)"
+      "Name": "In6.Cu (L7 TFLN/HBM)"
     },
     {
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In6.Cu (L7 Sig)/In7.Cu (L8 Sig)",
-      "Notes": "Type: dielectric layer 7 (from In6.Cu (L7 Sig) to In7.Cu (L8 Sig))"
+      "Name": "In6.Cu (L7 TFLN/HBM)/In7.Cu (L8 TFLN_B/HBM_B)",
+      "Notes": "Type: dielectric layer 7 (from In6.Cu (L7 TFLN/HBM) to In7.Cu (L8 TFLN_B/HBM_B))"
     },
     {
       "Type": "Copper",
       "Thickness": 0.035,
-      "Name": "In7.Cu (L8 Sig)"
+      "Name": "In7.Cu (L8 TFLN_B/HBM_B)"
     },
     {
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In7.Cu (L8 Sig)/In8.Cu (L9 GND)",
-      "Notes": "Type: dielectric layer 8 (from In7.Cu (L8 Sig) to In8.Cu (L9 GND))"
+      "Name": "In7.Cu (L8 TFLN_B/HBM_B)/In8.Cu (L9 GND)",
+      "Notes": "Type: dielectric layer 8 (from In7.Cu (L8 TFLN_B/HBM_B) to In8.Cu (L9 GND))"
     },
     {
       "Type": "Copper",
@@ -317,20 +315,20 @@
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In8.Cu (L9 GND)/In9.Cu (L10 Sig)",
-      "Notes": "Type: dielectric layer 9 (from In8.Cu (L9 GND) to In9.Cu (L10 Sig))"
+      "Name": "In8.Cu (L9 GND)/In9.Cu (L10 CLK)",
+      "Notes": "Type: dielectric layer 9 (from In8.Cu (L9 GND) to In9.Cu (L10 CLK))"
     },
     {
       "Type": "Copper",
       "Thickness": 0.035,
-      "Name": "In9.Cu (L10 Sig)"
+      "Name": "In9.Cu (L10 CLK)"
     },
     {
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In9.Cu (L10 Sig)/In10.Cu (L11 PWR 0V9)",
-      "Notes": "Type: dielectric layer 10 (from In9.Cu (L10 Sig) to In10.Cu (L11 PWR 0V9))"
+      "Name": "In9.Cu (L10 CLK)/In10.Cu (L11 PWR 0V9)",
+      "Notes": "Type: dielectric layer 10 (from In9.Cu (L10 CLK) to In10.Cu (L11 PWR 0V9))"
     },
     {
       "Type": "Copper",
@@ -353,32 +351,32 @@
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In11.Cu (L12 GND center)/In12.Cu (L13 Sig)",
-      "Notes": "Type: dielectric layer 12 (from In11.Cu (L12 GND center) to In12.Cu (L13 Sig))"
+      "Name": "In11.Cu (L12 GND center)/In12.Cu (L13 PWR 1V8)",
+      "Notes": "Type: dielectric layer 12 (from In11.Cu (L12 GND center) to In12.Cu (L13 PWR 1V8))"
     },
     {
       "Type": "Copper",
       "Thickness": 0.035,
-      "Name": "In12.Cu (L13 Sig)"
+      "Name": "In12.Cu (L13 PWR 1V8)"
     },
     {
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In12.Cu (L13 Sig)/In13.Cu (L14 Sig)",
-      "Notes": "Type: dielectric layer 13 (from In12.Cu (L13 Sig) to In13.Cu (L14 Sig))"
+      "Name": "In12.Cu (L13 PWR 1V8)/In13.Cu (L14 PWR 3V3)",
+      "Notes": "Type: dielectric layer 13 (from In12.Cu (L13 PWR 1V8) to In13.Cu (L14 PWR 3V3))"
     },
     {
       "Type": "Copper",
       "Thickness": 0.035,
-      "Name": "In13.Cu (L14 Sig)"
+      "Name": "In13.Cu (L14 PWR 3V3)"
     },
     {
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In13.Cu (L14 Sig)/In14.Cu (L15 GND)",
-      "Notes": "Type: dielectric layer 14 (from In13.Cu (L14 Sig) to In14.Cu (L15 GND))"
+      "Name": "In13.Cu (L14 PWR 3V3)/In14.Cu (L15 GND)",
+      "Notes": "Type: dielectric layer 14 (from In13.Cu (L14 PWR 3V3) to In14.Cu (L15 GND))"
     },
     {
       "Type": "Copper",
@@ -401,32 +399,32 @@
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In15.Cu (L16 Sig)/In16.Cu (L17 PWR 1V8)",
-      "Notes": "Type: dielectric layer 16 (from In15.Cu (L16 Sig) to In16.Cu (L17 PWR 1V8))"
+      "Name": "In15.Cu (L16 Sig)/In16.Cu (L17 Sig)",
+      "Notes": "Type: dielectric layer 16 (from In15.Cu (L16 Sig) to In16.Cu (L17 Sig))"
     },
     {
       "Type": "Copper",
       "Thickness": 0.035,
-      "Name": "In16.Cu (L17 PWR 1V8)"
+      "Name": "In16.Cu (L17 Sig)"
     },
     {
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In16.Cu (L17 PWR 1V8)/In17.Cu (L18 GND)",
-      "Notes": "Type: dielectric layer 17 (from In16.Cu (L17 PWR 1V8) to In17.Cu (L18 GND))"
+      "Name": "In16.Cu (L17 Sig)/In17.Cu (L18 Sig)",
+      "Notes": "Type: dielectric layer 17 (from In16.Cu (L17 Sig) to In17.Cu (L18 Sig))"
     },
     {
       "Type": "Copper",
       "Thickness": 0.035,
-      "Name": "In17.Cu (L18 GND)"
+      "Name": "In17.Cu (L18 Sig)"
     },
     {
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In17.Cu (L18 GND)/In18.Cu (L19 Sig)",
-      "Notes": "Type: dielectric layer 18 (from In17.Cu (L18 GND) to In18.Cu (L19 Sig))"
+      "Name": "In17.Cu (L18 Sig)/In18.Cu (L19 Sig)",
+      "Notes": "Type: dielectric layer 18 (from In17.Cu (L18 Sig) to In18.Cu (L19 Sig))"
     },
     {
       "Type": "Copper",
@@ -449,20 +447,20 @@
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In19.Cu (L20 Sig)/In20.Cu (L21 PWR 3V3)",
-      "Notes": "Type: dielectric layer 20 (from In19.Cu (L20 Sig) to In20.Cu (L21 PWR 3V3))"
+      "Name": "In19.Cu (L20 Sig)/In20.Cu (L21 GND)",
+      "Notes": "Type: dielectric layer 20 (from In19.Cu (L20 Sig) to In20.Cu (L21 GND))"
     },
     {
       "Type": "Copper",
       "Thickness": 0.035,
-      "Name": "In20.Cu (L21 PWR 3V3)"
+      "Name": "In20.Cu (L21 GND)"
     },
     {
       "Type": "Dielectric",
       "Thickness": 0.0767,
       "Material": "FR4",
-      "Name": "In20.Cu (L21 PWR 3V3)/B.Cu",
-      "Notes": "Type: dielectric layer 21 (from In20.Cu (L21 PWR 3V3) to B.Cu)"
+      "Name": "In20.Cu (L21 GND)/B.Cu",
+      "Notes": "Type: dielectric layer 21 (from In20.Cu (L21 GND) to B.Cu)"
     },
     {
       "Type": "Copper",

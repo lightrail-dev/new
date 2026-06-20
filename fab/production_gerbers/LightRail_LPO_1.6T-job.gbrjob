@@ -5,7 +5,7 @@
       "Application": "Pcbnew",
       "Version": "8.0.9-8.0.9-0~ubuntu22.04.1"
     },
-    "CreationDate": "2026-06-16T06:24:24+00:00"
+    "CreationDate": "2026-06-20T21:10:33+00:00"
   },
   "GeneralSpecs": {
     "ProjectId": {
@@ -204,16 +204,6 @@
       "FilePolarity": "Positive"
     },
     {
-      "Path": "LightRail_LPO_1.6T-F_Adhesive.gta",
-      "FileFunction": "Glue,Top",
-      "FilePolarity": "Positive"
-    },
-    {
-      "Path": "LightRail_LPO_1.6T-B_Adhesive.gba",
-      "FileFunction": "Glue,Bot",
-      "FilePolarity": "Positive"
-    },
-    {
       "Path": "LightRail_LPO_1.6T-F_Paste.gtp",
       "FileFunction": "SolderPaste,Top",
       "FilePolarity": "Positive"
@@ -244,38 +234,8 @@
       "FilePolarity": "Negative"
     },
     {
-      "Path": "LightRail_LPO_1.6T-User_Drawings.gbr",
-      "FileFunction": "Other,User",
-      "FilePolarity": "Positive"
-    },
-    {
-      "Path": "LightRail_LPO_1.6T-User_Comments.gbr",
-      "FileFunction": "Other,User",
-      "FilePolarity": "Positive"
-    },
-    {
-      "Path": "LightRail_LPO_1.6T-User_Eco1.gbr",
-      "FileFunction": "Other,User",
-      "FilePolarity": "Positive"
-    },
-    {
-      "Path": "LightRail_LPO_1.6T-User_Eco2.gbr",
-      "FileFunction": "Other,User",
-      "FilePolarity": "Positive"
-    },
-    {
       "Path": "LightRail_LPO_1.6T-Edge_Cuts.gm1",
       "FileFunction": "Profile",
-      "FilePolarity": "Positive"
-    },
-    {
-      "Path": "LightRail_LPO_1.6T-F_Fabrication.gbr",
-      "FileFunction": "AssemblyDrawing,Top",
-      "FilePolarity": "Positive"
-    },
-    {
-      "Path": "LightRail_LPO_1.6T-B_Fabrication.gbr",
-      "FileFunction": "AssemblyDrawing,Bot",
       "FilePolarity": "Positive"
     }
   ],
