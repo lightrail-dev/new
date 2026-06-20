@@ -133,7 +133,11 @@
 		(property "Sheetfile" "sheets/clock_interface.kicad_sch" (at 190.00 63.27 0) (effects (font (size 1.27 1.27)) (hide yes)))
 	)
 
-	(text "LightRail NCE+TFLN Evaluation Board\nPA-2026-001 Rev 1.0\n100x100mm 22-Layer Intelligence Stack\n\n4 Hierarchical Sub-Sheets:\n1. Power Supply (12V → 0.9V)\n2. NCE + FPGA Compute\n3. TFLN Optical Engine\n4. Clock + Interface" (at 30.00 75.00 0) (effects (font (size 1.50 1.50))))
+	(text "LightRail NCE+TFLN Evaluation Board\nPA-2026-001 Rev 1.0\n100x100mm 22-Layer Intelligence Stack\n\nTable of Contents\n  Page 1: Top-Level Block Diagram\n  Page 2: Power Supply (12V - 0.9V)\n  Page 3: NCE + FPGA Compute\n  Page 4: TFLN Optical Engine\n  Page 5: Clock + Interface" (at 30.00 75.00 0) (effects (font (size 1.50 1.50))))
+
+	(text "REVISION HISTORY\n  Rev  Date        Author         Description\n  ---  ----------  -------------  --------------------------------\n  0.1  2026-05-01  LightRail EE   Initial schematic capture\n  0.2  2026-05-10  LightRail EE   Added TFLN optical + clock tree\n  0.3  2026-05-18  LightRail EE   ERC clean, net class assignment\n  1.0  2026-05-26  LightRail EE   Release for eval board fab" (at 30.00 105.00 0) (effects (font (size 1.27 1.27))))
+
+	(text "BLOCK DIAGRAM - Signal Flow\n\n  [12V IN] ---> [Power Supply] ---> +5V, +3V3, +1V8, +1V0, +0V9\n                     |                    |\n                     v                    v\n              [NCE QFN-64]          [Artix-7 FPGA]\n              AXI4-Lite <----------> AXI4-Lite\n              JTAG <-------------------- JTAG\n              HBM5 DQ[63:0]         SPI Flash (W25Q128)\n                     |              USB-UART (FT232H)\n                     v\n            [TFLN Optical Engine]\n            8ch PAM4 TX/RX\n            MPO-24 Fiber I/O\n            AD7928 ADC Monitor\n            AD5684R DAC Bias\n                     |\n                     v\n           [Clock Tree: Si5395A]\n           100MHz TCXO --> CLK_CORE, CLK_REF,\n                          CLK_SERDES, CLK_HBM" (at 30.00 135.00 0) (effects (font (size 1.27 1.27))))
 	(sheet_instances
 		(path "/" (page "1"))
 		(path "/aa000001-1111-4000-8000-000000000001" (page "2"))
