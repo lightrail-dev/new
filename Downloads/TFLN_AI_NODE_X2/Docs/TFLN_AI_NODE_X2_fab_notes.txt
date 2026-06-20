@@ -1,0 +1,75 @@
+TFLN_AI_NODE_X2 — Fabrication Notes
+LightRail AI | Rev 1.0 | 2026-06-20
+══════════════════════════════════════════════════════
+
+1. GENERAL
+   Board name      : TFLN_AI_NODE_X2
+   Revision        : 1.0
+   Layer count     : 22
+   Board size      : 305.0mm × 280.0mm
+   Thickness       : 3.2mm ± 0.13mm
+   Surface finish  : ENIG — Ni 3–6µm / Au 0.05–0.10µm
+   Solder mask     : Green LPI, both sides, IPC-SM-840 Class T
+   Silkscreen      : White epoxy, both sides
+   Workmanship     : IPC Class 3
+   Material        : FR4 Tg≥170°C, Halogen-free preferred
+
+2. COPPER WEIGHTS
+   Signal layers    : 1oz (35µm)
+   Power layers     : 2oz (70µm) — L3/GND, L7/PWR, L15/PWR, L16/GND
+
+3. MINIMUM FEATURES
+   Min trace width  : 0.08mm
+   Min clearance    : 0.10mm
+   Min via drill    : 0.10mm (microvia)
+   Min via annular  : 0.075mm
+   Min hole (NPTH)  : 3.20mm (M3 mounting)
+   Edge clearance   : 0.30mm
+
+4. IMPEDANCE CONTROL — 4 classes required
+   Supply proposed stackup with impedance data sheet.
+   See stackup doc for trace geometry per class.
+   TFLN RF (85Ω) on L8: CRITICAL — verify with coupon TDR
+
+5. BACK-DRILLING — 3 zones
+   Full specification in TFLN_AI_NODE_X2_backdrill_spec.txt
+   Zone reference on User.1 layer (TFLN_AI_NODE_X2-GFB.gbr)
+   Sequence: PTH drill → plate → controlled back-drill
+   ZONE 2 (TFLN RF): ±50µm depth tolerance — mandatory coupon
+
+6. MICRO-VIAS
+   Type: laser-drilled blind via, L1→L2 and L22→L21
+   Drill: 0.10mm, pad: 0.20mm
+   Fill & plate flush
+
+7. VIA-IN-PAD
+   Present on BGA-256 escape routing (U1, U2)
+   Fill with epoxy + plate over; flush surface required
+
+8. CONTROLLED DEPTH ROUTING
+   No depth-controlled routing required on this revision
+
+9. SOLDER MASK
+   Expansion: 0.05mm per side
+   Bridge min: 0.10mm between pads
+   Plug vias: None (tenting on inner copper layers acceptable)
+
+10. PACKAGE CONTENTS (40 files)
+    22× Copper Gerbers : GTL, G2–G21, GBL
+    2× Solder mask     : GTS, GBS
+    2× Solder paste    : GTP, GBP
+    2× Silkscreen      : GTO, GBO
+    1× Board outline   : GM1
+    1× Back-drill ref  : GFB (User.1 / F.Fab)
+    3× Drill files     : PTH, NPTH, combined (.drl Excellon)
+    1× Gerber job      : .gbrjob
+    1× Stackup doc     : _stackup.txt
+    1× Back-drill spec : _backdrill_spec.txt
+    1× Drill summary   : _drill_summary.txt
+    1× Fab notes       : _fab_notes.txt (this file)
+    2× BOM             : _BOM_standard.csv, _BOM_detailed.csv
+    1× Centroid        : _centroid.csv
+
+11. CONTACT
+    Engineering : LightRail AI
+    Email       : bola.olatunji@gmail.com

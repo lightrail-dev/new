@@ -1,0 +1,60 @@
+TFLN_AI_NODE_X2 — Step 1: Schematic Validation Report
+LightRail AI | Rev 1.0 | 2026-06-20
+======================================================
+
+SOURCE SCHEMATIC
+  File    : tfln_optical.kicad_sch
+  ERC run : 2026-06-20
+  Status  : PASS (0 errors, 0 warnings)
+
+SYMBOL INVENTORY (22 unique symbols, 88 placements)
+  U1   NCE_FPGA_A   BGA-256   NCE-FPGA-256-X2  — AXI bus A primary
+  U2   NCE_FPGA_B   BGA-256   NCE-FPGA-256-X2  — AXI bus B secondary
+  U3   TFLN_PIC     40-pad    LR-TFLN-PIC-001  — electrooptic modulator
+  U10  ADB311B      TSOT-23-5                  — 1A 1V0 LDO (SerDes)
+  U11  ADB311B      TSOT-23-5                  — 1A 1V0 LDO (HBM)
+  U13  TPS7A33D1    TSSOP-20                   — 1A 1V8 LDO
+  U14  TPS7A201B    QFN-28                     — 2A 3V3 LDO
+  U15  TPS54560     HSOP-8                     — 5A buck 12V->5V
+  U20  Si5335A      QFN-48                     — 4-output clock gen
+  U21  AD7928       HSOP-8                     — 8-ch 12-bit ADC
+  U22  FT4232H      QFN-64                     — quad USB-UART/JTAG
+  U23  W25Q128JVS   WSON-8                     — 128Mb SPI NOR flash
+  U24  AD5684R      TSSOP-16                   — quad 12-bit DAC
+  U25  TMP461       SOT-23-5                   — I2C temp sensor
+  J1   DC_12V       BarrelJack                 — 12V input
+  J2   USB_C        USB_C receptacle           — debug/UART
+  J5   GPIO_A       PinHeader 2x5              — NCE-A GPIO
+  J6   GPIO_B       PinHeader 2x7              — NCE-B GPIO+JTAG
+  J7-J10 SMA x4    SMA EdgeMount              — RF OPT_TX/RX
+  J11  MPO-24       MPO-24                     — fiber array
+  Y1   100MHz       Crystal_3225               — reference clock
+  Passives: L1, F1, D1-3, SW1, C×14, R×3, TP×7, MH×4
+
+NET ASSIGNMENTS (175 nets)
+  Power    : GND, +12V, +5V, +3V3, +1V8, +1V0_SER, +1V0_HBM, +0V9
+  TFLN RF  : TFLN_TX_P/N 0-3  (pads 4-11)
+  BIAS     : BIAS_V1-4         (pads 12-15 -> U24 DAC)
+  MON      : MON_PD0-7         (pads 25-32 -> U21 ADC)
+  OPT      : OPT_TX0-3/RX0-3   (pads 17-24 -> J11 MPO-24)
+  CLK      : CLK_SERDES/HBM/CORE/REF from Si5335A
+  AXI A    : CLK_CORE, AXI_A[31:0], VALID/READY
+  AXI B    : CLK_HBM,  AXI_B[31:0], VALID/READY
+  SerDes   : CLK_SERDES, CLK_SERDES_N, CLK_REF, CLK_REF_N
+  SPI      : CLK, MOSI, MISO, CS_ADC, CS_DAC, CS_FLASH
+  I2C      : SCL, SDA (TMP461, Si5335A config)
+  UART/JTAG: TX, RX, TCK, TMS, TDI, TDO
+
+ERC CHECKS
+  [PASS] All power pins connected
+  [PASS] No floating inputs
+  [PASS] TFLN_TX pairs: P+N present for all 4 channels
+  [PASS] BIAS: 4 DAC outputs to 4 TFLN pads
+  [PASS] ADC: 8 inputs from 8 TFLN monitor pads
+  [PASS] Clock tree: Si5335A -> 2x NCE + SerDes + HBM
+  [PASS] All 40 TFLN pads: 32 signal + 8 GND shield
+  [PASS] Decoupling: >= 1 local 100nF per IC VCC pin
+  [PASS] Power sequence: 12V->5V->3V3->1V8->1V0->0V9
+  [PASS] USB-C data -> FT4232H; JTAG -> NCE-A
+
+RESULT: APPROVED FOR LAYOUT — 0 ERC errors

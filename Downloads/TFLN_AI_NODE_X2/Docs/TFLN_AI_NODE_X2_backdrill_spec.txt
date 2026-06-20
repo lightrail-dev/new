@@ -1,0 +1,73 @@
+TFLN_AI_NODE_X2 — Back-Drill Specification
+LightRail AI | Rev 1.0
+Generated: 2026-06-20
+============================================================
+
+GENERAL REQUIREMENTS
+--------------------
+Board thickness    : 3.200 mm ± 0.10 mm
+Back-drill control : Per-zone (see zones below)
+Stub length target : ≤ 0.15 mm (all zones unless noted)
+Annular ring min   : 0.075 mm after drill
+Reference layer    : User.1 (Gerber: TFLN_AI_NODE_X2-GFB.gbr)
+Drill file         : TFLN_AI_NODE_X2_backdrill.drl (Excellon metric)
+
+============================================================
+ZONE 1 — PCIe / SerDes  (85 Ω target, L6 routing)
+------------------------------------------------------------
+Drill direction    : From BOTTOM
+Depth target       : Stop at L5 (In4.Cu) — drill through L6→L22
+Depth (mm)         : 3.200 − (5 × 0.136) = 2.52 mm ±0.10 mm
+Via drill size     : 0.20 mm finished
+Anti-pad clearance : 0.15 mm
+Estimated via count: ~500
+Location reference : BD-Z1 marked on User.1 layer
+Special note       : Back-drill AFTER plating; inspect stub with
+                     TDR before board assembly
+
+============================================================
+ZONE 2 — TFLN RF Differential  (100 Ω target, L7/L8)
+------------------------------------------------------------
+Drill direction    : From BOTTOM
+Depth target       : Stop at L2 (In1.Cu)
+Depth (mm)         : 3.200 − (2 × 0.136) = 2.928 mm ±0.050 mm
+Via drill size     : 0.15 mm finished (microvia class)
+Anti-pad clearance : 0.10 mm
+Estimated via count: ~32
+Location reference : BD-Z2 marked on User.1 layer
+CRITICAL TOLERANCE : ±50 µm depth — verify with cross-section
+                     coupon on each panel before shipment
+Special note       : These vias carry >10 GHz RF. Stub resonance
+                     at full depth would cause severe IL.
+                     100% TDR verification required.
+
+============================================================
+ZONE 3 — DDR5 DQS / HBM  (100 Ω target, L17/L18)
+------------------------------------------------------------
+Drill direction    : BOTH sides
+  Top drill stops at : L6  (In5.Cu)
+  Bot drill stops at : L16 (In15.Cu)
+Top depth (mm)     : 0.136 × 5 = 0.680 mm ±0.10 mm
+Bot depth (mm)     : 0.136 × 6 = 0.816 mm ±0.10 mm
+Via drill size     : 0.20 mm finished
+Anti-pad clearance : 0.12 mm
+Estimated via count: ~1,200 (600 drilled each side)
+Location reference : BD-Z3 marked on User.1 layer
+Special note       : Sequence: drill PTH first → plate → back-drill
+                     top → back-drill bottom. Do not reverse order.
+
+============================================================
+TOOL TABLE (back-drill only)
+------------------------------------------------------------
+Tool  | Diameter | Zones  | Count
+T01   | 0.15 mm  | Z2     |    32
+T02   | 0.20 mm  | Z1,Z3  | 1,700
+------------------------------------------------------------
+Total back-drill hits : 1,732
+
+============================================================
+COUPON REQUIREMENTS
+--------------------
+- 1× TDR coupon per panel (Zone 2 geometry)
+- 1× cross-section coupon per batch (Zone 2 depth verification)
+- Report: stub length measured ≤ 0.15 mm for Z1/Z3; ≤ 0.10 mm Z2

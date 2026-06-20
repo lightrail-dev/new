@@ -1,0 +1,41 @@
+TFLN_AI_NODE_X2 — Drill Summary
+LightRail AI | Rev 1.0
+Generated: 2026-06-20
+======================================================
+
+BOARD OVERVIEW
+  Size           : 305.0mm × 280.0mm
+  Layers         : 22
+  Thickness      : 3.2mm
+  Copper finish  : ENIG
+
+HOLE COUNTS (estimated)
+  PTH vias (routing)   : 3,138
+  PTH component holes  : 822
+  NPTH (mounting M3)   : 4
+  Back-drill hits      : 1,732
+  ─────────────────────────────
+  Total estimated holes: ~5,696
+
+DRILL TOOL TABLE
+  Tool  Diameter(mm)  Type    Count    Notes
+  T01   0.10          PTH     est.500  Microvias (blind)
+  T02   0.15          PTH     est.2000 TFLN RF / fine vias
+  T03   0.20          PTH     est.4000 Standard signal vias
+  T04   0.25          PTH     est.3000 Power vias
+  T05   0.30          PTH     est.1000 Via-in-pad (BGA escape)
+  T06   0.40          PTH     est.500  Standard vias
+  T07   0.50          PTH     est.200  Component holes
+  T08   3.20          NPTH    4        M3 mounting holes
+  T09   0.15          BD      32       Back-drill Z2 (TFLN)
+  T10   0.20          BD      1700     Back-drill Z1+Z3
+
+DRILL FORMAT
+  Software : KiCad 9 / Excellon
+  Units    : Metric (mm)
+  Format   : 3:3 decimal
+  Files    :
+    TFLN_AI_NODE_X2-PTH.drl     (plated through-holes)
+    TFLN_AI_NODE_X2-NPTH.drl    (non-plated)
+    TFLN_AI_NODE_X2-combined.drl
+    TFLN_AI_NODE_X2_backdrill.drl (back-drill, per zone)

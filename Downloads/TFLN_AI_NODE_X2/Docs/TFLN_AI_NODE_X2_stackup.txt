@@ -1,0 +1,68 @@
+TFLN_AI_NODE_X2 — 22-Layer Stackup
+LightRail AI | Rev 1.0
+Generated: 2026-06-20
+Board thickness target: 3.2mm ±0.13mm
+Copper finish: ENIG (Ni 3-6µm / Au 0.05-0.1µm)
+Material: FR4 Tg170+ (Rogers 4350B for L7/L8 if RF option selected)
+==========================================================================
+
+Layer  Name         Function              Cu(oz) Thick(µm)  Dielectric
+─────────────────────────────────────────────────────────────────────────
+ L1   F.Cu          Signal outer-top      1oz    35        —
+      Prepreg 2116  (εr=4.2, tanδ=0.02)         100
+ L2   In1.Cu        Signal fan-out        1oz    35
+      Core          (εr=4.5, tanδ=0.02)         200
+ L3   In2.Cu        GND plane             2oz    70        ← reference L4
+      Prepreg 2116                               100
+ L4   In3.Cu        AXI-A signal          1oz    35
+      Core                                       130
+ L5   In4.Cu        AXI-B signal          1oz    35        ← BD-Z1 stop
+      Prepreg 2116                               100
+ L6   In5.Cu        SerDes/PCIe signal    1oz    35        ← BD-Z1 stop
+      Core                                       130
+ L7   In6.Cu        PWR plane (2oz)       2oz    70        ← BD-Z2 stop
+      Prepreg 1080  (εr=4.0 — thin)             75
+ L8   In7.Cu        TFLN RF diff (85Ω)   1oz    35
+      Core                                       130
+ L9   In8.Cu        TFLN_B/HBM_B diff    1oz    35
+      Prepreg 2116                               100
+ L10  In9.Cu        GND plane             1oz    35
+      Core                                       200
+ L11  In10.Cu       CLK signals           1oz    35
+      Prepreg 2116                               100
+ L12  In11.Cu       PWR 0V9              1oz    35
+      Core                                       130
+ L13  In12.Cu       GND centre            1oz    35
+      Prepreg 2116                               100
+ L14  In13.Cu       PWR 1V8              1oz    35
+      Core                                       130
+ L15  In14.Cu       PWR 3V3 (2oz)        2oz    70        ← 2oz
+      Prepreg 2116                               100
+ L16  In15.Cu       GND plane             2oz    70        ← BD-Z3 stop
+      Core                                       130
+ L17  In16.Cu       DDR5 DQS (100Ω)     1oz    35
+      Prepreg 2116                               100
+ L18  In17.Cu       DDR5 DQ signal        1oz    35
+      Core                                       200
+ L19  In18.Cu       Signal (2oz)          2oz    70        ← BD-Z3 stop
+      Prepreg 2116                               100
+ L20  In19.Cu       Signal                1oz    35
+      Core                                       130
+ L21  In20.Cu       GND plane             1oz    35
+      Prepreg 2116                               100
+ L22  B.Cu          Signal outer-bot      1oz    35
+─────────────────────────────────────────────────────────────────────────
+Total copper + dielectric: ~3.2mm (nominal)
+
+IMPEDANCE REQUIREMENTS (request controlled-impedance stackup quote)
+──────────────────────────────────────────────────────────────────
+Class  Target  Topology       Layer  Trace/Gap    Ref plane
+TFLN   85Ω     Diff CPWG      L8     0.10/0.10mm  L7(GND) + L9(GND)
+PCIe   100Ω    Diff stripline L6     0.10/0.12mm  L5(GND) + L7(GND)
+DDR5   100Ω    Diff stripline L17    0.10/0.10mm  L16(GND)+ L18(GND)
+GPIO   50Ω     SE microstrip  L1     0.15mm       L3(GND)
+
+COPPER WEIGHTS BY LAYER
+───────────────────────
+1oz layers : L1,L2,L4,L5,L6,L8,L9,L10,L11,L12,L13,L14,L17,L18,L20,L21,L22
+2oz layers : L3,L7,L15,L16  (power/ground planes for thermal/current capacity)
