@@ -348,7 +348,8 @@ def generate_bga_breakout(nce_x, nce_y, nce_idx, nets, direction="both"):
     lines = []
     bga_half = 20.0
     
-    # Top fanout - 50 traces with 2-segment curves
+    # Top fanout - 50 traces (use layers that DON'T overlap with HBM routing)
+    top_layers = ["In16.Cu", "In17.Cu", "In18.Cu"] if nce_idx == 0 else ["In27.Cu", "In28.Cu", "In29.Cu"]
     for i in range(50):
         angle = -70 + (i / 49) * 140
         sx = nce_x + bga_half * math.sin(math.radians(angle))
@@ -360,14 +361,14 @@ def generate_bga_breakout(nce_x, nce_y, nce_idx, nets, direction="both"):
         my = (sy + ey) / 2
         
         net_id = nets.get(f"NCE{nce_idx}_FAN{i % 120}", 0)
-        layer = ["In1.Cu", "In2.Cu", "In3.Cu"][i % 3]
+        layer = top_layers[i % 3]
         lines.append(segment(sx, sy, mx, my, 0.09, layer, net_id))
         lines.append(segment(mx, my, ex, ey, 0.09, layer, net_id))
         lines.append(via(sx, sy, 0.3, 0.15, net_id, ("F.Cu", layer)))
-        # F.Cu stub from pad to via (visible as red traces in reference)
         lines.append(segment(sx + (i-25)*0.05, sy + 1, sx, sy, 0.12, "F.Cu", net_id))
     
-    # Bottom fanout - 50 traces
+    # Bottom fanout - 50 traces (different layers from HBM)
+    bot_layers = ["In19.Cu", "In20.Cu", "In21.Cu"] if nce_idx == 0 else ["In10.Cu", "In11.Cu", "In12.Cu"]
     for i in range(50):
         angle = -70 + (i / 49) * 140
         sx = nce_x + bga_half * math.sin(math.radians(angle))
@@ -379,7 +380,7 @@ def generate_bga_breakout(nce_x, nce_y, nce_idx, nets, direction="both"):
         my = (sy + ey) / 2
         
         net_id = nets.get(f"NCE{nce_idx}_FAN{(i + 30) % 120}", 0)
-        layer = ["In3.Cu", "In4.Cu", "In5.Cu"][i % 3]
+        layer = bot_layers[i % 3]
         lines.append(segment(sx, sy, mx, my, 0.09, layer, net_id))
         lines.append(segment(mx, my, ex, ey, 0.09, layer, net_id))
         lines.append(via(sx, sy, 0.3, 0.15, net_id, ("F.Cu", layer)))
@@ -812,6 +813,180 @@ def generate_control_bus(nets, nce0_x, nce0_y, nce1_x, nce1_y):
     return "\n".join(lines)
 
 
+def generate_ldo_rf_routing(nets, tfln_x, tfln_y):
+    """LDO → RF driver power routing (0.9V supply to HMC8410 RF amps)."""
+    lines = []
+    v09 = nets["+0V9"]
+    gnd = nets["GND"]
+    
+    for i in range(4):
+        ldo_x = tfln_x - 15 + i * 10
+        ldo_y = tfln_y + 15
+        rf_x = tfln_x - 20 + i * 13
+        rf_y = tfln_y - 15
+        
+        # LDO output to RF driver (vertical on F.Cu)
+        mid_x = (ldo_x + rf_x) / 2
+        lines.append(segment(ldo_x + 1, ldo_y, mid_x, tfln_y, 0.25, "F.Cu", v09))
+        lines.append(segment(mid_x, tfln_y, rf_x, rf_y + 3, 0.25, "F.Cu", v09))
+        # GND return
+        lines.append(segment(ldo_x - 1, ldo_y, mid_x - 1.5, tfln_y + 1, 0.25, "B.Cu", gnd))
+        lines.append(segment(mid_x - 1.5, tfln_y + 1, rf_x - 1, rf_y + 3, 0.25, "B.Cu", gnd))
+        lines.append(via(ldo_x - 1, ldo_y, 0.4, 0.2, gnd, ("F.Cu", "B.Cu")))
+        lines.append(via(rf_x - 1, rf_y + 3, 0.4, 0.2, gnd, ("B.Cu", "F.Cu")))
+    
+    return "\n".join(lines)
+
+
+def generate_jitter_nce_routing(nets, nce0_x, nce0_y, nce1_x, nce1_y):
+    """Jitter cleaner → NCE reference clock distribution."""
+    lines = []
+    
+    for clk_idx in range(2):
+        jx = 170 + clk_idx * 80
+        jy = 30
+        nce_x = nce0_x if clk_idx == 0 else nce1_x
+        nce_y = nce0_y if clk_idx == 0 else nce1_y
+        
+        # 4 ref clock outputs per jitter cleaner to NCE
+        for ch in range(4):
+            net_id = nets.get(f"CLK{clk_idx}_OUT{ch}_P", 0)
+            jx_pin = jx - 3 + ch * 2
+            nce_target_x = nce_x - 8 + ch * 5
+            nce_target_y = nce_y - 22
+            
+            mid_x = (jx_pin + nce_target_x) / 2
+            mid_y = (jy + nce_target_y) / 2
+            lines.append(segment(jx_pin, jy + 4, mid_x, mid_y, 0.12, "In25.Cu", net_id))
+            lines.append(segment(mid_x, mid_y, nce_target_x, nce_target_y, 0.12, "In25.Cu", net_id))
+            lines.append(via(jx_pin, jy + 4, 0.3, 0.15, net_id, ("F.Cu", "In25.Cu")))
+            lines.append(via(nce_target_x, nce_target_y, 0.3, 0.15, net_id, ("In25.Cu", "F.Cu")))
+            # F.Cu stubs for visibility
+            lines.append(segment(jx_pin, jy + 4, jx_pin, jy + 6, 0.15, "F.Cu", net_id))
+            lines.append(segment(nce_target_x, nce_target_y, nce_target_x, nce_target_y - 2, 0.15, "F.Cu", net_id))
+    
+    return "\n".join(lines)
+
+
+def generate_bmc_management_bus(nets, nce0_x, nce0_y, nce1_x, nce1_y):
+    """BMC management bus to all major ICs (I2C/SMBus/JTAG)."""
+    lines = []
+    bmc_x, bmc_y = 50, 45
+    i2c_sda = nets["I2C_SDA"]
+    i2c_scl = nets["I2C_SCL"]
+    
+    # BMC → VRM controllers (management bus)
+    vrm_positions = [(30, 100), (30, 220), (390, 100), (390, 220)]
+    for i, (vx, vy) in enumerate(vrm_positions):
+        lines.append(segment(bmc_x + 5, bmc_y + 8 + i * 1.5, vx + 4, vy - 4, 0.12, "In9.Cu", i2c_sda))
+        lines.append(via(vx + 4, vy - 4, 0.3, 0.15, i2c_sda, ("F.Cu", "In9.Cu")))
+        # F.Cu stub at VRM
+        lines.append(segment(vx + 4, vy - 4, vx + 4, vy - 2, 0.15, "F.Cu", i2c_sda))
+    
+    # BMC → Retimers
+    for i in range(4):
+        ret_x = 130 + i * 50
+        ret_y = 290
+        lines.append(segment(bmc_x + 5, bmc_y + 15 + i * 1.2, ret_x - 4, ret_y - 5, 0.12, "In9.Cu", i2c_scl))
+        lines.append(via(ret_x - 4, ret_y - 5, 0.3, 0.15, i2c_scl, ("F.Cu", "In9.Cu")))
+        lines.append(segment(ret_x - 4, ret_y - 5, ret_x - 4, ret_y - 3, 0.15, "F.Cu", i2c_scl))
+    
+    # BMC → PCIe Switches
+    for i in range(4):
+        sw_x = 130 + i * 50
+        sw_y = 310
+        lines.append(segment(bmc_x + 5, bmc_y + 20 + i * 1.2, sw_x + 4, sw_y - 5, 0.12, "In9.Cu", i2c_sda))
+        lines.append(via(sw_x + 4, sw_y - 5, 0.3, 0.15, i2c_sda, ("F.Cu", "In9.Cu")))
+        lines.append(segment(sw_x + 4, sw_y - 5, sw_x + 4, sw_y - 3, 0.15, "F.Cu", i2c_sda))
+    
+    # BMC → Jitter cleaners
+    for i in range(2):
+        jx = 170 + i * 80
+        jy = 30
+        lines.append(segment(bmc_x + 5, bmc_y + 25 + i * 1.2, jx - 4, jy + 4, 0.12, "In9.Cu", i2c_scl))
+        lines.append(via(jx - 4, jy + 4, 0.3, 0.15, i2c_scl, ("F.Cu", "In9.Cu")))
+        lines.append(segment(jx - 4, jy + 4, jx - 4, jy + 2, 0.15, "F.Cu", i2c_scl))
+    
+    return "\n".join(lines)
+
+
+def generate_hbm_power_routing(nets, nce0_x, nce0_y, nce1_x, nce1_y):
+    """HBM power delivery from VRM to HBM stacks (visible F.Cu traces)."""
+    lines = []
+    v12_hbm = nets["+1V8"]  # HBM uses 1.2V but mapped to 1.8V rail here
+    gnd = nets["GND"]
+    
+    # For each NCE, route power to its 8 HBM stacks
+    for nce_idx, (nce_x, nce_y) in enumerate([(nce0_x, nce0_y), (nce1_x, nce1_y)]):
+        for i in range(8):
+            col = i % 4
+            row = i // 4
+            hx = nce_x - 30 + col * 20
+            hy = nce_y - 42 + row * 84
+            
+            # Power trace from nearest power plane via to HBM
+            via_x = hx + 5
+            via_y = hy + (5 if row == 0 else -5)
+            lines.append(via(via_x, via_y, 0.5, 0.3, v12_hbm, ("F.Cu", "In15.Cu")))
+            lines.append(segment(via_x, via_y, hx + 2, hy, 0.3, "F.Cu", v12_hbm))
+            # GND via
+            lines.append(via(hx - 5, via_y, 0.5, 0.3, gnd))
+            lines.append(segment(hx - 5, via_y, hx - 2, hy, 0.3, "F.Cu", gnd))
+    
+    return "\n".join(lines)
+
+
+def generate_retimer_nce_routing(nets, nce0_x, nce0_y, nce1_x, nce1_y):
+    """Additional visible retimer-to-NCE high-speed connections on F.Cu."""
+    lines = []
+    bga_half = 21
+    
+    for i in range(4):
+        ret_x = 130 + i * 50
+        ret_y = 290
+        nce_x = nce0_x if i < 2 else nce1_x
+        nce_y = nce0_y if i < 2 else nce1_y
+        
+        # 8 high-speed lanes per retimer visible on F.Cu
+        for ln in range(8):
+            net_id = nets.get(f"RET{i}_RX{ln % 4}_P", 0)
+            rx = ret_x - 4 + ln * 1.0
+            nce_target_y = nce_y + bga_half + 3
+            nce_target_x = nce_x - 10 + (i % 2) * 15 + ln * 1.2
+            
+            mid_y = (ret_y + nce_target_y) / 2
+            lines.append(segment(rx, ret_y - 4, rx + (nce_target_x - rx) * 0.3, mid_y, 0.10, "F.Cu", net_id))
+            lines.append(segment(rx + (nce_target_x - rx) * 0.3, mid_y, nce_target_x, nce_target_y, 0.10, "F.Cu", net_id))
+    
+    return "\n".join(lines)
+
+
+def generate_pcie_switch_nce_routing(nets, nce0_x, nce0_y, nce1_x, nce1_y):
+    """PCIe switch upstream connections to NCEs (visible on F.Cu)."""
+    lines = []
+    bga_half = 21
+    
+    for i in range(4):
+        sw_x = 130 + i * 50
+        sw_y = 310
+        nce_x = nce0_x if i < 2 else nce1_x
+        nce_y = nce0_y if i < 2 else nce1_y
+        
+        # 4 upstream lanes per switch to NCE
+        for ln in range(4):
+            net_id = nets.get(f"PCIESW{i}_LN{ln}_P", 0)
+            sw_pin_x = sw_x - 2 + ln * 1.5
+            nce_target_x = nce_x - 6 + (i % 2) * 10 + ln * 2
+            nce_target_y = nce_y + bga_half + 5
+            
+            mid_y = (sw_y + nce_target_y) / 2
+            mid_x = (sw_pin_x + nce_target_x) / 2
+            lines.append(segment(sw_pin_x, sw_y - 4, mid_x, mid_y, 0.10, "F.Cu", net_id))
+            lines.append(segment(mid_x, mid_y, nce_target_x, nce_target_y, 0.10, "F.Cu", net_id))
+    
+    return "\n".join(lines)
+
+
 # ══════════════════════════════════════════════════════════════════════════
 # MAIN GENERATION
 # ══════════════════════════════════════════════════════════════════════════
@@ -1067,6 +1242,24 @@ def generate():
 
     # B.Cu edge routing (blue traces along edges)
     L.append(generate_bcu_edge_routing(nets))
+
+    # LDO → RF driver power routing
+    L.append(generate_ldo_rf_routing(nets, TFLN_X, TFLN_Y))
+
+    # Jitter cleaner → NCE clock distribution
+    L.append(generate_jitter_nce_routing(nets, NCE0_X, NCE0_Y, NCE1_X, NCE1_Y))
+
+    # BMC management bus to all ICs
+    L.append(generate_bmc_management_bus(nets, NCE0_X, NCE0_Y, NCE1_X, NCE1_Y))
+
+    # HBM power delivery (visible F.Cu)
+    L.append(generate_hbm_power_routing(nets, NCE0_X, NCE0_Y, NCE1_X, NCE1_Y))
+
+    # Retimer → NCE high-speed connections (visible F.Cu)
+    L.append(generate_retimer_nce_routing(nets, NCE0_X, NCE0_Y, NCE1_X, NCE1_Y))
+
+    # PCIe switch upstream to NCE (visible F.Cu)
+    L.append(generate_pcie_switch_nce_routing(nets, NCE0_X, NCE0_Y, NCE1_X, NCE1_Y))
 
     # Via stitching arrays
     L.append(generate_via_stitching(nets))
